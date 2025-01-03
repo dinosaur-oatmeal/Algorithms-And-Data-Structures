@@ -30,12 +30,12 @@ renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
         , style "flex-direction" "column"
         , style "align-items" "center"
         , style "width" "100%"
-        , style "height" "250px"
+        , style "height" "400px"
         , style "padding" "10px"
         ]
         [ div 
-            [ style "font-size" "15px"
-            , style "margin-bottom" "5px"
+            [ style "font-size" "20px" -- Larger font for title
+            , style "margin-bottom" "10px"
             , style "font-weight" "bold"
             ]
             [ text title ]
@@ -43,11 +43,12 @@ renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
             [ style "display" "flex"
             , style "align-items" "flex-end"
             , style "justify-content" "center"
-            , style "height" "150px"
-            , style "padding" "5px"
+            , style "height" "300px"
+            , style "padding" "10px"
             ]
             (Array.toList array |> List.indexedMap (renderBar sorted outerIndex currentIndex maybeMinIndex))
         ]
+
 
 renderBar :
     -- Flag if the array is currently sorted
@@ -82,22 +83,39 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
 
         barColor =
             if sorted then
-                "#4CAF50" -- Green when sorted
+                "linear-gradient(180deg, #4CAF50, #81C784)" -- Gradient green when sorted
             else if isOuter then
-                "#FF5722" -- Red for outer index
+                "linear-gradient(180deg, #FF5722, #FF8A65)" -- Gradient red for outer index
             else if isMin then
-                "#FFA500" -- Orange for minIndex in selection sort
+                "linear-gradient(180deg, #FFA500, #FFD54F)" -- Gradient orange for minIndex
             else if isCurrent then
-                "#FFC107" -- Yellow for currentIndex
+                "linear-gradient(180deg, #FFC107, #FFE082)" -- Gradient yellow for currentIndex
             else
-                "#2196F3" -- Blue otherwise
+                "linear-gradient(180deg, #2196F3, #64B5F6)" -- Gradient blue otherwise
+
     in
     div 
+    -- Wrapper for the bar and value
+    [ style "display" "flex"
+    , style "flex-direction" "column"
+    , style "align-items" "center"
+    , style "margin" "2px"
+    ]
+    [ div 
         -- Styling for each bar in chart
         [ class "sorting-bar"
-        , style "height" (String.fromInt (value * 5) ++ "px")
-        , style "background-color" barColor
-        , style "margin" "1px"
+        , style "height" (String.fromInt (value * 7) ++ "px")
+        , style "background-image" barColor -- Use `background-image` for gradients
+        , style "width" "40px"
+        , style "border-radius" "5px"
         , style "transition" "height 0.5s ease, background-color 0.5s ease"
         ]
         []
+    , div
+        -- Styling for the value text below the bar
+        [ class "indices"
+        , style "font-size" "16px"
+        , style "margin-top" "10px"
+        ]
+        [ text (String.fromInt value) ]
+    ]

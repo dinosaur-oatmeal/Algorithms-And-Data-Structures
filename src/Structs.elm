@@ -10,9 +10,9 @@ type alias SortingTrack =
     { array : Array Int
     , outerIndex : Int
     , currentIndex : Int
+    , sorted : Bool
     , minIndex : Int
     , stack : List ( Int, Int )
-    , sorted : Bool
     , didSwap : Bool
     , currentStep : Int
     }
@@ -20,12 +20,12 @@ type alias SortingTrack =
 defaultSortingTrack : SortingTrack
 defaultSortingTrack =
     { array = Array.fromList
-        [9, 6, 16, 5, 13, 14, 8, 19, 2, 1, 15, 17, 4, 10, 20, 12, 3, 11, 18, 7]
+        [9, 6, 5, 8, 2, 1, 4, 10, 3, 7]
     , outerIndex = 0
     , currentIndex = 1
+    , sorted = False
     , minIndex = 0
     , stack = []
-    , sorted = False
     , didSwap = False
     , currentStep = 0
     }

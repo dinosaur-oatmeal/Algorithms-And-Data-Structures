@@ -1,27 +1,46 @@
-module Pages.Home exposing (view, Msg(..))
+module Pages.Home exposing (Model, Theme(..), Msg(..), view, update)
 
--- HTML imports
-import Html exposing (Html, div, h1, select, option, text)
-import Html.Attributes exposing (class, style, attribute)
-import Html.Events exposing (onInput)
+import Html exposing (Html, div, text, h1)
+import Html.Attributes exposing (class)
 
--- Only message is the Algorithm selected
+-- Theme type for dark/light mode
+type Theme
+    = Dark
+    | Light
+
+
+-- Model
+type alias Model =
+    { theme : Theme }
+
+
+-- Only message is changing the theme
 type Msg
-    = SelectAlgorithm String
+    = ToggleTheme
 
-view : Html Msg
-view =
-    div [ class "landing-page" ]
-        [ h1 [ class "title" ] [ text "Sorting Algorithm Visualizer" ]
-        , div [ class "dropdown-container" ]
-            [ select [ class "dropdown", onInput SelectAlgorithm ]
-                [ 
-                -- Default for dropdown
-                option [ attribute "value" "" ] [ text "Select Algorithm" ]
-                -- BubbleSort Page selected
-                , option [ attribute "value" "Bubble Sort" ] [ text "Bubble Sort" ]
-                ]
+
+-- Update
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        ToggleTheme ->
+            { model
+                | theme =
+                    if model.theme == Light then
+                        Dark
+                    else
+                        Light
+            }
+
+
+-- View
+view : Model -> Html Msg
+view model =
+    div [ class "home-container" ]
+        [ h1 [ class "home-title" ]
+            [ text "Welcome to the Sorting Visualizer Home Page!" ]
+        , div [ class "home-text" ]
+            [ text "Use the dropdown above to select a sorting algorithm, "
+            , text "and the circular icon in the bottom-right to toggle themes."
             ]
-        , div [ class "footer" ]
-            [ text "Learn and explore various sorting algorithms with interactive visualizations." ]
         ]

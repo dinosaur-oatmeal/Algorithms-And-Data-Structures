@@ -5217,6 +5217,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
+var $author$project$Pages$Home$Dark = {$: 'Dark'};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5255,7 +5256,7 @@ var $elm$core$Array$fromList = function (list) {
 var $author$project$Structs$defaultSortingTrack = {
 	array: $elm$core$Array$fromList(
 		_List_fromArray(
-			[9, 6, 16, 5, 13, 14, 8, 19, 2, 1, 15, 17, 4, 10, 20, 12, 3, 11, 18, 7])),
+			[9, 6, 5, 8, 2, 1, 4, 10, 3, 7])),
 	currentIndex: 1,
 	currentStep: 0,
 	didSwap: false,
@@ -6026,12 +6027,14 @@ var $author$project$Main$init = F3(
 			{
 				bubbleSortTrack: $author$project$Structs$defaultSortingTrack,
 				currentPage: $author$project$Main$parseUrl(url),
+				homeModel: {theme: $author$project$Pages$Home$Dark},
 				key: key
 			},
 			$elm$core$Platform$Cmd$none);
 	});
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Pages$Home$Light = {$: 'Light'};
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
@@ -6149,16 +6152,15 @@ var $author$project$Pages$BubbleSort$bubbleSortStep = function (track) {
 				} else {
 					return _Utils_update(
 						track,
-						{currentIndex: currentIndex + 1, didSwap: track.didSwap, outerIndex: outerIndex + 1});
+						{currentIndex: currentIndex + 1, outerIndex: outerIndex + 1});
 				}
 			} else {
 				return track;
 			}
 		} else {
-			var isSorted = !track.didSwap;
 			return _Utils_update(
 				track,
-				{currentIndex: 1, didSwap: false, outerIndex: 0, sorted: isSorted});
+				{currentIndex: 1, didSwap: false, outerIndex: 0, sorted: !track.didSwap});
 		}
 	}
 };
@@ -6174,7 +6176,23 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'HomeMsg':
 				var homeMsg = msg.a;
-				var algorithm = homeMsg.a;
+				var updatedTheme = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? $author$project$Pages$Home$Dark : $author$project$Pages$Home$Light;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							homeModel: {theme: updatedTheme}
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'BubbleSortStep':
+				var updatedTrack = $author$project$Pages$BubbleSort$bubbleSortStep(model.bubbleSortTrack);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{bubbleSortTrack: updatedTrack}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var algorithm = msg.a;
 				if (algorithm === 'Bubble Sort') {
 					return _Utils_Tuple2(
 						_Utils_update(
@@ -6182,17 +6200,15 @@ var $author$project$Main$update = F2(
 							{currentPage: $author$project$Main$BubbleSort}),
 						$elm$core$Platform$Cmd$none);
 				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{currentPage: $author$project$Main$Home}),
+						$elm$core$Platform$Cmd$none);
 				}
-			default:
-				var updatedTrack = $author$project$Pages$BubbleSort$bubbleSortStep(model.bubbleSortTrack);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{bubbleSortTrack: updatedTrack}),
-					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$Main$BubbleSortStep = {$: 'BubbleSortStep'};
 var $elm$browser$Browser$Document = F2(
 	function (title, body) {
 		return {body: body, title: title};
@@ -6200,10 +6216,6 @@ var $elm$browser$Browser$Document = F2(
 var $author$project$Main$HomeMsg = function (a) {
 	return {$: 'HomeMsg', a: a};
 };
-var $author$project$Main$NextBubbleSortStep = {$: 'NextBubbleSortStep'};
-var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
-var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6214,6 +6226,9 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6233,6 +6248,8 @@ var $elm$html$Html$Events$onClick = function (msg) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Visualization$renderBar = F6(
 	function (sorted, outerIndex, currentIndex, maybeMinIndex, position, value) {
 		var isOuter = _Utils_eq(position, outerIndex);
@@ -6248,24 +6265,48 @@ var $author$project$Visualization$renderBar = F6(
 			var ci = currentIndex;
 			return _Utils_eq(position, ci);
 		}();
-		var barColor = sorted ? '#4CAF50' : (isOuter ? '#FF5722' : (isMin ? '#FFA500' : (isCurrent ? '#FFC107' : '#2196F3')));
+		var barColor = sorted ? 'linear-gradient(180deg, #4CAF50, #81C784)' : (isOuter ? 'linear-gradient(180deg, #FF5722, #FF8A65)' : (isMin ? 'linear-gradient(180deg, #FFA500, #FFD54F)' : (isCurrent ? 'linear-gradient(180deg, #FFC107, #FFE082)' : 'linear-gradient(180deg, #2196F3, #64B5F6)')));
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('sorting-bar'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'height',
-					$elm$core$String$fromInt(value * 5) + 'px'),
-					A2($elm$html$Html$Attributes$style, 'background-color', barColor),
-					A2($elm$html$Html$Attributes$style, 'margin', '1px'),
-					A2($elm$html$Html$Attributes$style, 'transition', 'height 0.5s ease, background-color 0.5s ease')
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+					A2($elm$html$Html$Attributes$style, 'margin', '2px')
 				]),
-			_List_Nil);
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-bar'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'height',
+							$elm$core$String$fromInt(value * 7) + 'px'),
+							A2($elm$html$Html$Attributes$style, 'background-image', barColor),
+							A2($elm$html$Html$Attributes$style, 'width', '40px'),
+							A2($elm$html$Html$Attributes$style, 'border-radius', '5px'),
+							A2($elm$html$Html$Attributes$style, 'transition', 'height 0.5s ease, background-color 0.5s ease')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '16px'),
+							A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$String$fromInt(value))
+						]))
+				]));
 	});
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Visualization$renderComparison = F6(
 	function (array, title, sorted, outerIndex, currentIndex, maybeMinIndex) {
 		return A2(
@@ -6276,7 +6317,7 @@ var $author$project$Visualization$renderComparison = F6(
 					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column'),
 					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
 					A2($elm$html$Html$Attributes$style, 'width', '100%'),
-					A2($elm$html$Html$Attributes$style, 'height', '250px'),
+					A2($elm$html$Html$Attributes$style, 'height', '400px'),
 					A2($elm$html$Html$Attributes$style, 'padding', '10px')
 				]),
 			_List_fromArray(
@@ -6285,8 +6326,8 @@ var $author$project$Visualization$renderComparison = F6(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$style, 'font-size', '15px'),
-							A2($elm$html$Html$Attributes$style, 'margin-bottom', '5px'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
+							A2($elm$html$Html$Attributes$style, 'margin-bottom', '10px'),
 							A2($elm$html$Html$Attributes$style, 'font-weight', 'bold')
 						]),
 					_List_fromArray(
@@ -6300,8 +6341,8 @@ var $author$project$Visualization$renderComparison = F6(
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'align-items', 'flex-end'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'height', '150px'),
-							A2($elm$html$Html$Attributes$style, 'padding', '5px')
+							A2($elm$html$Html$Attributes$style, 'height', '300px'),
+							A2($elm$html$Html$Attributes$style, 'padding', '10px')
 						]),
 					A2(
 						$elm$core$List$indexedMap,
@@ -6323,13 +6364,23 @@ var $author$project$Pages$BubbleSort$view = F2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
+							$elm$html$Html$Attributes$class('title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Bubble Sort')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
 							$elm$html$Html$Attributes$class('description')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. The pass through the list is repeated until the array is sorted. The algorithm is known for its simplicity but is not suitable for large datasets.')
+							$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.\r\n            It compares adjacent elements and swaps them if the right one is less than the left one.\r\n            It does this repeatedly until the array is sorted.')
 						])),
-					A6($author$project$Visualization$renderComparison, track.array, 'Bubble Sort Visualization', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
+					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
@@ -6343,7 +6394,7 @@ var $author$project$Pages$BubbleSort$view = F2(
 							$elm$html$Html$text(
 							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Did Swap: ' + (track.didSwap ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
 							$elm$html$Html$text(
 							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
@@ -6366,10 +6417,53 @@ var $author$project$Pages$BubbleSort$view = F2(
 								[
 									$elm$html$Html$text('Next Step')
 								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Outer index is the left index being compared.\r\n            Current index is the right index being compared.\r\n            Checking if an element was swapped in the current pass is how we detect if it\'s sorted.\r\n            If no elements were swapped in a pass, the array is sorted.')
 						]))
 				]));
 	});
-var $author$project$Pages$Home$SelectAlgorithm = function (a) {
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$Pages$Home$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('home-container')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('home-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Welcome to the Sorting Visualizer Home Page!')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('home-text')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Use the dropdown above to select a sorting algorithm, '),
+						$elm$html$Html$text('and the circular icon in the bottom-right to toggle themes.')
+					]))
+			]));
+};
+var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
 };
 var $elm$virtual_dom$VirtualDom$attribute = F2(
@@ -6380,7 +6474,12 @@ var $elm$virtual_dom$VirtualDom$attribute = F2(
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$virtual_dom$VirtualDom$node = function (tag) {
+	return _VirtualDom_node(
+		_VirtualDom_noScript(tag));
+};
+var $elm$html$Html$node = $elm$virtual_dom$VirtualDom$node;
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -6416,38 +6515,50 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 };
 var $elm$html$Html$option = _VirtualDom_node('option');
 var $elm$html$Html$select = _VirtualDom_node('select');
-var $author$project$Pages$Home$view = A2(
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$Main$viewHeader = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
 		[
-			$elm$html$Html$Attributes$class('landing-page')
+			$elm$html$Html$Attributes$class('header')
 		]),
 	_List_fromArray(
 		[
 			A2(
-			$elm$html$Html$h1,
+			$elm$html$Html$label,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('title')
+					$elm$html$Html$Attributes$class('dropdown-label')
 				]),
 			_List_fromArray(
 				[
-					$elm$html$Html$text('Sorting Algorithm Visualizer')
+					$elm$html$Html$text('Algorithms:')
 				])),
 			A2(
-			$elm$html$Html$div,
+			$elm$html$Html$select,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('dropdown-container')
+					$elm$html$Html$Attributes$class('dropdown'),
+					$elm$html$Html$Events$onInput($author$project$Main$SelectAlgorithm)
 				]),
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$select,
+					$elm$html$Html$option,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('dropdown'),
-							$elm$html$Html$Events$onInput($author$project$Pages$Home$SelectAlgorithm)
+							$elm$html$Html$Attributes$value('')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Home Page')
+						])),
+					A3(
+					$elm$html$Html$node,
+					'optgroup',
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'label', 'Comparison-based')
 						]),
 					_List_fromArray(
 						[
@@ -6455,54 +6566,210 @@ var $author$project$Pages$Home$view = A2(
 							$elm$html$Html$option,
 							_List_fromArray(
 								[
-									A2($elm$html$Html$Attributes$attribute, 'value', '')
+									$elm$html$Html$Attributes$value('Bubble Sort')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Select Algorithm')
+									$elm$html$Html$text('Bubble Sort')
 								])),
 							A2(
 							$elm$html$Html$option,
 							_List_fromArray(
 								[
-									A2($elm$html$Html$Attributes$attribute, 'value', 'Bubble Sort')
+									$elm$html$Html$Attributes$value('Insertion Sort')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Bubble Sort')
+									$elm$html$Html$text('Insertion Sort')
+								])),
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Selection Sort')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Selection Sort')
+								]))
+						])),
+					A3(
+					$elm$html$Html$node,
+					'optgroup',
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'label', 'Divide & Conquer')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Merge Sort')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Merge Sort')
+								])),
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Quick Sort')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Quick Sort')
+								]))
+						])),
+					A3(
+					$elm$html$Html$node,
+					'optgroup',
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'label', 'Heaps')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Heap Sort')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Heap Sort')
+								]))
+						])),
+					A3(
+					$elm$html$Html$node,
+					'optgroup',
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'label', 'Graphs')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Topological Sort')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Topological Sort')
+								]))
+						])),
+					A3(
+					$elm$html$Html$node,
+					'optgroup',
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'label', 'Trees')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('AVL Tree')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('AVL Tree')
+								])),
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Binary Search Tree')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Binary Search Tree')
 								]))
 						]))
-				])),
-			A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('footer')
-				]),
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Learn and explore various sorting algorithms with interactive visualizations.')
 				]))
 		]));
+var $author$project$Pages$Home$ToggleTheme = {$: 'ToggleTheme'};
+var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
+var $author$project$Main$viewThemeToggle = function (model) {
+	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? _Utils_Tuple2('🌙', 'Switch to Dark Mode') : _Utils_Tuple2('☀', 'Switch to Light Mode');
+	var icon = _v0.a;
+	var tooltip = _v0.b;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('theme-toggle-container')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('theme-toggle-btn'),
+						$elm$html$Html$Events$onClick(
+						$author$project$Main$HomeMsg($author$project$Pages$Home$ToggleTheme)),
+						$elm$html$Html$Attributes$title(tooltip)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(icon)
+					]))
+			]));
+};
 var $author$project$Main$view = function (model) {
-	var _v0 = model.currentPage;
-	if (_v0.$ === 'Home') {
-		return A2(
-			$elm$browser$Browser$Document,
-			'Sorting Algorithm Visualizer',
-			_List_fromArray(
-				[
-					A2($elm$html$Html$map, $author$project$Main$HomeMsg, $author$project$Pages$Home$view)
-				]));
-	} else {
-		return A2(
-			$elm$browser$Browser$Document,
-			'Bubble Sort',
-			_List_fromArray(
-				[
-					A2($author$project$Pages$BubbleSort$view, model.bubbleSortTrack, $author$project$Main$NextBubbleSortStep)
-				]));
-	}
+	var themeClass = function () {
+		var _v1 = model.homeModel.theme;
+		if (_v1.$ === 'Light') {
+			return 'light-theme';
+		} else {
+			return 'dark-theme';
+		}
+	}();
+	return A2(
+		$elm$browser$Browser$Document,
+		'Sorting Visualizer',
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('main-container ' + themeClass)
+					]),
+				_List_fromArray(
+					[
+						$author$project$Main$viewHeader,
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('page-content')
+							]),
+						_List_fromArray(
+							[
+								function () {
+								var _v0 = model.currentPage;
+								if (_v0.$ === 'Home') {
+									return A2(
+										$elm$html$Html$map,
+										$author$project$Main$HomeMsg,
+										$author$project$Pages$Home$view(model.homeModel));
+								} else {
+									return A2($author$project$Pages$BubbleSort$view, model.bubbleSortTrack, $author$project$Main$BubbleSortStep);
+								}
+							}()
+							])),
+						$author$project$Main$viewThemeToggle(model)
+					]))
+			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{

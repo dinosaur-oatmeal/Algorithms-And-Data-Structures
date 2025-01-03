@@ -1,101 +1,185 @@
 /* General styles */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+/* Main container that holds the entire page content and theme classes */
+.main-container {
+  min-height: 100vh;
+  position: relative; /* Needed for positioning the theme toggle */
+  overflow: hidden;
+}
+
+/* The top header (navbar) for the dropdown. */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 0;
+  background-color: rgba(0,0,0,0.06);
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Label for the dropdown in the header */
+.dropdown-label {
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* The page-content can hold the content of Home, BubbleSort, etc. */
+.page-content {
+  margin: 20px;
+  padding: 20px;
+}
+
+.theme-toggle-container {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+}
+
+.theme-toggle-btn {
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: #f8f9fa;
+  color: #343a40;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: background 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: #e9ecef;
+}
+
+/* Light Theme */
+.light-theme {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  color: #343a40;
+}
+
+/* Dark Theme */
+.dark-theme {
+  background: linear-gradient(135deg, #212529, #343a40);
+  color: #f8f9fa;
+}
+
+/* Override the theme-toggle-btn in dark mode for a nice contrast */
+.dark-theme .theme-toggle-btn {
+  background: #343a40;
+  color: #f8f9fa;
+}
+.dark-theme .theme-toggle-btn:hover {
+  background: #495057;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.home-text {
+  font-size: 1.1rem;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  max-width: 1000px;
+  text-align: center;
+}
+
+.dropdown {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 25px;
+  width: 220px;
+  text-align: center;
+  cursor: pointer;
+  margin-right: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.dropdown:hover {
+  background: #e9ecef;
+  color: #343a40;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-sort-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.description {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.light-theme .indices {
+  color: #343a40;
+}
+
+.dark-theme .indices {
+  color: #f8f9fa;
+}
+
+.step-button {
+  margin: 15px;
+}
+
+.next-step-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.next-step-button:hover {
+  background-color: #1769aa;
+}
+
+.sorting-bar {
+  width: 20px;
+  transition: height 0.5s ease, background-color 0.5s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
   }
-  
-  /* Landing page container */
-  .landing-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
-    background-color: #ffffff;
-    padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  to {
+      opacity: 1;
+      transform: translateY(0);
   }
-  
-  /* Title */
-  .title {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #343a40;
-  }
-  
-  /* Dropdown container */
-  .dropdown-container {
-    margin-bottom: 20px;
-  }
-  
-  .dropdown {
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    width: 200px;
-    text-align: center;
-    background-color: #ffffff;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-  }
-  
-  .dropdown:hover {
-    border-color: #495057;
-  }
-  
-  /* Footer text */
-  .footer {
-    margin-top: 20px;
-    font-size: 1rem;
-    color: #6c757d;
-  }
-  
-  .bubble-sort-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .description {
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.2rem;
-    line-height: 1.5;
-    max-width: 600px;
-  }
-  
-  .indices {
-    margin-top: 20px;
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .step-button {
-    margin-top: 20px;
-  }
-  
-  .next-step-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .next-step-button:hover {
-    background-color: #1769aa;
-  }
-  
-  .sorting-bar {
-    width: 20px;
-    transition: height 0.5s ease, background-color 0.5s ease;
-  }
-  
+}
