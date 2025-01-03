@@ -6676,87 +6676,7 @@ var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Controls$Pause = {$: 'Pause'};
-var $author$project$Controls$Reset = {$: 'Reset'};
-var $author$project$Controls$Run = {$: 'Run'};
-var $author$project$Controls$Step = {$: 'Step'};
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $author$project$Controls$view = F2(
-	function (running, toMsg) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('control-buttons')
-				]),
-			_List_fromArray(
-				[
-					running ? A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$Controls$Pause))
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Pause')
-						])) : A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$Controls$Run))
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Run')
-						])),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$Controls$Step))
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Step')
-						])),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$Controls$Reset))
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Reset')
-						]))
-				]));
-	});
+var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Visualization$renderBar = F6(
@@ -6859,65 +6779,215 @@ var $author$project$Visualization$renderComparison = F6(
 						$elm$core$Array$toList(array)))
 				]));
 	});
-var $author$project$Pages$BubbleSort$view = function (track) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('sort-page')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('title')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Bubble Sort')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('description')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.\r\n                It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                It does this repeatedly until the array is sorted.')
-					])),
-				A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('indices')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
-						$elm$html$Html$text(
-						' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
-						$elm$html$Html$text(
-						' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
-						$elm$html$Html$text(
-						' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('description')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Outer index is the left index being compared.\r\n                Current index is the right index being compared.\r\n                Checking if an element was swapped in the current pass is how we detect if it\'s sorted.\r\n                If no elements were swapped in a pass, the array is sorted.')
-					]))
-			]));
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$Controls$Pause = {$: 'Pause'};
+var $author$project$Controls$Reset = {$: 'Reset'};
+var $author$project$Controls$Run = {$: 'Run'};
+var $author$project$Controls$Step = {$: 'Step'};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
 };
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$Controls$view = F2(
+	function (running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('control-buttons')
+				]),
+			_List_fromArray(
+				[
+					running ? A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Pause))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Pause')
+						])) : A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Run))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Run')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Step))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Step')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Reset))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Reset')
+						]))
+				]));
+	});
+var $author$project$Pages$BubbleSort$view = F3(
+	function (track, running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('sort-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Bubble Sort')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
+						])),
+					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
+					A2($author$project$Controls$view, running, toMsg),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Current Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							$elm$html$Html$text(
+							' | Next Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+							$elm$html$Html$text(
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
+							$elm$html$Html$text(
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('variable-list')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$ul,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Current index is the left index being compared.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Next index is the right index being compared.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Element Swapped: tells us if an element has been swapped on the current pass of the array.'),
+											A2(
+											$elm$html$Html$ul,
+											_List_Nil,
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$li,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$elm$html$Html$text('If no elements were swapped, then the array is sorted.')
+														]))
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Sorted: tells us once the array is sorted.')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Bubble Sort has a worst-case Time Complexity of O(n²).\r\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Bubble Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+						]))
+				]));
+	});
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $author$project$Pages$Home$view = function (model) {
 	return A2(
@@ -6951,74 +7021,149 @@ var $author$project$Pages$Home$view = function (model) {
 					]))
 			]));
 };
-var $author$project$Pages$SelectionSort$view = function (track) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('sort-page')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('title')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Selection Sort')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('description')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Selection Sort picks the smallest element and swaps it with the leftmost unsorted position.')
-					])),
-				A6(
-				$author$project$Visualization$renderComparison,
-				track.array,
-				'Walk through the steps below',
-				track.sorted,
-				track.outerIndex,
-				track.currentIndex,
-				$elm$core$Maybe$Just(track.minIndex)),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('indices')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
-						$elm$html$Html$text(
-						' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
-						$elm$html$Html$text(
-						' | Min Index: ' + $elm$core$String$fromInt(track.minIndex)),
-						$elm$html$Html$text(
-						' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
-						$elm$html$Html$text(
-						' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('description')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Breakdown...')
-					]))
-			]));
-};
+var $author$project$Pages$SelectionSort$view = F3(
+	function (track, running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('sort-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Selection Sort')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Selection Sort starts at hte first element in the array and looks through the entire length of the array to find the smallest element.\r\n                  Once the smallest element is found, it swaps with the current element before moving on.\r\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
+						])),
+					A6(
+					$author$project$Visualization$renderComparison,
+					track.array,
+					'Walk through the steps below',
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.minIndex)),
+					A2($author$project$Controls$view, running, toMsg),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Current Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							$elm$html$Html$text(
+							' | Compare Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+							$elm$html$Html$text(
+							' | Minimum Index: ' + $elm$core$String$fromInt(track.minIndex)),
+							$elm$html$Html$text(
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
+							$elm$html$Html$text(
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('variable-list')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$ul,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Current index is the index that will be swapped at the end of the pass.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Compare index is the index being compared to see if it\'s smaller.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Minimum Index is the index with the smallest value in the array during this pass.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Element Swapped: tells us if an element has been swapped on the current pass of the array.'),
+											A2(
+											$elm$html$Html$ul,
+											_List_Nil,
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$li,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$elm$html$Html$text('If no elements were swapped, then the array is sorted.')
+														]))
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Sorted: tells us once the array is sorted.')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Selection Sort has a consistent Time Complexity of O(n²).\r\n                        Regardless of the initial array (even if it\'s sorted), it will take  (length)² steps.')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Selection Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+						]))
+				]));
+	});
 var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
 };
@@ -7282,8 +7427,8 @@ var $author$project$Main$viewThemeToggle = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	var themeClass = function () {
-		var _v2 = model.homeModel.theme;
-		if (_v2.$ === 'Light') {
+		var _v1 = model.homeModel.theme;
+		if (_v1.$ === 'Light') {
 			return 'light-theme';
 		} else {
 			return 'dark-theme';
@@ -7320,23 +7465,13 @@ var $author$project$Main$view = function (model) {
 											$author$project$Main$HomeMsg,
 											$author$project$Pages$Home$view(model.homeModel));
 									case 'BubbleSort':
-										return $author$project$Pages$BubbleSort$view(model.sortingAlgorithm);
+										return A3($author$project$Pages$BubbleSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
 									default:
-										return $author$project$Pages$SelectionSort$view(model.sortingAlgorithm);
+										return A3($author$project$Pages$SelectionSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
 								}
 							}()
 							])),
-						function () {
-						var _v1 = model.currentPage;
-						switch (_v1.$) {
-							case 'Home':
-								return $elm$html$Html$text('');
-							case 'BubbleSort':
-								return A2($author$project$Controls$view, model.running, $author$project$Main$ControlMsg);
-							default:
-								return A2($author$project$Controls$view, model.running, $author$project$Main$ControlMsg);
-						}
-					}(),
+						$elm$html$Html$text(''),
 						$author$project$Main$viewThemeToggle(model)
 					]))
 			]));

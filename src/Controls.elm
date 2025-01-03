@@ -11,9 +11,12 @@ type ControlMsg
     | Pause
     | Reset
     | Step
+
+-- VIEW
 view : Bool -> (ControlMsg -> msg) -> Html msg
 view running toMsg =
     div [ class "control-buttons" ]
+        -- Show "Pause" if running, else show "Run"
         [ if running then
             button [ class "sorting-button", onClick (toMsg Pause) ] [ text "Pause" ]
           else

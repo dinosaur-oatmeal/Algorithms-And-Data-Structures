@@ -22,7 +22,7 @@ import Pages.SelectionSort as SelectionSort
 -- Custom structs imports (avoid circular import)
 import Structs exposing (defaultSortingTrack, SortingTrack)
 
--- Universal algorithm controls (run/pause/step/reset)
+-- Algorithm control buttons (run/pause/step/reset)
 import Controls exposing (ControlMsg(..))
 
 -- Model (info stored during interactions)
@@ -50,7 +50,7 @@ type Page
     | BubbleSort
     | SelectionSort
 
--- MESSAGES (all possible messages for hte program to receive)
+-- MESSAGES (all possible messages for the program to receive)
 type Msg
     -- Visit a new page
     = NavigateTo Page
@@ -134,7 +134,7 @@ update msg model =
                     in
                     ( { model | homeModel = { theme = newTheme } }, Cmd.none )
 
-        -- Universal algorithm selection form the top dropdown
+        -- Algorithm selection form the top dropdown
         SelectAlgorithm algName ->
             case algName of
                 -- BubbleSort
@@ -167,12 +167,15 @@ update msg model =
         -- Control messages for algorithm buttons
         ControlMsg controlMsg ->
             case controlMsg of
+                -- Run the algorithm (subscriptions)
                 Run ->
                     ( { model | running = True }, Cmd.none )
 
+                -- Pause the algorithm running (only available if it is running)
                 Pause ->
                     ( { model | running = False }, Cmd.none )
 
+                -- Reset back to the initial state
                 Reset ->
                     ( { model
                         | sortingAlgorithm = defaultSortingTrack
@@ -181,6 +184,7 @@ update msg model =
                     , Cmd.none
                     )
 
+                -- Allow user to do one step to see how the array changes
                 Step ->
                     let
                         updatedTrack =
@@ -206,12 +210,15 @@ update msg model =
                 let
                     updatedTrack =
                         case model.currentPage of
+                            -- BubbleSort Running
                             BubbleSort ->
                                 BubbleSort.bubbleSortStep model.sortingAlgorithm
 
+                            -- SelectionSort Running
                             SelectionSort ->
                                 SelectionSort.selectionSortStep model.sortingAlgorithm
 
+                            -- Don't update if on Home
                             _ ->
                                 model.sortingAlgorithm
                 in
@@ -232,6 +239,7 @@ subscriptions model =
 view : Model -> Browser.Document Msg
 view model =
     let
+        -- Website theme
         themeClass =
             case model.homeModel.theme of
                 Home.Light ->
@@ -245,26 +253,21 @@ view model =
             [ viewHeader
             , div [ class "page-content" ]
                 [ case model.currentPage of
+                    -- Home Page
                     Home ->
                         Html.map HomeMsg (Home.view model.homeModel)
 
+                    -- BubbleSort Page
                     BubbleSort ->
-                        BubbleSort.view model.sortingAlgorithm
+                        -- Call BubbleSort to render
+                        -- Pass current array state, Bool if it's running, and message wrapper
+                            -- Message wrapper allows BubbleSort.elm to place buttons in relation to webpage
+                        BubbleSort.view model.sortingAlgorithm model.running ControlMsg
 
                     SelectionSort ->
-                        SelectionSort.view model.sortingAlgorithm
+                        SelectionSort.view model.sortingAlgorithm model.running ControlMsg
                 ]
-            , case model.currentPage of
-                Home ->
-                    -- No controls on Home
-                    Html.text ""
-
-                BubbleSort ->
-                    Controls.view model.running ControlMsg
-
-                SelectionSort ->
-                    Controls.view model.running ControlMsg
-
+            , Html.text ""
             , viewThemeToggle model
             ]
         ]

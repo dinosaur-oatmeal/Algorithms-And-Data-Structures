@@ -1,7 +1,7 @@
 module Pages.BubbleSort exposing (view, bubbleSortStep)
 
 -- HTML Imports
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, ul, li)
 import Html.Attributes exposing (class)
 
 import Array exposing (Array)
@@ -11,6 +11,8 @@ import Structs exposing (SortingTrack)
 
 -- Import visualization for graph
 import Visualization exposing (renderComparison)
+
+import Controls exposing (ControlMsg, view)
 
 {-
   One step of bubble sort. Takes the current Tracking state
@@ -71,43 +73,62 @@ bubbleSortStep track =
 
 {-
   Basic page view for Bubble Sort
-    Title, Description, Graph, Variables, Breakdown
+    Title, Description, Graph, Buttons, Variables, Breakdown
+    (ControlMsg -> msg) is ControlMsg in Main.elm
 -}
-view : SortingTrack -> Html msg
-view track =
+view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
+view track running toMsg =
     div [ class "sort-page" ]
+        [ -- Title
+          div [ class "title" ]
+              [ text "Bubble Sort" ]
 
-        -- Title
-        [ div [ class "title" ]
-            [ text "Bubble Sort" ]
-
-        -- Description
+          -- Description
         , div [ class "description" ]
-            [ text """Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.
-                It compares adjacent elements and swaps them if the right one is less than the left one.
-                It does this repeatedly until the array is sorted.""" ]
-        
-        -- Calls Visualization.elm (Graph)
+              [ text """Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.
+                  It compares adjacent elements and swaps them if the right one is less than the left one.
+                  It does this repeatedly until the array is sorted.""" ]
+
+          -- Graph
         , renderComparison
-            track.array
-            "Walk through the steps below"
-            track.sorted
-            track.outerIndex
-            track.currentIndex
-            Nothing
+              track.array
+              "Walk through the steps below"
+              track.sorted
+              track.outerIndex
+              track.currentIndex
+              Nothing
 
-        -- Variables (track as state changes)
+          -- Buttons (calls Controls.elm to be rendered)
+            -- Allows button actions to be routed to Main.elm
+        , Controls.view running toMsg
+
+          -- Variables
         , div [ class "indices" ]
-            [ text ("Outer Index: " ++ String.fromInt track.outerIndex)
-            , text (" | Current Index: " ++ String.fromInt track.currentIndex)
-            , text (" | Element Swapped: " ++ (if track.didSwap then "Yes" else "No"))
-            , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
-            ]
+              [ text ("Current Index: " ++ String.fromInt track.outerIndex)
+              , text (" | Next Index: " ++ String.fromInt track.currentIndex)
+              , text (" | Element Swapped: " ++ (if track.didSwap then "Yes" else "No"))
+              , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
+              ]
 
-        -- Breakdown
-        , div [ class "description" ]
-            [ text """Outer index is the left index being compared.
-                Current index is the right index being compared.
-                Checking if an element was swapped in the current pass is how we detect if it's sorted.
-                If no elements were swapped in a pass, the array is sorted.""" ]
+          -- Breakdown
+        , div [ class "variable-list" ]
+              [ ul []
+                  [ li [] [ text "Current index is the left index being compared." ]
+                  , li [] [ text "Next index is the right index being compared." ]
+                  , li []
+                      [ text "Element Swapped: tells us if an element has been swapped on the current pass of the array." 
+                      , ul []
+                          [ li [] [ text "If no elements were swapped, then the array is sorted." ] ]
+                      ]
+                  , li [] [ text "Sorted: tells us once the array is sorted." ]
+                  ]
+              ]
+
+          -- Big-O Notation
+        , div [ class "latex" ]
+              [ text """Bubble Sort has a worst-case Time Complexity of O(n²).
+                        A reverse-sorted array will require the (array's length)² steps to sort the array.""" ]
+        , div [class "latex" ]
+              [ text """Bubble Sort has a Space Complexity of O(1).
+                        Swaps are done in place, so no extra room is needed to process the sorting algorithm."""]
         ]
