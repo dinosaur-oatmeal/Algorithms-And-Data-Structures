@@ -5268,6 +5268,7 @@ var $author$project$Structs$defaultSortingTrack = {
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
+var $author$project$Main$SelectionSort = {$: 'SelectionSort'};
 var $elm$url$Url$Parser$State = F5(
 	function (visited, unvisited, params, frag, value) {
 		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
@@ -5904,6 +5905,7 @@ var $elm$url$Url$Parser$parse = F2(
 	});
 var $author$project$Main$BubbleSortRoute = {$: 'BubbleSortRoute'};
 var $author$project$Main$HomeRoute = {$: 'HomeRoute'};
+var $author$project$Main$SelectionSortRoute = {$: 'SelectionSortRoute'};
 var $elm$url$Url$Parser$Parser = function (a) {
 	return {$: 'Parser', a: a};
 };
@@ -6005,17 +6007,25 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$BubbleSortRoute,
-			$elm$url$Url$Parser$s('bubble-sort'))
+			$elm$url$Url$Parser$s('bubble-sort')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$SelectionSortRoute,
+			$elm$url$Url$Parser$s('selection-sort'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
 	if (_v0.$ === 'Just') {
-		if (_v0.a.$ === 'HomeRoute') {
-			var _v1 = _v0.a;
-			return $author$project$Main$Home;
-		} else {
-			var _v2 = _v0.a;
-			return $author$project$Main$BubbleSort;
+		switch (_v0.a.$) {
+			case 'HomeRoute':
+				var _v1 = _v0.a;
+				return $author$project$Main$Home;
+			case 'BubbleSortRoute':
+				var _v2 = _v0.a;
+				return $author$project$Main$BubbleSort;
+			default:
+				var _v3 = _v0.a;
+				return $author$project$Main$SelectionSort;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6028,7 +6038,8 @@ var $author$project$Main$init = F3(
 				bubbleSortTrack: $author$project$Structs$defaultSortingTrack,
 				currentPage: $author$project$Main$parseUrl(url),
 				homeModel: {theme: $author$project$Pages$Home$Dark},
-				key: key
+				key: key,
+				selectionSortTrack: $author$project$Structs$defaultSortingTrack
 			},
 			$elm$core$Platform$Cmd$none);
 	});
@@ -6164,6 +6175,54 @@ var $author$project$Pages$BubbleSort$bubbleSortStep = function (track) {
 		}
 	}
 };
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Pages$SelectionSort$selectionSortStep = function (track) {
+	var outer = track.outerIndex;
+	var minimum = track.minIndex;
+	var current = track.currentIndex;
+	var arr = track.array;
+	var length = $elm$core$Array$length(arr);
+	if (track.sorted || (_Utils_cmp(outer, length) > -1)) {
+		return _Utils_update(
+			track,
+			{sorted: true});
+	} else {
+		if (_Utils_cmp(current, length) < 0) {
+			var _v0 = _Utils_Tuple2(
+				A2($elm$core$Array$get, current, arr),
+				A2($elm$core$Array$get, minimum, arr));
+			if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
+				var currentValue = _v0.a.a;
+				var minimumValue = _v0.b.a;
+				return (_Utils_cmp(currentValue, minimumValue) < 0) ? _Utils_update(
+					track,
+					{currentIndex: current + 1, minIndex: current}) : _Utils_update(
+					track,
+					{currentIndex: current + 1});
+			} else {
+				return track;
+			}
+		} else {
+			var _v1 = _Utils_Tuple2(
+				A2($elm$core$Array$get, outer, arr),
+				A2($elm$core$Array$get, minimum, arr));
+			if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
+				var outerValue = _v1.a.a;
+				var minimumValue = _v1.b.a;
+				var updatedArray = (!_Utils_eq(minimum, outer)) ? A3(
+					$elm$core$Array$set,
+					outer,
+					minimumValue,
+					A3($elm$core$Array$set, minimum, outerValue, arr)) : arr;
+				return _Utils_update(
+					track,
+					{array: updatedArray, currentIndex: outer + 2, minIndex: outer + 1, outerIndex: outer + 1});
+			} else {
+				return track;
+			}
+		}
+	}
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6191,20 +6250,34 @@ var $author$project$Main$update = F2(
 						model,
 						{bubbleSortTrack: updatedTrack}),
 					$elm$core$Platform$Cmd$none);
+			case 'SelectionSortStep':
+				var updatedTrack = $author$project$Pages$SelectionSort$selectionSortStep(model.selectionSortTrack);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{selectionSortTrack: updatedTrack}),
+					$elm$core$Platform$Cmd$none);
 			default:
 				var algorithm = msg.a;
-				if (algorithm === 'Bubble Sort') {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{currentPage: $author$project$Main$BubbleSort}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{currentPage: $author$project$Main$Home}),
-						$elm$core$Platform$Cmd$none);
+				switch (algorithm) {
+					case 'Bubble Sort':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{currentPage: $author$project$Main$BubbleSort}),
+							$elm$core$Platform$Cmd$none);
+					case 'Selection Sort':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{currentPage: $author$project$Main$SelectionSort}),
+							$elm$core$Platform$Cmd$none);
+					default:
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{currentPage: $author$project$Main$Home}),
+							$elm$core$Platform$Cmd$none);
 				}
 		}
 	});
@@ -6216,6 +6289,7 @@ var $elm$browser$Browser$Document = F2(
 var $author$project$Main$HomeMsg = function (a) {
 	return {$: 'HomeMsg', a: a};
 };
+var $author$project$Main$SelectionSortStep = {$: 'SelectionSortStep'};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6463,6 +6537,95 @@ var $author$project$Pages$Home$view = function (model) {
 					]))
 			]));
 };
+var $author$project$Pages$SelectionSort$view = F2(
+	function (track, nextSelectionSortMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('sort-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Selection Sort')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Selection Sort...')
+						])),
+					A6(
+					$author$project$Visualization$renderComparison,
+					track.array,
+					'Walk through the steps below',
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.minIndex)),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							$elm$html$Html$text(
+							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+							$elm$html$Html$text(
+							' | Min Index: ' + $elm$core$String$fromInt(track.minIndex)),
+							$elm$html$Html$text(
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
+							$elm$html$Html$text(
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('step-button')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(nextSelectionSortMsg),
+									$elm$html$Html$Attributes$class('next-step-button')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Next Step')
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Description...')
+						]))
+				]));
+	});
 var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
 };
@@ -6698,7 +6861,7 @@ var $author$project$Main$viewHeader = A2(
 var $author$project$Pages$Home$ToggleTheme = {$: 'ToggleTheme'};
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Main$viewThemeToggle = function (model) {
-	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? _Utils_Tuple2('🌙', 'Switch to Dark Mode') : _Utils_Tuple2('☀', 'Switch to Light Mode');
+	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? _Utils_Tuple2('☾', 'Switch to Dark Mode') : _Utils_Tuple2('☀', 'Switch to Light Mode');
 	var icon = _v0.a;
 	var tooltip = _v0.b;
 	return A2(
@@ -6757,13 +6920,16 @@ var $author$project$Main$view = function (model) {
 							[
 								function () {
 								var _v0 = model.currentPage;
-								if (_v0.$ === 'Home') {
-									return A2(
-										$elm$html$Html$map,
-										$author$project$Main$HomeMsg,
-										$author$project$Pages$Home$view(model.homeModel));
-								} else {
-									return A2($author$project$Pages$BubbleSort$view, model.bubbleSortTrack, $author$project$Main$BubbleSortStep);
+								switch (_v0.$) {
+									case 'Home':
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$HomeMsg,
+											$author$project$Pages$Home$view(model.homeModel));
+									case 'BubbleSort':
+										return A2($author$project$Pages$BubbleSort$view, model.bubbleSortTrack, $author$project$Main$BubbleSortStep);
+									default:
+										return A2($author$project$Pages$SelectionSort$view, model.selectionSortTrack, $author$project$Main$SelectionSortStep);
 								}
 							}()
 							])),

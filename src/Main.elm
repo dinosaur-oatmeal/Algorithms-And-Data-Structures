@@ -17,6 +17,7 @@ import Structs exposing (defaultSortingTrack, SortingTrack)
 -- Pages that can be visited
 import Pages.Home as Home
 import Pages.BubbleSort as BubbleSort
+import Pages.SelectionSort as SelectionSort
 
 
 -- MODEL (info stored during interactions)
@@ -25,6 +26,7 @@ type alias Model =
     , currentPage : Page
     , homeModel : Home.Model
     , bubbleSortTrack : SortingTrack
+    , selectionSortTrack : SortingTrack
     }
 
 -- INIT (initial state of program)
@@ -32,11 +34,12 @@ init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { key = key
       , currentPage = parseUrl url
-      , bubbleSortTrack = defaultSortingTrack
       , homeModel =
             -- Default to the superior theme
             { theme = Home.Dark
             }
+        , bubbleSortTrack = defaultSortingTrack
+        , selectionSortTrack = defaultSortingTrack
       }
     , Cmd.none
     )
@@ -45,6 +48,7 @@ init _ url key =
 type Page
     = Home
     | BubbleSort
+    | SelectionSort
 
 -- Convert URL into a page
 parseUrl : Url -> Page
@@ -58,6 +62,10 @@ parseUrl url =
         Just BubbleSortRoute ->
             BubbleSort
 
+        -- SelectionSort Page
+        Just SelectionSortRoute ->
+            SelectionSort
+
         -- Go to home for edge cases
         _ ->
             Home
@@ -66,6 +74,7 @@ parseUrl url =
 type Route
     = HomeRoute
     | BubbleSortRoute
+    | SelectionSortRoute
 
 -- Defines mapping between URL and Route types
 routeParser : Parser.Parser (Route -> a) a
@@ -74,14 +83,16 @@ routeParser =
     Parser.oneOf
         [ Parser.map HomeRoute top
         , Parser.map BubbleSortRoute (s "bubble-sort")
+        , Parser.map SelectionSortRoute (s "selection-sort")
         ]
 
 -- MESSAGES (all possilbe messages for the program to receive)
 type Msg
     = NavigateTo Page
     | HomeMsg Home.Msg
-    | BubbleSortStep
     | SelectAlgorithm String
+    | BubbleSortStep
+    | SelectionSortStep
 
 
 -- UPDATE
@@ -114,12 +125,24 @@ update msg model =
             in
             ( { model | bubbleSortTrack = updatedTrack }, Cmd.none )
 
+        -- Update SelectionSort Track
+        SelectionSortStep ->
+            let
+                updatedTrack =
+                    SelectionSort.selectionSortStep model.selectionSortTrack
+            in
+            ( { model | selectionSortTrack = updatedTrack }, Cmd.none )
+
         -- Universal algorithm selection from the top dropdown
         SelectAlgorithm algorithm ->
             case algorithm of
                 -- BubbleSort
                 "Bubble Sort" ->
                     ( { model | currentPage = BubbleSort }, Cmd.none )
+
+                -- SelectionSort
+                "Selection Sort" ->
+                    ( { model | currentPage = SelectionSort }, Cmd.none )
 
                 -- Default to home for algorithms not yet added
                 _ ->
@@ -152,6 +175,10 @@ view model =
                     BubbleSort ->
                         -- Render BubbleSort page
                         BubbleSort.view model.bubbleSortTrack BubbleSortStep
+
+                    SelectionSort ->
+                        -- Render SelectionSort page
+                        SelectionSort.view model.selectionSortTrack SelectionSortStep
                 ]
             , viewThemeToggle model
             ]
@@ -198,7 +225,7 @@ viewThemeToggle model =
     let
         (icon, tooltip) =
             if model.homeModel.theme == Home.Light then
-                ("🌙", "Switch to Dark Mode")
+                ("☾", "Switch to Dark Mode")
             else
                 ("☀", "Switch to Light Mode")
     in
