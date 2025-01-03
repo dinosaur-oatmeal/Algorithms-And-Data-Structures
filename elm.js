@@ -4390,6 +4390,52 @@ function _Url_percentDecode(string)
 }
 
 
+function _Time_now(millisToPosix)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(millisToPosix(Date.now())));
+	});
+}
+
+var _Time_setInterval = F2(function(interval, task)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
+		return function() { clearInterval(id); };
+	});
+});
+
+function _Time_here()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(
+			A2($elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
+		));
+	});
+}
+
+
+function _Time_getZoneName()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		try
+		{
+			var name = $elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
+		}
+		catch (e)
+		{
+			var name = $elm$time$Time$Offset(new Date().getTimezoneOffset());
+		}
+		callback(_Scheduler_succeed(name));
+	});
+}
+
+
+
 var _Bitwise_and = F2(function(a, b)
 {
 	return a & b;
@@ -6035,16 +6081,295 @@ var $author$project$Main$init = F3(
 	function (_v0, url, key) {
 		return _Utils_Tuple2(
 			{
-				bubbleSortTrack: $author$project$Structs$defaultSortingTrack,
 				currentPage: $author$project$Main$parseUrl(url),
 				homeModel: {theme: $author$project$Pages$Home$Dark},
 				key: key,
-				selectionSortTrack: $author$project$Structs$defaultSortingTrack
+				running: false,
+				sortingAlgorithm: $author$project$Structs$defaultSortingTrack
 			},
 			$elm$core$Platform$Cmd$none);
 	});
+var $author$project$Main$Tick = function (a) {
+	return {$: 'Tick', a: a};
+};
+var $elm$time$Time$Every = F2(
+	function (a, b) {
+		return {$: 'Every', a: a, b: b};
+	});
+var $elm$time$Time$State = F2(
+	function (taggers, processes) {
+		return {processes: processes, taggers: taggers};
+	});
+var $elm$time$Time$init = $elm$core$Task$succeed(
+	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
+var $elm$time$Time$addMySub = F2(
+	function (_v0, state) {
+		var interval = _v0.a;
+		var tagger = _v0.b;
+		var _v1 = A2($elm$core$Dict$get, interval, state);
+		if (_v1.$ === 'Nothing') {
+			return A3(
+				$elm$core$Dict$insert,
+				interval,
+				_List_fromArray(
+					[tagger]),
+				state);
+		} else {
+			var taggers = _v1.a;
+			return A3(
+				$elm$core$Dict$insert,
+				interval,
+				A2($elm$core$List$cons, tagger, taggers),
+				state);
+		}
+	});
+var $elm$core$Process$kill = _Scheduler_kill;
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$merge = F6(
+	function (leftStep, bothStep, rightStep, leftDict, rightDict, initialResult) {
+		var stepState = F3(
+			function (rKey, rValue, _v0) {
+				stepState:
+				while (true) {
+					var list = _v0.a;
+					var result = _v0.b;
+					if (!list.b) {
+						return _Utils_Tuple2(
+							list,
+							A3(rightStep, rKey, rValue, result));
+					} else {
+						var _v2 = list.a;
+						var lKey = _v2.a;
+						var lValue = _v2.b;
+						var rest = list.b;
+						if (_Utils_cmp(lKey, rKey) < 0) {
+							var $temp$rKey = rKey,
+								$temp$rValue = rValue,
+								$temp$_v0 = _Utils_Tuple2(
+								rest,
+								A3(leftStep, lKey, lValue, result));
+							rKey = $temp$rKey;
+							rValue = $temp$rValue;
+							_v0 = $temp$_v0;
+							continue stepState;
+						} else {
+							if (_Utils_cmp(lKey, rKey) > 0) {
+								return _Utils_Tuple2(
+									list,
+									A3(rightStep, rKey, rValue, result));
+							} else {
+								return _Utils_Tuple2(
+									rest,
+									A4(bothStep, lKey, lValue, rValue, result));
+							}
+						}
+					}
+				}
+			});
+		var _v3 = A3(
+			$elm$core$Dict$foldl,
+			stepState,
+			_Utils_Tuple2(
+				$elm$core$Dict$toList(leftDict),
+				initialResult),
+			rightDict);
+		var leftovers = _v3.a;
+		var intermediateResult = _v3.b;
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v4, result) {
+					var k = _v4.a;
+					var v = _v4.b;
+					return A3(leftStep, k, v, result);
+				}),
+			intermediateResult,
+			leftovers);
+	});
+var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+var $elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
+var $elm$time$Time$setInterval = _Time_setInterval;
+var $elm$core$Process$spawn = _Scheduler_spawn;
+var $elm$time$Time$spawnHelp = F3(
+	function (router, intervals, processes) {
+		if (!intervals.b) {
+			return $elm$core$Task$succeed(processes);
+		} else {
+			var interval = intervals.a;
+			var rest = intervals.b;
+			var spawnTimer = $elm$core$Process$spawn(
+				A2(
+					$elm$time$Time$setInterval,
+					interval,
+					A2($elm$core$Platform$sendToSelf, router, interval)));
+			var spawnRest = function (id) {
+				return A3(
+					$elm$time$Time$spawnHelp,
+					router,
+					rest,
+					A3($elm$core$Dict$insert, interval, id, processes));
+			};
+			return A2($elm$core$Task$andThen, spawnRest, spawnTimer);
+		}
+	});
+var $elm$time$Time$onEffects = F3(
+	function (router, subs, _v0) {
+		var processes = _v0.processes;
+		var rightStep = F3(
+			function (_v6, id, _v7) {
+				var spawns = _v7.a;
+				var existing = _v7.b;
+				var kills = _v7.c;
+				return _Utils_Tuple3(
+					spawns,
+					existing,
+					A2(
+						$elm$core$Task$andThen,
+						function (_v5) {
+							return kills;
+						},
+						$elm$core$Process$kill(id)));
+			});
+		var newTaggers = A3($elm$core$List$foldl, $elm$time$Time$addMySub, $elm$core$Dict$empty, subs);
+		var leftStep = F3(
+			function (interval, taggers, _v4) {
+				var spawns = _v4.a;
+				var existing = _v4.b;
+				var kills = _v4.c;
+				return _Utils_Tuple3(
+					A2($elm$core$List$cons, interval, spawns),
+					existing,
+					kills);
+			});
+		var bothStep = F4(
+			function (interval, taggers, id, _v3) {
+				var spawns = _v3.a;
+				var existing = _v3.b;
+				var kills = _v3.c;
+				return _Utils_Tuple3(
+					spawns,
+					A3($elm$core$Dict$insert, interval, id, existing),
+					kills);
+			});
+		var _v1 = A6(
+			$elm$core$Dict$merge,
+			leftStep,
+			bothStep,
+			rightStep,
+			newTaggers,
+			processes,
+			_Utils_Tuple3(
+				_List_Nil,
+				$elm$core$Dict$empty,
+				$elm$core$Task$succeed(_Utils_Tuple0)));
+		var spawnList = _v1.a;
+		var existingDict = _v1.b;
+		var killTask = _v1.c;
+		return A2(
+			$elm$core$Task$andThen,
+			function (newProcesses) {
+				return $elm$core$Task$succeed(
+					A2($elm$time$Time$State, newTaggers, newProcesses));
+			},
+			A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$time$Time$spawnHelp, router, spawnList, existingDict);
+				},
+				killTask));
+	});
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
+var $elm$time$Time$onSelfMsg = F3(
+	function (router, interval, state) {
+		var _v0 = A2($elm$core$Dict$get, interval, state.taggers);
+		if (_v0.$ === 'Nothing') {
+			return $elm$core$Task$succeed(state);
+		} else {
+			var taggers = _v0.a;
+			var tellTaggers = function (time) {
+				return $elm$core$Task$sequence(
+					A2(
+						$elm$core$List$map,
+						function (tagger) {
+							return A2(
+								$elm$core$Platform$sendToApp,
+								router,
+								tagger(time));
+						},
+						taggers));
+			};
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v1) {
+					return $elm$core$Task$succeed(state);
+				},
+				A2($elm$core$Task$andThen, tellTaggers, $elm$time$Time$now));
+		}
+	});
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$time$Time$subMap = F2(
+	function (f, _v0) {
+		var interval = _v0.a;
+		var tagger = _v0.b;
+		return A2(
+			$elm$time$Time$Every,
+			interval,
+			A2($elm$core$Basics$composeL, f, tagger));
+	});
+_Platform_effectManagers['Time'] = _Platform_createManager($elm$time$Time$init, $elm$time$Time$onEffects, $elm$time$Time$onSelfMsg, 0, $elm$time$Time$subMap);
+var $elm$time$Time$subscription = _Platform_leaf('Time');
+var $elm$time$Time$every = F2(
+	function (interval, tagger) {
+		return $elm$time$Time$subscription(
+			A2($elm$time$Time$Every, interval, tagger));
+	});
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Main$subscriptions = function (model) {
+	return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
+};
 var $author$project$Pages$Home$Light = {$: 'Light'};
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
@@ -6149,17 +6474,17 @@ var $author$project$Pages$BubbleSort$bubbleSortStep = function (track) {
 				A2($elm$core$Array$get, outerIndex, arr),
 				A2($elm$core$Array$get, currentIndex, arr));
 			if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
-				var outerValue = _v0.a.a;
-				var currentValue = _v0.b.a;
-				if (_Utils_cmp(outerValue, currentValue) > 0) {
-					var updatedArray = A3(
+				var leftVal = _v0.a.a;
+				var rightVal = _v0.b.a;
+				if (_Utils_cmp(leftVal, rightVal) > 0) {
+					var swappedArray = A3(
 						$elm$core$Array$set,
 						outerIndex,
-						currentValue,
-						A3($elm$core$Array$set, currentIndex, outerValue, arr));
+						rightVal,
+						A3($elm$core$Array$set, currentIndex, leftVal, arr));
 					return _Utils_update(
 						track,
-						{array: updatedArray, currentIndex: currentIndex + 1, didSwap: true, outerIndex: outerIndex + 1});
+						{array: swappedArray, currentIndex: currentIndex + 1, didSwap: true, outerIndex: outerIndex + 1});
 				} else {
 					return _Utils_update(
 						track,
@@ -6231,57 +6556,105 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{currentPage: page}),
+						{currentPage: page, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
 					$elm$core$Platform$Cmd$none);
 			case 'HomeMsg':
 				var homeMsg = msg.a;
-				var updatedTheme = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? $author$project$Pages$Home$Dark : $author$project$Pages$Home$Light;
+				var newTheme = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? $author$project$Pages$Home$Dark : $author$project$Pages$Home$Light;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							homeModel: {theme: updatedTheme}
+							homeModel: {theme: newTheme}
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 'BubbleSortStep':
-				var updatedTrack = $author$project$Pages$BubbleSort$bubbleSortStep(model.bubbleSortTrack);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{bubbleSortTrack: updatedTrack}),
-					$elm$core$Platform$Cmd$none);
-			case 'SelectionSortStep':
-				var updatedTrack = $author$project$Pages$SelectionSort$selectionSortStep(model.selectionSortTrack);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{selectionSortTrack: updatedTrack}),
-					$elm$core$Platform$Cmd$none);
-			default:
-				var algorithm = msg.a;
-				switch (algorithm) {
+			case 'SelectAlgorithm':
+				var algName = msg.a;
+				switch (algName) {
 					case 'Bubble Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$BubbleSort}),
+								{currentPage: $author$project$Main$BubbleSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
 							$elm$core$Platform$Cmd$none);
 					case 'Selection Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$SelectionSort}),
+								{currentPage: $author$project$Main$SelectionSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
 							$elm$core$Platform$Cmd$none);
 					default:
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$Home}),
+								{currentPage: $author$project$Main$Home, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
 							$elm$core$Platform$Cmd$none);
+				}
+			case 'ControlMsg':
+				var controlMsg = msg.a;
+				switch (controlMsg.$) {
+					case 'Run':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{running: true}),
+							$elm$core$Platform$Cmd$none);
+					case 'Pause':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{running: false}),
+							$elm$core$Platform$Cmd$none);
+					case 'Reset':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
+							$elm$core$Platform$Cmd$none);
+					default:
+						var updatedTrack = function () {
+							var _v4 = model.currentPage;
+							switch (_v4.$) {
+								case 'BubbleSort':
+									return $author$project$Pages$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
+								case 'SelectionSort':
+									return $author$project$Pages$SelectionSort$selectionSortStep(model.sortingAlgorithm);
+								default:
+									return model.sortingAlgorithm;
+							}
+						}();
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{sortingAlgorithm: updatedTrack}),
+							$elm$core$Platform$Cmd$none);
+				}
+			default:
+				if (model.running) {
+					var updatedTrack = function () {
+						var _v5 = model.currentPage;
+						switch (_v5.$) {
+							case 'BubbleSort':
+								return $author$project$Pages$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
+							case 'SelectionSort':
+								return $author$project$Pages$SelectionSort$selectionSortStep(model.sortingAlgorithm);
+							default:
+								return model.sortingAlgorithm;
+						}
+					}();
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{sortingAlgorithm: updatedTrack}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 		}
 	});
-var $author$project$Main$BubbleSortStep = {$: 'BubbleSortStep'};
+var $author$project$Main$ControlMsg = function (a) {
+	return {$: 'ControlMsg', a: a};
+};
 var $elm$browser$Browser$Document = F2(
 	function (title, body) {
 		return {body: body, title: title};
@@ -6289,7 +6662,6 @@ var $elm$browser$Browser$Document = F2(
 var $author$project$Main$HomeMsg = function (a) {
 	return {$: 'HomeMsg', a: a};
 };
-var $author$project$Main$SelectionSortStep = {$: 'SelectionSortStep'};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6302,6 +6674,12 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Controls$Pause = {$: 'Pause'};
+var $author$project$Controls$Reset = {$: 'Reset'};
+var $author$project$Controls$Run = {$: 'Run'};
+var $author$project$Controls$Step = {$: 'Step'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -6320,10 +6698,67 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $author$project$Controls$view = F2(
+	function (running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('control-buttons')
+				]),
+			_List_fromArray(
+				[
+					running ? A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Pause))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Pause')
+						])) : A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Run))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Run')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Step))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Step')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$Controls$Reset))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Reset')
+						]))
+				]));
+	});
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Visualization$renderBar = F6(
 	function (sorted, outerIndex, currentIndex, maybeMinIndex, position, value) {
 		var isOuter = _Utils_eq(position, outerIndex);
@@ -6359,7 +6794,7 @@ var $author$project$Visualization$renderBar = F6(
 							A2(
 							$elm$html$Html$Attributes$style,
 							'height',
-							$elm$core$String$fromInt(value * 7) + 'px'),
+							$elm$core$String$fromInt(value * 10) + 'px'),
 							A2($elm$html$Html$Attributes$style, 'background-image', barColor),
 							A2($elm$html$Html$Attributes$style, 'width', '40px'),
 							A2($elm$html$Html$Attributes$style, 'border-radius', '5px'),
@@ -6390,8 +6825,8 @@ var $author$project$Visualization$renderComparison = F6(
 					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column'),
 					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
-					A2($elm$html$Html$Attributes$style, 'width', '100%'),
-					A2($elm$html$Html$Attributes$style, 'height', '400px'),
+					A2($elm$html$Html$Attributes$style, 'width', '150%'),
+					A2($elm$html$Html$Attributes$style, 'height', '200px'),
 					A2($elm$html$Html$Attributes$style, 'padding', '10px')
 				]),
 			_List_fromArray(
@@ -6424,86 +6859,65 @@ var $author$project$Visualization$renderComparison = F6(
 						$elm$core$Array$toList(array)))
 				]));
 	});
-var $author$project$Pages$BubbleSort$view = F2(
-	function (track, nextBubbleSortMsg) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('bubble-sort-page')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('title')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Bubble Sort')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('description')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.\r\n            It compares adjacent elements and swaps them if the right one is less than the left one.\r\n            It does this repeatedly until the array is sorted.')
-						])),
-					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('indices')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
-							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
-							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
-							$elm$html$Html$text(
-							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('step-button')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$button,
-							_List_fromArray(
-								[
-									$elm$html$Html$Events$onClick(nextBubbleSortMsg),
-									$elm$html$Html$Attributes$class('next-step-button')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Next Step')
-								]))
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('description')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Outer index is the left index being compared.\r\n            Current index is the right index being compared.\r\n            Checking if an element was swapped in the current pass is how we detect if it\'s sorted.\r\n            If no elements were swapped in a pass, the array is sorted.')
-						]))
-				]));
-	});
+var $author$project$Pages$BubbleSort$view = function (track) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Bubble Sort')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.\r\n                It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                It does this repeatedly until the array is sorted.')
+					])),
+				A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('indices')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+						$elm$html$Html$text(
+						' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+						$elm$html$Html$text(
+						' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
+						$elm$html$Html$text(
+						' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Outer index is the left index being compared.\r\n                Current index is the right index being compared.\r\n                Checking if an element was swapped in the current pass is how we detect if it\'s sorted.\r\n                If no elements were swapped in a pass, the array is sorted.')
+					]))
+			]));
+};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $author$project$Pages$Home$view = function (model) {
 	return A2(
@@ -6537,95 +6951,74 @@ var $author$project$Pages$Home$view = function (model) {
 					]))
 			]));
 };
-var $author$project$Pages$SelectionSort$view = F2(
-	function (track, nextSelectionSortMsg) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('sort-page')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('title')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Selection Sort')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('description')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Selection Sort...')
-						])),
-					A6(
-					$author$project$Visualization$renderComparison,
-					track.array,
-					'Walk through the steps below',
-					track.sorted,
-					track.outerIndex,
-					track.currentIndex,
-					$elm$core$Maybe$Just(track.minIndex)),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('indices')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
-							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
-							$elm$html$Html$text(
-							' | Min Index: ' + $elm$core$String$fromInt(track.minIndex)),
-							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
-							$elm$html$Html$text(
-							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('step-button')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$button,
-							_List_fromArray(
-								[
-									$elm$html$Html$Events$onClick(nextSelectionSortMsg),
-									$elm$html$Html$Attributes$class('next-step-button')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Next Step')
-								]))
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('description')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Description...')
-						]))
-				]));
-	});
+var $author$project$Pages$SelectionSort$view = function (track) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Selection Sort')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Selection Sort picks the smallest element and swaps it with the leftmost unsorted position.')
+					])),
+				A6(
+				$author$project$Visualization$renderComparison,
+				track.array,
+				'Walk through the steps below',
+				track.sorted,
+				track.outerIndex,
+				track.currentIndex,
+				$elm$core$Maybe$Just(track.minIndex)),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('indices')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+						$elm$html$Html$text(
+						' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+						$elm$html$Html$text(
+						' | Min Index: ' + $elm$core$String$fromInt(track.minIndex)),
+						$elm$html$Html$text(
+						' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
+						$elm$html$Html$text(
+						' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Breakdown...')
+					]))
+			]));
+};
 var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
 };
@@ -6889,8 +7282,8 @@ var $author$project$Main$viewThemeToggle = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	var themeClass = function () {
-		var _v1 = model.homeModel.theme;
-		if (_v1.$ === 'Light') {
+		var _v2 = model.homeModel.theme;
+		if (_v2.$ === 'Light') {
 			return 'light-theme';
 		} else {
 			return 'dark-theme';
@@ -6927,12 +7320,23 @@ var $author$project$Main$view = function (model) {
 											$author$project$Main$HomeMsg,
 											$author$project$Pages$Home$view(model.homeModel));
 									case 'BubbleSort':
-										return A2($author$project$Pages$BubbleSort$view, model.bubbleSortTrack, $author$project$Main$BubbleSortStep);
+										return $author$project$Pages$BubbleSort$view(model.sortingAlgorithm);
 									default:
-										return A2($author$project$Pages$SelectionSort$view, model.selectionSortTrack, $author$project$Main$SelectionSortStep);
+										return $author$project$Pages$SelectionSort$view(model.sortingAlgorithm);
 								}
 							}()
 							])),
+						function () {
+						var _v1 = model.currentPage;
+						switch (_v1.$) {
+							case 'Home':
+								return $elm$html$Html$text('');
+							case 'BubbleSort':
+								return A2($author$project$Controls$view, model.running, $author$project$Main$ControlMsg);
+							default:
+								return A2($author$project$Controls$view, model.running, $author$project$Main$ControlMsg);
+						}
+					}(),
 						$author$project$Main$viewThemeToggle(model)
 					]))
 			]));
@@ -6947,9 +7351,7 @@ var $author$project$Main$main = $elm$browser$Browser$application(
 		onUrlRequest: function (_v0) {
 			return $author$project$Main$NavigateTo($author$project$Main$Home);
 		},
-		subscriptions: function (_v1) {
-			return $elm$core$Platform$Sub$none;
-		},
+		subscriptions: $author$project$Main$subscriptions,
 		update: $author$project$Main$update,
 		view: $author$project$Main$view
 	});

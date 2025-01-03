@@ -29,8 +29,8 @@ renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
         [ style "display" "flex"
         , style "flex-direction" "column"
         , style "align-items" "center"
-        , style "width" "100%"
-        , style "height" "400px"
+        , style "width" "150%"
+        , style "height" "200px"
         , style "padding" "10px"
         ]
         [ div 
@@ -104,7 +104,7 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
     [ div 
         -- Styling for each bar in chart
         [ class "sorting-bar"
-        , style "height" (String.fromInt (value * 7) ++ "px")
+        , style "height" (String.fromInt (value * 10) ++ "px")
         , style "background-image" barColor -- Use `background-image` for gradients
         , style "width" "40px"
         , style "border-radius" "5px"

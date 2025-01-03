@@ -1,19 +1,15 @@
 module Pages.SelectionSort exposing (view, selectionSortStep)
 
--- HTML Imports
-import Html exposing (Html, div, text, button)
+import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-
 import Array exposing (Array)
-
--- Import necessary structures to track state
 import Structs exposing (SortingTrack)
-
--- Import visualization for graph
 import Visualization exposing (renderComparison)
 
--- One step of SelectionSort
+{-
+  One step of selection sort.
+  Takes current track and returns new track.
+-}
 selectionSortStep : SortingTrack -> SortingTrack
 selectionSortStep track =
     let
@@ -73,22 +69,33 @@ selectionSortStep track =
                 _ ->
                     track
 
--- View
-view : SortingTrack -> msg -> Html msg
-view track nextSelectionSortMsg =
+{-
+  Basic page view for Selection Sort
+    Title, Description, Graph, Variables, Breakdown
+-}
+view : SortingTrack -> Html msg
+view track =
     div [ class "sort-page" ]
+
+        -- Title
         [ div [ class "title" ]
             [ text "Selection Sort" ]
+
+        -- Description
         , div [ class "description" ]
-            [ text """Selection Sort...""" ]
-        -- Calls Visualization.elm
+            [ text "Selection Sort picks the smallest element and swaps it with the leftmost unsorted position." ]
+        
+        -- Calls Visualization.elm (Graph)
         , renderComparison
             track.array
             "Walk through the steps below"
             track.sorted
             track.outerIndex
             track.currentIndex
+            -- Pass minIndex!
             (Just track.minIndex)
+
+        -- Variables (track as state changes)
         , div [ class "indices" ]
             [ text ("Outer Index: " ++ String.fromInt track.outerIndex)
             , text (" | Current Index: " ++ String.fromInt track.currentIndex)
@@ -96,10 +103,8 @@ view track nextSelectionSortMsg =
             , text (" | Element Swapped: " ++ (if track.didSwap then "Yes" else "No"))
             , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
             ]
-        , div [ class "step-button" ]
-            [ button [ onClick nextSelectionSortMsg, class "next-step-button" ]
-                [ text "Next Step" ]
-            ]
+            
+        -- Breakdown
         , div [ class "description" ]
-            [ text """Description...""" ]
+            [ text """Breakdown...""" ]
         ]

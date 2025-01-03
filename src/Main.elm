@@ -5,50 +5,72 @@ module Main exposing (main)
 -- Imports for website to work
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, div, text, button, label, select, option, node)
+import Html exposing (Html, div, text, label, select, option, node, button)
 import Html.Attributes exposing (class, value, attribute, title)
 import Html.Events exposing (onInput, onClick)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), s, top)
 
--- Custom structs imports (avoid circular import)
-import Structs exposing (defaultSortingTrack, SortingTrack)
+-- Time for "Run" button
+import Time
 
 -- Pages that can be visited
 import Pages.Home as Home
 import Pages.BubbleSort as BubbleSort
 import Pages.SelectionSort as SelectionSort
 
+-- Custom structs imports (avoid circular import)
+import Structs exposing (defaultSortingTrack, SortingTrack)
 
--- MODEL (info stored during interactions)
+-- Universal algorithm controls (run/pause/step/reset)
+import Controls exposing (ControlMsg(..))
+
+-- Model (info stored during interactions)
 type alias Model =
     { key : Nav.Key
+    -- Page we're visiting
     , currentPage : Page
+    -- Theme of webiste (light/dark)
     , homeModel : Home.Model
-    , bubbleSortTrack : SortingTrack
-    , selectionSortTrack : SortingTrack
+    -- Generic sortingTrack data
+    , sortingAlgorithm : SortingTrack
+    -- Running or not
+    , running : Bool
     }
 
--- INIT (initial state of program)
-init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url key =
-    ( { key = key
-      , currentPage = parseUrl url
-      , homeModel =
-            -- Default to the superior theme
-            { theme = Home.Dark
-            }
-        , bubbleSortTrack = defaultSortingTrack
-        , selectionSortTrack = defaultSortingTrack
-      }
-    , Cmd.none
-    )
+-- ROUTE (how URLs map to different pages)
+type Route
+    = HomeRoute
+    | BubbleSortRoute
+    | SelectionSortRoute
 
--- PAGES (different views for the website)
+-- PAGE (different views for the website)
 type Page
     = Home
     | BubbleSort
     | SelectionSort
+
+-- MESSAGES (all possible messages for hte program to receive)
+type Msg
+    -- Visit a new page
+    = NavigateTo Page
+    -- Update the website theme
+    | HomeMsg Home.Msg
+    -- Select and algorithm to view
+    | SelectAlgorithm String
+    -- Control buttons for algorithm
+    | ControlMsg ControlMsg
+    -- Timing for running the algorithm
+    | Tick Time.Posix
+
+-- PARSER (Define mapping betwen URL and Route types)
+routeParser : Parser.Parser (Route -> a) a
+routeParser =
+    Parser.oneOf
+        [ Parser.map HomeRoute top
+        , Parser.map BubbleSortRoute (s "bubble-sort")
+        , Parser.map SelectionSortRoute (s "selection-sort")
+        ]
 
 -- Convert URL into a page
 parseUrl : Url -> Page
@@ -67,94 +89,149 @@ parseUrl url =
             SelectionSort
 
         -- Go to home for edge cases
-        _ ->
+        Nothing ->
             Home
 
--- ROUTES (how URLs map to different pages)
-type Route
-    = HomeRoute
-    | BubbleSortRoute
-    | SelectionSortRoute
-
--- Defines mapping between URL and Route types
-routeParser : Parser.Parser (Route -> a) a
-routeParser =
-    -- Check all possible routes
-    Parser.oneOf
-        [ Parser.map HomeRoute top
-        , Parser.map BubbleSortRoute (s "bubble-sort")
-        , Parser.map SelectionSortRoute (s "selection-sort")
-        ]
-
--- MESSAGES (all possilbe messages for the program to receive)
-type Msg
-    = NavigateTo Page
-    | HomeMsg Home.Msg
-    | SelectAlgorithm String
-    | BubbleSortStep
-    | SelectionSortStep
-
+-- INIT (initial state of program)
+init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init _ url key =
+    ( { key = key
+      , currentPage = parseUrl url
+      , homeModel =
+            -- Default to the superior theme
+          { theme = Home.Dark }
+      , sortingAlgorithm = defaultSortingTrack
+      -- Sorting algorithm should not start as running
+      , running = False
+      }
+    , Cmd.none
+    )
 
 -- UPDATE
-
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         -- Visit specific page clicked on
         NavigateTo page ->
-            ( { model | currentPage = page }, Cmd.none )
+            ( { model | currentPage = page
+                        -- Reset sorting information and set running to false
+                      , sortingAlgorithm = defaultSortingTrack
+                      , running = False
+              }
+            , Cmd.none
+            )
 
         HomeMsg homeMsg ->
             case homeMsg of
                 -- Update website theme
                 Home.ToggleTheme ->
                     let
-                        updatedTheme =
+                        newTheme =
                             if model.homeModel.theme == Home.Light then
                                 Home.Dark
                             else
                                 Home.Light
                     in
-                    ( { model | homeModel = { theme = updatedTheme } }, Cmd.none )
+                    ( { model | homeModel = { theme = newTheme } }, Cmd.none )
 
-        -- Update BubbleSort Track
-        BubbleSortStep ->
-            let
-                updatedTrack =
-                    BubbleSort.bubbleSortStep model.bubbleSortTrack
-            in
-            ( { model | bubbleSortTrack = updatedTrack }, Cmd.none )
-
-        -- Update SelectionSort Track
-        SelectionSortStep ->
-            let
-                updatedTrack =
-                    SelectionSort.selectionSortStep model.selectionSortTrack
-            in
-            ( { model | selectionSortTrack = updatedTrack }, Cmd.none )
-
-        -- Universal algorithm selection from the top dropdown
-        SelectAlgorithm algorithm ->
-            case algorithm of
+        -- Universal algorithm selection form the top dropdown
+        SelectAlgorithm algName ->
+            case algName of
                 -- BubbleSort
                 "Bubble Sort" ->
-                    ( { model | currentPage = BubbleSort }, Cmd.none )
+                    ( { model | currentPage = BubbleSort
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
 
                 -- SelectionSort
                 "Selection Sort" ->
-                    ( { model | currentPage = SelectionSort }, Cmd.none )
+                    ( { model | currentPage = SelectionSort
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
 
                 -- Default to home for algorithms not yet added
                 _ ->
-                    -- default to Home or do nothing
-                    ( { model | currentPage = Home }, Cmd.none )
+                    ( { model | currentPage = Home
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
 
+        -- Control messages for algorithm buttons
+        ControlMsg controlMsg ->
+            case controlMsg of
+                Run ->
+                    ( { model | running = True }, Cmd.none )
+
+                Pause ->
+                    ( { model | running = False }, Cmd.none )
+
+                Reset ->
+                    ( { model
+                        | sortingAlgorithm = defaultSortingTrack
+                        , running = False
+                      }
+                    , Cmd.none
+                    )
+
+                Step ->
+                    let
+                        updatedTrack =
+                            case model.currentPage of
+                                -- One step of Bubble if on Bubble Page
+                                BubbleSort ->
+                                    BubbleSort.bubbleSortStep model.sortingAlgorithm
+
+                                -- One step of Selection if on Selection Page
+                                SelectionSort ->
+                                    SelectionSort.selectionSortStep model.sortingAlgorithm
+
+                                -- Don't update if on Home
+                                _ ->
+                                    model.sortingAlgorithm
+                    in
+                    ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+        -- Running algorithm
+        Tick _ ->
+            -- Update model depending on page if flag is True
+            if model.running then
+                let
+                    updatedTrack =
+                        case model.currentPage of
+                            BubbleSort ->
+                                BubbleSort.bubbleSortStep model.sortingAlgorithm
+
+                            SelectionSort ->
+                                SelectionSort.selectionSortStep model.sortingAlgorithm
+
+                            _ ->
+                                model.sortingAlgorithm
+                in
+                ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+            else
+                ( model, Cmd.none )
+
+-- SUBSCRIPTIONS
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    -- Automatically step every 0.5 seconds if the running flag is True
+    if model.running then
+        Time.every 500 Tick
+    else
+        Sub.none
 
 -- VIEW
 view : Model -> Browser.Document Msg
 view model =
     let
-        -- Reuse them from homeModel
         themeClass =
             case model.homeModel.theme of
                 Home.Light ->
@@ -169,48 +246,51 @@ view model =
             , div [ class "page-content" ]
                 [ case model.currentPage of
                     Home ->
-                        -- Render Home page
                         Html.map HomeMsg (Home.view model.homeModel)
 
                     BubbleSort ->
-                        -- Render BubbleSort page
-                        BubbleSort.view model.bubbleSortTrack BubbleSortStep
+                        BubbleSort.view model.sortingAlgorithm
 
                     SelectionSort ->
-                        -- Render SelectionSort page
-                        SelectionSort.view model.selectionSortTrack SelectionSortStep
+                        SelectionSort.view model.sortingAlgorithm
                 ]
+            , case model.currentPage of
+                Home ->
+                    -- No controls on Home
+                    Html.text ""
+
+                BubbleSort ->
+                    Controls.view model.running ControlMsg
+
+                SelectionSort ->
+                    Controls.view model.running ControlMsg
+
             , viewThemeToggle model
             ]
         ]
 
--- Top header (navbar) containing a label and dropdown with multiple algorithm categories.
+-- Top header (navbar) with dropdown for algorithms
 viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
         [ label [ class "dropdown-label" ] [ text "Algorithms:" ]
         , select [ class "dropdown", onInput SelectAlgorithm ]
             [ option [ value "" ] [ text "Home Page" ]
-            -- Comparison-Based
             , node "optgroup" [ attribute "label" "Comparison-based" ]
                 [ option [ value "Bubble Sort" ] [ text "Bubble Sort" ]
                 , option [ value "Insertion Sort" ] [ text "Insertion Sort" ]
                 , option [ value "Selection Sort" ] [ text "Selection Sort" ]
                 ]
-            -- Divide and Conquer
             , node "optgroup" [ attribute "label" "Divide & Conquer" ]
                 [ option [ value "Merge Sort" ] [ text "Merge Sort" ]
                 , option [ value "Quick Sort" ] [ text "Quick Sort" ]
                 ]
-            -- Heaps
             , node "optgroup" [ attribute "label" "Heaps" ]
                 [ option [ value "Heap Sort" ] [ text "Heap Sort" ]
                 ]
-            -- Graphs
             , node "optgroup" [ attribute "label" "Graphs" ]
                 [ option [ value "Topological Sort" ] [ text "Topological Sort" ]
                 ]
-            -- Trees
             , node "optgroup" [ attribute "label" "Trees" ]
                 [ option [ value "AVL Tree" ] [ text "AVL Tree" ]
                 , option [ value "Binary Search Tree" ] [ text "Binary Search Tree" ]
@@ -218,16 +298,15 @@ viewHeader =
             ]
         ]
 
-
 -- Bottom right theme toggle
 viewThemeToggle : Model -> Html Msg
 viewThemeToggle model =
     let
-        (icon, tooltip) =
+        ( icon, tooltip ) =
             if model.homeModel.theme == Home.Light then
-                ("☾", "Switch to Dark Mode")
+                ( "☾", "Switch to Dark Mode" )
             else
-                ("☀", "Switch to Light Mode")
+                ( "☀", "Switch to Light Mode" )
     in
     div [ class "theme-toggle-container" ]
         [ button
@@ -238,7 +317,6 @@ viewThemeToggle model =
             [ text icon ]
         ]
 
-
 -- MAIN (handles application state in browser)
 main : Program () Model Msg
 main =
@@ -248,5 +326,5 @@ main =
         , onUrlRequest = \_ -> NavigateTo Home
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }

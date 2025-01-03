@@ -119,6 +119,7 @@ body {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
+
 .dropdown:hover {
   background: #e9ecef;
   color: #343a40;
@@ -148,11 +149,11 @@ body {
   color: #f8f9fa;
 }
 
-.step-button {
+.control-buttons {
   margin: 15px;
 }
 
-.next-step-button {
+.sorting-button {
   padding: 10px 20px;
   font-size: 1rem;
   background-color: #2196F3;
@@ -163,7 +164,7 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.next-step-button:hover {
+.sorting-button:hover {
   background-color: #1769aa;
 }
 

@@ -1,19 +1,21 @@
 module Pages.BubbleSort exposing (view, bubbleSortStep)
 
 -- HTML Imports
-import Html exposing (Html, div, text, button)
+import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
 
 import Array exposing (Array)
 
--- Import necessary structures to track state
+-- Import necessary structure to track state
 import Structs exposing (SortingTrack)
 
 -- Import visualization for graph
 import Visualization exposing (renderComparison)
 
--- One step of BubbleSort
+{-
+  One step of bubble sort. Takes the current Tracking state
+  and returns an updated state.
+-}
 bubbleSortStep : SortingTrack -> SortingTrack
 bubbleSortStep track =
     let
@@ -26,27 +28,28 @@ bubbleSortStep track =
     -- Array already sorted
     if track.sorted then
         track
+
     else
         if currentIndex < length then
             -- Compare outer and current values
             case ( Array.get outerIndex arr, Array.get currentIndex arr ) of
-                (Just outerValue, Just currentValue) ->
-                    if outerValue > currentValue then
+                (Just leftVal, Just rightVal) ->
+                    if leftVal > rightVal then
                         let
                             -- Swap elements in array
-                            updatedArray =
-                                Array.set outerIndex currentValue
-                                    (Array.set currentIndex outerValue arr)
+                            swappedArray =
+                                Array.set outerIndex rightVal
+                                    (Array.set currentIndex leftVal arr)
                         in
                         -- Update track to reflect new array
                         { track
-                            | array = updatedArray
+                            | array = swappedArray
                             , outerIndex = outerIndex + 1
-                            , didSwap = True
                             , currentIndex = currentIndex + 1
+                            , didSwap = True
                         }
 
-                    -- Go to next element in array
+                    -- Go to next Element in array
                     else
                         { track
                             | outerIndex = outerIndex + 1
@@ -56,8 +59,7 @@ bubbleSortStep track =
                 -- Default constructor
                 _ ->
                     track
-
-        -- Go to next pass and update to see if the array is sorted
+        -- Go to next pass and update to see if hte array is sorted
         else
             { track
                 | outerIndex = 0
@@ -67,17 +69,25 @@ bubbleSortStep track =
             }
 
 
--- View
-view : SortingTrack -> msg -> Html msg
-view track nextBubbleSortMsg =
-    div [ class "bubble-sort-page" ]
+{-
+  Basic page view for Bubble Sort
+    Title, Description, Graph, Variables, Breakdown
+-}
+view : SortingTrack -> Html msg
+view track =
+    div [ class "sort-page" ]
+
+        -- Title
         [ div [ class "title" ]
             [ text "Bubble Sort" ]
+
+        -- Description
         , div [ class "description" ]
             [ text """Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.
-            It compares adjacent elements and swaps them if the right one is less than the left one.
-            It does this repeatedly until the array is sorted.""" ]
-        -- Calls Visualization.elm
+                It compares adjacent elements and swaps them if the right one is less than the left one.
+                It does this repeatedly until the array is sorted.""" ]
+        
+        -- Calls Visualization.elm (Graph)
         , renderComparison
             track.array
             "Walk through the steps below"
@@ -85,19 +95,19 @@ view track nextBubbleSortMsg =
             track.outerIndex
             track.currentIndex
             Nothing
+
+        -- Variables (track as state changes)
         , div [ class "indices" ]
             [ text ("Outer Index: " ++ String.fromInt track.outerIndex)
             , text (" | Current Index: " ++ String.fromInt track.currentIndex)
             , text (" | Element Swapped: " ++ (if track.didSwap then "Yes" else "No"))
             , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
             ]
-        , div [ class "step-button" ]
-            [ button [ onClick nextBubbleSortMsg, class "next-step-button" ]
-                [ text "Next Step" ]
-            ]
+
+        -- Breakdown
         , div [ class "description" ]
             [ text """Outer index is the left index being compared.
-            Current index is the right index being compared.
-            Checking if an element was swapped in the current pass is how we detect if it's sorted.
-            If no elements were swapped in a pass, the array is sorted.""" ]
+                Current index is the right index being compared.
+                Checking if an element was swapped in the current pass is how we detect if it's sorted.
+                If no elements were swapped in a pass, the array is sorted.""" ]
         ]
