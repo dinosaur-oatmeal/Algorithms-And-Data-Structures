@@ -18,6 +18,8 @@ import Time
 import Pages.Home as Home
 import Pages.BubbleSort as BubbleSort
 import Pages.SelectionSort as SelectionSort
+import Pages.InsertionSort as InsertionSort
+import Pages.ShellSort as ShellSort
 
 -- Custom structs imports (avoid circular import)
 import Structs exposing (defaultSortingTrack, SortingTrack)
@@ -43,12 +45,16 @@ type Route
     = HomeRoute
     | BubbleSortRoute
     | SelectionSortRoute
+    | InsertionSortRoute
+    | ShellSortRoute
 
 -- PAGE (different views for the website)
 type Page
     = Home
     | BubbleSort
     | SelectionSort
+    | InsertionSort
+    | ShellSort
 
 -- MESSAGES (all possible messages for the program to receive)
 type Msg
@@ -70,6 +76,8 @@ routeParser =
         [ Parser.map HomeRoute top
         , Parser.map BubbleSortRoute (s "bubble-sort")
         , Parser.map SelectionSortRoute (s "selection-sort")
+        , Parser.map InsertionSortRoute (s "insertion-sort")
+        , Parser.map ShellSortRoute (s "shell-sort")
         ]
 
 -- Convert URL into a page
@@ -87,6 +95,14 @@ parseUrl url =
         -- SelectionSort Page
         Just SelectionSortRoute ->
             SelectionSort
+
+        -- InsertionSort Page
+        Just InsertionSortRoute ->
+            InsertionSort
+
+        -- ShellSort Page
+        Just ShellSortRoute ->
+            ShellSort
 
         -- Go to home for edge cases
         Nothing ->
@@ -155,6 +171,24 @@ update msg model =
                     , Cmd.none
                     )
 
+                -- InsertionSort
+                "Insertion Sort" ->
+                    ( { model | currentPage = InsertionSort
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
+
+                -- ShellShort
+                "Shell Sort" ->
+                    ( { model | currentPage = ShellSort
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
+
                 -- Default to home for algorithms not yet added
                 _ ->
                     ( { model | currentPage = Home
@@ -196,6 +230,14 @@ update msg model =
                                 -- One step of Selection if on Selection Page
                                 SelectionSort ->
                                     SelectionSort.selectionSortStep model.sortingAlgorithm
+                                
+                                -- One step of Insertion if on Insertion Page
+                                InsertionSort ->
+                                    InsertionSort.insertionSortStep model.sortingAlgorithm
+
+                                -- One step of Shell if on Shell Page
+                                ShellSort ->
+                                    ShellSort.shellSortStep model.sortingAlgorithm
 
                                 -- Don't update if on Home
                                 _ ->
@@ -217,6 +259,14 @@ update msg model =
                             -- SelectionSort Running
                             SelectionSort ->
                                 SelectionSort.selectionSortStep model.sortingAlgorithm
+
+                            -- InsertionSort Running
+                            InsertionSort ->
+                                InsertionSort.insertionSortStep model.sortingAlgorithm
+
+                            -- ShellSort Running
+                            ShellSort ->
+                                ShellSort.shellSortStep model.sortingAlgorithm
 
                             -- Don't update if on Home
                             _ ->
@@ -266,6 +316,12 @@ view model =
 
                     SelectionSort ->
                         SelectionSort.view model.sortingAlgorithm model.running ControlMsg
+
+                    InsertionSort ->
+                        InsertionSort.view model.sortingAlgorithm model.running ControlMsg
+
+                    ShellSort ->
+                        ShellSort.view model.sortingAlgorithm model.running ControlMsg
                 ]
             , Html.text ""
             , viewThemeToggle model
@@ -281,8 +337,9 @@ viewHeader =
             [ option [ value "" ] [ text "Home Page" ]
             , node "optgroup" [ attribute "label" "Comparison-based" ]
                 [ option [ value "Bubble Sort" ] [ text "Bubble Sort" ]
-                , option [ value "Insertion Sort" ] [ text "Insertion Sort" ]
                 , option [ value "Selection Sort" ] [ text "Selection Sort" ]
+                , option [ value "Insertion Sort" ] [ text "Insertion Sort" ]
+                , option [ value "Shell Sort" ] [ text "Shell Sort" ]
                 ]
             , node "optgroup" [ attribute "label" "Divide & Conquer" ]
                 [ option [ value "Merge Sort" ] [ text "Merge Sort" ]

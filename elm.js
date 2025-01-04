@@ -5306,6 +5306,7 @@ var $author$project$Structs$defaultSortingTrack = {
 	currentIndex: 1,
 	currentStep: 0,
 	didSwap: false,
+	gap: (10 / 2) | 0,
 	minIndex: 0,
 	outerIndex: 0,
 	sorted: false,
@@ -5314,7 +5315,9 @@ var $author$project$Structs$defaultSortingTrack = {
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
+var $author$project$Main$InsertionSort = {$: 'InsertionSort'};
 var $author$project$Main$SelectionSort = {$: 'SelectionSort'};
+var $author$project$Main$ShellSort = {$: 'ShellSort'};
 var $elm$url$Url$Parser$State = F5(
 	function (visited, unvisited, params, frag, value) {
 		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
@@ -5951,7 +5954,9 @@ var $elm$url$Url$Parser$parse = F2(
 	});
 var $author$project$Main$BubbleSortRoute = {$: 'BubbleSortRoute'};
 var $author$project$Main$HomeRoute = {$: 'HomeRoute'};
+var $author$project$Main$InsertionSortRoute = {$: 'InsertionSortRoute'};
 var $author$project$Main$SelectionSortRoute = {$: 'SelectionSortRoute'};
+var $author$project$Main$ShellSortRoute = {$: 'ShellSortRoute'};
 var $elm$url$Url$Parser$Parser = function (a) {
 	return {$: 'Parser', a: a};
 };
@@ -6057,7 +6062,15 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$SelectionSortRoute,
-			$elm$url$Url$Parser$s('selection-sort'))
+			$elm$url$Url$Parser$s('selection-sort')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$InsertionSortRoute,
+			$elm$url$Url$Parser$s('insertion-sort')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$ShellSortRoute,
+			$elm$url$Url$Parser$s('shell-sort'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6069,9 +6082,15 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'BubbleSortRoute':
 				var _v2 = _v0.a;
 				return $author$project$Main$BubbleSort;
-			default:
+			case 'SelectionSortRoute':
 				var _v3 = _v0.a;
 				return $author$project$Main$SelectionSort;
+			case 'InsertionSortRoute':
+				var _v4 = _v0.a;
+				return $author$project$Main$InsertionSort;
+			default:
+				var _v5 = _v0.a;
+				return $author$project$Main$ShellSort;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6500,6 +6519,47 @@ var $author$project$Pages$BubbleSort$bubbleSortStep = function (track) {
 		}
 	}
 };
+var $author$project$Pages$InsertionSort$insertionSortStep = function (track) {
+	var outer = track.outerIndex;
+	var current = track.currentIndex;
+	var arr = track.array;
+	var length = $elm$core$Array$length(arr);
+	if (track.sorted || (_Utils_cmp(outer, length) > -1)) {
+		return _Utils_update(
+			track,
+			{sorted: true});
+	} else {
+		if (current <= 0) {
+			return _Utils_update(
+				track,
+				{currentIndex: outer + 1, outerIndex: outer + 1});
+		} else {
+			var _v0 = _Utils_Tuple2(
+				A2($elm$core$Array$get, current, arr),
+				A2($elm$core$Array$get, current - 1, arr));
+			if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
+				var currentValue = _v0.a.a;
+				var previousValue = _v0.b.a;
+				if (_Utils_cmp(currentValue, previousValue) < 0) {
+					var swappedArray = A3(
+						$elm$core$Array$set,
+						current - 1,
+						currentValue,
+						A3($elm$core$Array$set, current, previousValue, arr));
+					return _Utils_update(
+						track,
+						{array: swappedArray, currentIndex: current - 1});
+				} else {
+					return _Utils_update(
+						track,
+						{currentIndex: outer + 1, outerIndex: outer + 1});
+				}
+			} else {
+				return track;
+			}
+		}
+	}
+};
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$Pages$SelectionSort$selectionSortStep = function (track) {
 	var outer = track.outerIndex;
@@ -6548,6 +6608,55 @@ var $author$project$Pages$SelectionSort$selectionSortStep = function (track) {
 		}
 	}
 };
+var $author$project$Pages$ShellSort$shellSortStep = function (track) {
+	var outer = track.outerIndex;
+	var gap = track.gap;
+	var current = track.currentStep;
+	var arr = track.array;
+	var length = $elm$core$Array$length(arr);
+	if (track.sorted || (gap <= 0)) {
+		return _Utils_update(
+			track,
+			{sorted: true});
+	} else {
+		if (_Utils_cmp(outer, length) > -1) {
+			var newGap = (gap === 1) ? 0 : ((gap / 2) | 0);
+			return _Utils_update(
+				track,
+				{currentStep: newGap, gap: newGap, outerIndex: newGap});
+		} else {
+			if (_Utils_cmp(current, gap) < 0) {
+				return _Utils_update(
+					track,
+					{currentStep: outer + 1, outerIndex: outer + 1});
+			} else {
+				var _v0 = _Utils_Tuple2(
+					A2($elm$core$Array$get, current, arr),
+					A2($elm$core$Array$get, current - gap, arr));
+				if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
+					var currentValue = _v0.a.a;
+					var gapValue = _v0.b.a;
+					if (_Utils_cmp(currentValue, gapValue) < 0) {
+						var updatedArray = A3(
+							$elm$core$Array$set,
+							current,
+							gapValue,
+							A3($elm$core$Array$set, current - gap, currentValue, arr));
+						return _Utils_update(
+							track,
+							{array: updatedArray, currentIndex: current - gap, currentStep: current - gap});
+					} else {
+						return _Utils_update(
+							track,
+							{currentStep: outer + 1, outerIndex: outer + 1});
+					}
+				} else {
+					return track;
+				}
+			}
+		}
+	}
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6582,6 +6691,18 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{currentPage: $author$project$Main$SelectionSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
+							$elm$core$Platform$Cmd$none);
+					case 'Insertion Sort':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{currentPage: $author$project$Main$InsertionSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
+							$elm$core$Platform$Cmd$none);
+					case 'Shell Sort':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{currentPage: $author$project$Main$ShellSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
 							$elm$core$Platform$Cmd$none);
 					default:
 						return _Utils_Tuple2(
@@ -6619,6 +6740,10 @@ var $author$project$Main$update = F2(
 									return $author$project$Pages$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 								case 'SelectionSort':
 									return $author$project$Pages$SelectionSort$selectionSortStep(model.sortingAlgorithm);
+								case 'InsertionSort':
+									return $author$project$Pages$InsertionSort$insertionSortStep(model.sortingAlgorithm);
+								case 'ShellSort':
+									return $author$project$Pages$ShellSort$shellSortStep(model.sortingAlgorithm);
 								default:
 									return model.sortingAlgorithm;
 							}
@@ -6638,6 +6763,10 @@ var $author$project$Main$update = F2(
 								return $author$project$Pages$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 							case 'SelectionSort':
 								return $author$project$Pages$SelectionSort$selectionSortStep(model.sortingAlgorithm);
+							case 'InsertionSort':
+								return $author$project$Pages$InsertionSort$insertionSortStep(model.sortingAlgorithm);
+							case 'ShellSort':
+								return $author$project$Pages$ShellSort$shellSortStep(model.sortingAlgorithm);
 							default:
 								return model.sortingAlgorithm;
 						}
@@ -6889,7 +7018,7 @@ var $author$project$Pages$BubbleSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
+							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
 						])),
 					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$Controls$view, running, toMsg),
@@ -6928,14 +7057,14 @@ var $author$project$Pages$BubbleSort$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Current index is the left index being compared.')
+											$elm$html$Html$text('Current Index:  the left index being compared.')
 										])),
 									A2(
 									$elm$html$Html$li,
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Next index is the right index being compared.')
+											$elm$html$Html$text('Next Index: the right index being compared.')
 										])),
 									A2(
 									$elm$html$Html$li,
@@ -7021,6 +7150,111 @@ var $author$project$Pages$Home$view = function (model) {
 					]))
 			]));
 };
+var $author$project$Pages$InsertionSort$view = F3(
+	function (track, running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('sort-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Insertion Sort')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
+						])),
+					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
+					A2($author$project$Controls$view, running, toMsg),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							$elm$html$Html$text(
+							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+							$elm$html$Html$text(
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('variable-list')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$ul,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Outer Index: tracks the last element of the sorted section of the array.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Current index: tracks the element being moved to it\'s correct relative location.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Sorted: tells us once the array is sorted.')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Insertion Sort has a worst-case Time Complexity of O(n²).\r\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Insertion Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+						]))
+				]));
+	});
 var $author$project$Pages$SelectionSort$view = F3(
 	function (track, running, toMsg) {
 		return A2(
@@ -7049,7 +7283,7 @@ var $author$project$Pages$SelectionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort starts at hte first element in the array and looks through the entire length of the array to find the smallest element.\r\n                  Once the smallest element is found, it swaps with the current element before moving on.\r\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
+							$elm$html$Html$text('Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.\r\n                  Once the smallest element is found, it swaps with the current element before moving on.\r\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
 						])),
 					A6(
 					$author$project$Visualization$renderComparison,
@@ -7097,41 +7331,21 @@ var $author$project$Pages$SelectionSort$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Current index is the index that will be swapped at the end of the pass.')
+											$elm$html$Html$text('Current Index:  the index that will be swapped at the end of the pass.')
 										])),
 									A2(
 									$elm$html$Html$li,
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Compare index is the index being compared to see if it\'s smaller.')
+											$elm$html$Html$text('Compare Index: the index being compared to see if it\'s smaller.')
 										])),
 									A2(
 									$elm$html$Html$li,
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Minimum Index is the index with the smallest value in the array during this pass.')
-										])),
-									A2(
-									$elm$html$Html$li,
-									_List_Nil,
-									_List_fromArray(
-										[
-											$elm$html$Html$text('Element Swapped: tells us if an element has been swapped on the current pass of the array.'),
-											A2(
-											$elm$html$Html$ul,
-											_List_Nil,
-											_List_fromArray(
-												[
-													A2(
-													$elm$html$Html$li,
-													_List_Nil,
-													_List_fromArray(
-														[
-															$elm$html$Html$text('If no elements were swapped, then the array is sorted.')
-														]))
-												]))
+											$elm$html$Html$text('Minimum Index: the index with the smallest value in the array during this pass.')
 										])),
 									A2(
 									$elm$html$Html$li,
@@ -7161,6 +7375,127 @@ var $author$project$Pages$SelectionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text('Selection Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+						]))
+				]));
+	});
+var $author$project$Pages$ShellSort$view = F3(
+	function (track, running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('sort-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Shell Sort')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Shell Sort is an optimization of Insertion Sort.\r\n              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.\r\n              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.\r\n              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).')
+						])),
+					A6(
+					$author$project$Visualization$renderComparison,
+					track.array,
+					'Walk through the steps below',
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.gap)),
+					A2($author$project$Controls$view, running, toMsg),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							$elm$html$Html$text(
+							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+							$elm$html$Html$text(
+							' | Gap: ' + $elm$core$String$fromInt(track.gap)),
+							$elm$html$Html$text(
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('variable-list')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$ul,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Outer Index: tracks the last element of the sorted section of the array.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Current index: tracks the element being moved to it\'s correct relative location.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Gap: tracks the gap elements are being swapped from in the array.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Sorted: tells us once the array is sorted.')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Similar to Insertion Sort, Shell Sort has a worst-case Time Complexity of O(n²).')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('latex')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Likewise, Shell Sort has a Space Complexity of O(1).')
 						]))
 				]));
 	});
@@ -7277,6 +7612,16 @@ var $author$project$Main$viewHeader = A2(
 							$elm$html$Html$option,
 							_List_fromArray(
 								[
+									$elm$html$Html$Attributes$value('Selection Sort')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Selection Sort')
+								])),
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
 									$elm$html$Html$Attributes$value('Insertion Sort')
 								]),
 							_List_fromArray(
@@ -7287,11 +7632,11 @@ var $author$project$Main$viewHeader = A2(
 							$elm$html$Html$option,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Selection Sort')
+									$elm$html$Html$Attributes$value('Shell Sort')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Selection Sort')
+									$elm$html$Html$text('Shell Sort')
 								]))
 						])),
 					A3(
@@ -7466,8 +7811,12 @@ var $author$project$Main$view = function (model) {
 											$author$project$Pages$Home$view(model.homeModel));
 									case 'BubbleSort':
 										return A3($author$project$Pages$BubbleSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
-									default:
+									case 'SelectionSort':
 										return A3($author$project$Pages$SelectionSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'InsertionSort':
+										return A3($author$project$Pages$InsertionSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									default:
+										return A3($author$project$Pages$ShellSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
 								}
 							}()
 							])),

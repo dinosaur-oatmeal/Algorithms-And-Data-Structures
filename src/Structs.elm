@@ -12,6 +12,7 @@ type alias SortingTrack =
     , currentIndex : Int
     , sorted : Bool
     , minIndex : Int
+    , gap : Int
     , stack : List ( Int, Int )
     , didSwap : Bool
     , currentStep : Int
@@ -25,6 +26,7 @@ defaultSortingTrack =
     , currentIndex = 1
     , sorted = False
     , minIndex = 0
+    , gap = 10 // 2
     , stack = []
     , didSwap = False
     , currentStep = 0

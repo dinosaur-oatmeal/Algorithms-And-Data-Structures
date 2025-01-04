@@ -85,7 +85,7 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Bubble Sort is a simple sorting algorithm that steps through an array one element at a time.
+              [ text """Bubble Sort is a simple algorithm that steps through an array one element at a time.
                   It compares adjacent elements and swaps them if the right one is less than the left one.
                   It does this repeatedly until the array is sorted.""" ]
 
@@ -113,8 +113,8 @@ view track running toMsg =
           -- Breakdown
         , div [ class "variable-list" ]
               [ ul []
-                  [ li [] [ text "Current index is the left index being compared." ]
-                  , li [] [ text "Next index is the right index being compared." ]
+                  [ li [] [ text "Current Index:  the left index being compared." ]
+                  , li [] [ text "Next Index: the right index being compared." ]
                   , li []
                       [ text "Element Swapped: tells us if an element has been swapped on the current pass of the array." 
                       , ul []

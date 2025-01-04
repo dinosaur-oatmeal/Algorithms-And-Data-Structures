@@ -84,7 +84,7 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Selection Sort starts at hte first element in the array and looks through the entire length of the array to find the smallest element.
+              [ text """Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.
                   Once the smallest element is found, it swaps with the current element before moving on.
                   This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.""" ]
 
@@ -112,14 +112,9 @@ view track running toMsg =
         -- Breakdown Description
         , div [ class "variable-list" ]
               [ ul []
-                  [ li [] [ text "Current index is the index that will be swapped at the end of the pass." ]
-                  , li [] [ text "Compare index is the index being compared to see if it's smaller." ]
-                  , li [] [ text "Minimum Index is the index with the smallest value in the array during this pass."]
-                  , li []
-                      [ text "Element Swapped: tells us if an element has been swapped on the current pass of the array." 
-                      , ul []
-                          [ li [] [ text "If no elements were swapped, then the array is sorted." ] ]
-                      ]
+                  [ li [] [ text "Current Index:  the index that will be swapped at the end of the pass." ]
+                  , li [] [ text "Compare Index: the index being compared to see if it's smaller." ]
+                  , li [] [ text "Minimum Index: the index with the smallest value in the array during this pass."]
                   , li [] [ text "Sorted: tells us once the array is sorted." ]
                   ]
               ]
