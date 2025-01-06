@@ -1,8 +1,8 @@
-module Visualization exposing (renderComparison)
+module Visualization exposing (renderComparison, renderBackgroundBars)
 
 -- HTML Elements
 import Html exposing (Html, div, text)
-import Html.Attributes exposing (style, class)
+import Html.Attributes exposing (class, style)
 
 -- Array
 import Array exposing (Array)
@@ -26,7 +26,8 @@ renderComparison :
 
 renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
     div 
-        [ style "display" "flex"
+        [ class "bar-chart"
+        , style "display" "flex"
         , style "flex-direction" "column"
         , style "align-items" "center"
         , style "width" "150%"
@@ -34,7 +35,7 @@ renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
         , style "padding" "10px"
         ]
         [ div 
-            [ style "font-size" "20px" -- Larger font for title
+            [ style "font-size" "20px"
             , style "margin-bottom" "10px"
             , style "font-weight" "bold"
             ]
@@ -106,9 +107,7 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
         [ class "sorting-bar"
         , style "height" (String.fromInt (value * 10) ++ "px")
         , style "background-image" barColor -- Use `background-image` for gradients
-        , style "width" "40px"
         , style "border-radius" "5px"
-        , style "transition" "height 0.5s ease, background-color 0.5s ease"
         ]
         []
     , div
@@ -119,3 +118,38 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
         ]
         [ text (String.fromInt value) ]
     ]
+
+-- Renders background from Home.elm
+    -- Needs to be different from previous renders for z-index and blur
+renderBackgroundBars : Array Int -> Html msg
+renderBackgroundBars array =
+    div
+        [ style "position" "absolute"
+        , style "top" "0"
+        , style "left" "0"
+        , style "width" "100%"
+        , style "height" "100%"
+        , style "display" "flex"
+        , style "justify-content" "center"
+        , style "align-items" "flex-end"
+        -- Put behind text on the screen
+        , style "z-index" "-1"
+        -- Blur the bars to emphasize title text
+        , style "filter" "blur(10px) opacity(0.9)"
+        , style "pointer-events" "none"
+        ]
+        (Array.toList array
+            |> List.map
+                (\val ->
+                    div
+                        -- Make bars large to take up the whole background
+                        [ style "width" "100px"
+                        , style "margin" "0 10px"
+                        , style "height" (String.fromInt (val * 30) ++ "px")
+                        -- Same gradient  and transitionas other bar charts
+                        , style "background-image" "linear-gradient(180deg, #2196F3, #64B5F6)" -- Gradient blue otherwise
+                        , style "transition" "height 0.5s ease"
+                        ]
+                        []
+                )
+        )

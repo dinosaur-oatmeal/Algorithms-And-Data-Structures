@@ -32,7 +32,7 @@ type alias Model =
     { key : Nav.Key
     -- Page we're visiting
     , currentPage : Page
-    -- Theme of webiste (light/dark)
+    -- Call Home.elm model
     , homeModel : Home.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
@@ -40,13 +40,14 @@ type alias Model =
     , running : Bool
     }
 
--- ROUTE (how URLs map to different pages)
+-- ROUTE (How URLs map to different pages)
 type Route
     = HomeRoute
     | BubbleSortRoute
     | SelectionSortRoute
     | InsertionSortRoute
     | ShellSortRoute
+
 
 -- PAGE (different views for the website)
 type Page
@@ -56,11 +57,12 @@ type Page
     | InsertionSort
     | ShellSort
 
--- MESSAGES (all possible messages for the program to receive)
+
+-- MESSAGES (all possible messages for hte program to receive)
 type Msg
     -- Visit a new page
     = NavigateTo Page
-    -- Update the website theme
+    -- Update something on homepage (typing/array)
     | HomeMsg Home.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
@@ -69,7 +71,7 @@ type Msg
     -- Timing for running the algorithm
     | Tick Time.Posix
 
--- PARSER (Define mapping betwen URL and Route types)
+-- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
 routeParser =
     Parser.oneOf
@@ -84,7 +86,7 @@ routeParser =
 parseUrl : Url -> Page
 parseUrl url =
     case Parser.parse routeParser url of
-        -- Home (default)
+        -- Home Page
         Just HomeRoute ->
             Home
 
@@ -100,60 +102,58 @@ parseUrl url =
         Just InsertionSortRoute ->
             InsertionSort
 
-        -- ShellSort Page
+        -- ShellSOrt Page
         Just ShellSortRoute ->
             ShellSort
 
-        -- Go to home for edge cases
+        -- Default to Home
         Nothing ->
             Home
+
 
 -- INIT (initial state of program)
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { key = key
       , currentPage = parseUrl url
-      , homeModel =
-            -- Default to the superior theme
-          { theme = Home.Dark }
+      -- Initialize Home.model
+      , homeModel = Home.initModel
       , sortingAlgorithm = defaultSortingTrack
-      -- Sorting algorithm should not start as running
+      -- Sorting algorithm shouldn't start as running
       , running = False
       }
     , Cmd.none
     )
 
+
 -- UPDATE
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         -- Visit specific page clicked on
         NavigateTo page ->
-            ( { model | currentPage = page
-                        -- Reset sorting information and set running to false
-                      , sortingAlgorithm = defaultSortingTrack
-                      , running = False
+            ( { model
+                | currentPage = page
+                -- Reset sorting information and set running to false
+                , sortingAlgorithm = defaultSortingTrack
+                , running = False
               }
             , Cmd.none
             )
 
+        -- Theme, typing effect, and background array point to Home.elm
         HomeMsg homeMsg ->
-            case homeMsg of
-                -- Update website theme
-                Home.ToggleTheme ->
-                    let
-                        newTheme =
-                            if model.homeModel.theme == Home.Light then
-                                Home.Dark
-                            else
-                                Home.Light
-                    in
-                    ( { model | homeModel = { theme = newTheme } }, Cmd.none )
+            let
+                ( newHome, homeCmd ) =
+                    Home.update homeMsg model.homeModel
+            in
+            ( { model | homeModel = newHome }
+            , Cmd.map HomeMsg homeCmd
+            )
 
-        -- Algorithm selection form the top dropdown
+        -- Algorithm selection from dropdown
         SelectAlgorithm algName ->
             case algName of
-                -- BubbleSort
                 "Bubble Sort" ->
                     ( { model | currentPage = BubbleSort
                               , sortingAlgorithm = defaultSortingTrack
@@ -162,7 +162,6 @@ update msg model =
                     , Cmd.none
                     )
 
-                -- SelectionSort
                 "Selection Sort" ->
                     ( { model | currentPage = SelectionSort
                               , sortingAlgorithm = defaultSortingTrack
@@ -171,7 +170,6 @@ update msg model =
                     , Cmd.none
                     )
 
-                -- InsertionSort
                 "Insertion Sort" ->
                     ( { model | currentPage = InsertionSort
                               , sortingAlgorithm = defaultSortingTrack
@@ -180,7 +178,6 @@ update msg model =
                     , Cmd.none
                     )
 
-                -- ShellShort
                 "Shell Sort" ->
                     ( { model | currentPage = ShellSort
                               , sortingAlgorithm = defaultSortingTrack
@@ -201,15 +198,12 @@ update msg model =
         -- Control messages for algorithm buttons
         ControlMsg controlMsg ->
             case controlMsg of
-                -- Run the algorithm (subscriptions)
                 Run ->
                     ( { model | running = True }, Cmd.none )
 
-                -- Pause the algorithm running (only available if it is running)
                 Pause ->
                     ( { model | running = False }, Cmd.none )
 
-                -- Reset back to the initial state
                 Reset ->
                     ( { model
                         | sortingAlgorithm = defaultSortingTrack
@@ -218,28 +212,23 @@ update msg model =
                     , Cmd.none
                     )
 
-                -- Allow user to do one step to see how the array changes
                 Step ->
                     let
                         updatedTrack =
+                            -- One step of specific algorithm depending on what currentPage is
                             case model.currentPage of
-                                -- One step of Bubble if on Bubble Page
                                 BubbleSort ->
                                     BubbleSort.bubbleSortStep model.sortingAlgorithm
 
-                                -- One step of Selection if on Selection Page
                                 SelectionSort ->
                                     SelectionSort.selectionSortStep model.sortingAlgorithm
-                                
-                                -- One step of Insertion if on Insertion Page
+
                                 InsertionSort ->
                                     InsertionSort.insertionSortStep model.sortingAlgorithm
 
-                                -- One step of Shell if on Shell Page
                                 ShellSort ->
                                     ShellSort.shellSortStep model.sortingAlgorithm
 
-                                -- Don't update if on Home
                                 _ ->
                                     model.sortingAlgorithm
                     in
@@ -247,43 +236,50 @@ update msg model =
 
         -- Running algorithm
         Tick _ ->
-            -- Update model depending on page if flag is True
             if model.running then
                 let
                     updatedTrack =
+                        -- Run specific algorithm depending on what currentPage is
                         case model.currentPage of
-                            -- BubbleSort Running
                             BubbleSort ->
                                 BubbleSort.bubbleSortStep model.sortingAlgorithm
 
-                            -- SelectionSort Running
                             SelectionSort ->
                                 SelectionSort.selectionSortStep model.sortingAlgorithm
 
-                            -- InsertionSort Running
                             InsertionSort ->
                                 InsertionSort.insertionSortStep model.sortingAlgorithm
 
-                            -- ShellSort Running
                             ShellSort ->
                                 ShellSort.shellSortStep model.sortingAlgorithm
 
-                            -- Don't update if on Home
                             _ ->
                                 model.sortingAlgorithm
                 in
                 ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
             else
+                -- Don't update if "Run" not active
                 ( model, Cmd.none )
+
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    -- Automatically step every 0.5 seconds if the running flag is True
-    if model.running then
-        Time.every 500 Tick
-    else
-        Sub.none
+    case model.currentPage of
+        -- Redirect Home subscriptions to Home.elm
+        Home ->
+            Home.subscriptions model.homeModel
+                |> Sub.map HomeMsg
+
+        -- Default to every 0.5 seconds if running flag True
+            -- Used for running algorithms
+        _ ->
+            if model.running then
+                Time.every 500 Tick
+            else
+                Sub.none
+
 
 -- VIEW
 view : Model -> Browser.Document Msg
@@ -300,11 +296,12 @@ view model =
     in
     Browser.Document "Sorting Visualizer"
         [ div [ class ("main-container " ++ themeClass) ]
+            -- Call viewHeader for algorithm dropdown
             [ viewHeader
             , div [ class "page-content" ]
                 [ case model.currentPage of
-                    -- Home Page
                     Home ->
+                        -- Home Page
                         Html.map HomeMsg (Home.view model.homeModel)
 
                     -- BubbleSort Page
@@ -323,12 +320,14 @@ view model =
                     ShellSort ->
                         ShellSort.view model.sortingAlgorithm model.running ControlMsg
                 ]
-            , Html.text ""
+            -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
+            -- Left side footer
+            , viewFooter
             ]
         ]
 
--- Top header (navbar) with dropdown for algorithms
+-- Algorithm Dropdown
 viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
@@ -377,6 +376,12 @@ viewThemeToggle model =
             [ text icon ]
         ]
 
+-- Footer with a String
+viewFooter : Html Msg
+viewFooter =
+    div [ class "footer-left" ]
+        [ text "An educational platform built by Will Maberry" ]
+
 -- MAIN (handles application state in browser)
 main : Program () Model Msg
 main =
@@ -385,6 +390,6 @@ main =
         , onUrlChange = \url -> NavigateTo (parseUrl url)
         , onUrlRequest = \_ -> NavigateTo Home
         , update = update
-        , view = view
         , subscriptions = subscriptions
+        , view = view
         }

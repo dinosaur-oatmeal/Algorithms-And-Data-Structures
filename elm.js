@@ -5263,7 +5263,6 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
-var $author$project$Pages$Home$Dark = {$: 'Dark'};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5311,6 +5310,16 @@ var $author$project$Structs$defaultSortingTrack = {
 	outerIndex: 0,
 	sorted: false,
 	stack: _List_Nil
+};
+var $author$project$Pages$Home$Dark = {$: 'Dark'};
+var $author$project$Pages$Home$initModel = {
+	backgroundArray: $elm$core$Array$fromList(
+		_List_fromArray(
+			[5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10])),
+	targetString: 'Algorithms and Data Structures',
+	theme: $author$project$Pages$Home$Dark,
+	typingFlag: false,
+	typingIndex: 0
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6101,13 +6110,16 @@ var $author$project$Main$init = F3(
 		return _Utils_Tuple2(
 			{
 				currentPage: $author$project$Main$parseUrl(url),
-				homeModel: {theme: $author$project$Pages$Home$Dark},
+				homeModel: $author$project$Pages$Home$initModel,
 				key: key,
 				running: false,
 				sortingAlgorithm: $author$project$Structs$defaultSortingTrack
 			},
 			$elm$core$Platform$Cmd$none);
 	});
+var $author$project$Main$HomeMsg = function (a) {
+	return {$: 'HomeMsg', a: a};
+};
 var $author$project$Main$Tick = function (a) {
 	return {$: 'Tick', a: a};
 };
@@ -6384,12 +6396,40 @@ var $elm$time$Time$every = F2(
 		return $elm$time$Time$subscription(
 			A2($elm$time$Time$Every, interval, tagger));
 	});
+var $elm$core$Platform$Sub$map = _Platform_map;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$subscriptions = function (model) {
-	return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
+var $author$project$Pages$Home$SwapNeeded = {$: 'SwapNeeded'};
+var $author$project$Pages$Home$TypingSimulation = {$: 'TypingSimulation'};
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
+var $author$project$Pages$Home$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				A2(
+				$elm$time$Time$every,
+				200,
+				$elm$core$Basics$always($author$project$Pages$Home$TypingSimulation)),
+				A2(
+				$elm$time$Time$every,
+				1000,
+				$elm$core$Basics$always($author$project$Pages$Home$SwapNeeded))
+			]));
 };
-var $author$project$Pages$Home$Light = {$: 'Light'};
+var $author$project$Main$subscriptions = function (model) {
+	var _v0 = model.currentPage;
+	if (_v0.$ === 'Home') {
+		return A2(
+			$elm$core$Platform$Sub$map,
+			$author$project$Main$HomeMsg,
+			$author$project$Pages$Home$subscriptions(model.homeModel));
+	} else {
+		return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
+	}
+};
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
@@ -6560,6 +6600,7 @@ var $author$project$Pages$InsertionSort$insertionSortStep = function (track) {
 		}
 	}
 };
+var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$Pages$SelectionSort$selectionSortStep = function (track) {
 	var outer = track.outerIndex;
@@ -6657,6 +6698,242 @@ var $author$project$Pages$ShellSort$shellSortStep = function (track) {
 		}
 	}
 };
+var $author$project$Pages$Home$IndexSwap = function (a) {
+	return {$: 'IndexSwap', a: a};
+};
+var $author$project$Pages$Home$Light = {$: 'Light'};
+var $elm$random$Random$Generate = function (a) {
+	return {$: 'Generate', a: a};
+};
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 'Seed', a: a, b: b};
+	});
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $elm$random$Random$init = A2(
+	$elm$core$Task$andThen,
+	function (time) {
+		return $elm$core$Task$succeed(
+			$elm$random$Random$initialSeed(
+				$elm$time$Time$posixToMillis(time)));
+	},
+	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0.a;
+		return generator(seed);
+	});
+var $elm$random$Random$onEffects = F3(
+	function (router, commands, seed) {
+		if (!commands.b) {
+			return $elm$core$Task$succeed(seed);
+		} else {
+			var generator = commands.a.a;
+			var rest = commands.b;
+			var _v1 = A2($elm$random$Random$step, generator, seed);
+			var value = _v1.a;
+			var newSeed = _v1.b;
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$random$Random$onEffects, router, rest, newSeed);
+				},
+				A2($elm$core$Platform$sendToApp, router, value));
+		}
+	});
+var $elm$random$Random$onSelfMsg = F3(
+	function (_v0, _v1, seed) {
+		return $elm$core$Task$succeed(seed);
+	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
+	});
+var $elm$random$Random$cmdMap = F2(
+	function (func, _v0) {
+		var generator = _v0.a;
+		return $elm$random$Random$Generate(
+			A2($elm$random$Random$map, func, generator));
+	});
+_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
+var $elm$random$Random$command = _Platform_leaf('Random');
+var $elm$random$Random$generate = F2(
+	function (tagger, generator) {
+		return $elm$random$Random$command(
+			$elm$random$Random$Generate(
+				A2($elm$random$Random$map, tagger, generator)));
+	});
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var $elm$random$Random$map2 = F3(
+	function (func, _v0, _v1) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v2 = genA(seed0);
+				var a = _v2.a;
+				var seed1 = _v2.b;
+				var _v3 = genB(seed1);
+				var b = _v3.a;
+				var seed2 = _v3.b;
+				return _Utils_Tuple2(
+					A2(func, a, b),
+					seed2);
+			});
+	});
+var $elm$random$Random$pair = F2(
+	function (genA, genB) {
+		return A3(
+			$elm$random$Random$map2,
+			F2(
+				function (a, b) {
+					return _Utils_Tuple2(a, b);
+				}),
+			genA,
+			genB);
+	});
+var $author$project$Pages$Home$swap = F3(
+	function (indexOne, indexTwo, array) {
+		var _v0 = _Utils_Tuple2(
+			A2($elm$core$Array$get, indexOne, array),
+			A2($elm$core$Array$get, indexTwo, array));
+		if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
+			var valueOne = _v0.a.a;
+			var valueTwo = _v0.b.a;
+			return A3(
+				$elm$core$Array$set,
+				indexTwo,
+				valueOne,
+				A3($elm$core$Array$set, indexOne, valueTwo, array));
+		} else {
+			return array;
+		}
+	});
+var $author$project$Pages$Home$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'ToggleTheme':
+				var switched = function () {
+					var _v1 = model.theme;
+					if (_v1.$ === 'Light') {
+						return $author$project$Pages$Home$Dark;
+					} else {
+						return $author$project$Pages$Home$Light;
+					}
+				}();
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{theme: switched}),
+					$elm$core$Platform$Cmd$none);
+			case 'TypingSimulation':
+				return ((_Utils_cmp(
+					model.typingIndex,
+					$elm$core$String$length(model.targetString)) < 0) && (!model.typingFlag)) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{typingIndex: model.typingIndex + 1}),
+					$elm$core$Platform$Cmd$none) : (((model.typingIndex > 0) && model.typingFlag) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{typingIndex: model.typingIndex - 1}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{typingFlag: !model.typingFlag}),
+					$elm$core$Platform$Cmd$none));
+			case 'SwapNeeded':
+				var arrLength = $elm$core$Array$length(model.backgroundArray);
+				var randomCmd = A2(
+					$elm$random$Random$generate,
+					$author$project$Pages$Home$IndexSwap,
+					A2(
+						$elm$random$Random$pair,
+						A2($elm$random$Random$int, 0, arrLength - 1),
+						A2($elm$random$Random$int, 0, arrLength - 1)));
+				return _Utils_Tuple2(model, randomCmd);
+			default:
+				var _v2 = msg.a;
+				var indexOne = _v2.a;
+				var indexTwo = _v2.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							backgroundArray: A3($author$project$Pages$Home$swap, indexOne, indexTwo, model.backgroundArray)
+						}),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6669,14 +6946,14 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'HomeMsg':
 				var homeMsg = msg.a;
-				var newTheme = _Utils_eq(model.homeModel.theme, $author$project$Pages$Home$Light) ? $author$project$Pages$Home$Dark : $author$project$Pages$Home$Light;
+				var _v1 = A2($author$project$Pages$Home$update, homeMsg, model.homeModel);
+				var newHome = _v1.a;
+				var homeCmd = _v1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							homeModel: {theme: newTheme}
-						}),
-					$elm$core$Platform$Cmd$none);
+						{homeModel: newHome}),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$HomeMsg, homeCmd));
 			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
@@ -6788,9 +7065,6 @@ var $elm$browser$Browser$Document = F2(
 	function (title, body) {
 		return {body: body, title: title};
 	});
-var $author$project$Main$HomeMsg = function (a) {
-	return {$: 'HomeMsg', a: a};
-};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6803,11 +7077,11 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Visualization$renderBar = F6(
 	function (sorted, outerIndex, currentIndex, maybeMinIndex, position, value) {
 		var isOuter = _Utils_eq(position, outerIndex);
@@ -6845,9 +7119,7 @@ var $author$project$Visualization$renderBar = F6(
 							'height',
 							$elm$core$String$fromInt(value * 10) + 'px'),
 							A2($elm$html$Html$Attributes$style, 'background-image', barColor),
-							A2($elm$html$Html$Attributes$style, 'width', '40px'),
-							A2($elm$html$Html$Attributes$style, 'border-radius', '5px'),
-							A2($elm$html$Html$Attributes$style, 'transition', 'height 0.5s ease, background-color 0.5s ease')
+							A2($elm$html$Html$Attributes$style, 'border-radius', '5px')
 						]),
 					_List_Nil),
 					A2(
@@ -6871,6 +7143,7 @@ var $author$project$Visualization$renderComparison = F6(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
+					$elm$html$Html$Attributes$class('bar-chart'),
 					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column'),
 					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
@@ -7118,6 +7391,43 @@ var $author$project$Pages$BubbleSort$view = F3(
 				]));
 	});
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$Visualization$renderBackgroundBars = function (array) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+				A2($elm$html$Html$Attributes$style, 'top', '0'),
+				A2($elm$html$Html$Attributes$style, 'left', '0'),
+				A2($elm$html$Html$Attributes$style, 'width', '100%'),
+				A2($elm$html$Html$Attributes$style, 'height', '100%'),
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+				A2($elm$html$Html$Attributes$style, 'align-items', 'flex-end'),
+				A2($elm$html$Html$Attributes$style, 'z-index', '-1'),
+				A2($elm$html$Html$Attributes$style, 'filter', 'blur(10px) opacity(0.9)'),
+				A2($elm$html$Html$Attributes$style, 'pointer-events', 'none')
+			]),
+		A2(
+			$elm$core$List$map,
+			function (val) {
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'width', '100px'),
+							A2($elm$html$Html$Attributes$style, 'margin', '0 10px'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'height',
+							$elm$core$String$fromInt(val * 30) + 'px'),
+							A2($elm$html$Html$Attributes$style, 'background-image', 'linear-gradient(180deg, #2196F3, #64B5F6)'),
+							A2($elm$html$Html$Attributes$style, 'transition', 'height 0.5s ease')
+						]),
+					_List_Nil);
+			},
+			$elm$core$Array$toList(array)));
+};
 var $author$project$Pages$Home$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -7127,15 +7437,17 @@ var $author$project$Pages$Home$view = function (model) {
 			]),
 		_List_fromArray(
 			[
+				$author$project$Visualization$renderBackgroundBars(model.backgroundArray),
 				A2(
 				$elm$html$Html$h1,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('home-title')
+						$elm$html$Html$Attributes$class('home-typed-title')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Welcome to the Sorting Visualizer Home Page!')
+						$elm$html$Html$text(
+						A2($elm$core$String$left, model.typingIndex, model.targetString))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -7145,8 +7457,7 @@ var $author$project$Pages$Home$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Use the dropdown above to select a sorting algorithm, '),
-						$elm$html$Html$text('and the circular icon in the bottom-right to toggle themes.')
+						$elm$html$Html$text('Select and algorithm to learn about from the dropdown above.')
 					]))
 			]));
 };
@@ -7499,6 +7810,16 @@ var $author$project$Pages$ShellSort$view = F3(
 						]))
 				]));
 	});
+var $author$project$Main$viewFooter = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('footer-left')
+		]),
+	_List_fromArray(
+		[
+			$elm$html$Html$text('An educational platform built by Will Maberry')
+		]));
 var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
 };
@@ -7820,8 +8141,8 @@ var $author$project$Main$view = function (model) {
 								}
 							}()
 							])),
-						$elm$html$Html$text(''),
-						$author$project$Main$viewThemeToggle(model)
+						$author$project$Main$viewThemeToggle(model),
+						$author$project$Main$viewFooter
 					]))
 			]));
 };

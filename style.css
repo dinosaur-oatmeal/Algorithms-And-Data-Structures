@@ -8,10 +8,13 @@ body {
 /* Main container that holds the entire page content and theme classes */
 .main-container {
   min-height: 100vh;
-  position: relative; /* Needed for positioning the theme toggle */
+  position: relative; /* Needed for positioning theme toggle and footer */
   overflow: hidden;
 }
 
+/* =========================================
+   ALGORITHM DROPDOWN
+   ========================================= */
 /* The top header (navbar) for the dropdown. */
 .header {
   display: flex;
@@ -27,84 +30,6 @@ body {
   margin-right: 10px;
   font-weight: bold;
   font-size: 1.1rem;
-}
-
-/* The page-content can hold the content of Home, BubbleSort, etc. */
-.page-content {
-  margin: 20px;
-  padding: 20px;
-}
-
-.theme-toggle-container {
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-}
-
-.theme-toggle-btn {
-  width: 50px;
-  height: 50px;
-  font-size: 1.5rem;
-  border-radius: 50%;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  background: #f8f9fa;
-  color: #343a40;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  transition: background 0.3s ease;
-}
-
-.theme-toggle-btn:hover {
-  background: #e9ecef;
-}
-
-/* Light Theme */
-.light-theme {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  color: #343a40;
-}
-
-/* Dark Theme */
-.dark-theme {
-  background: linear-gradient(135deg, #212529, #343a40);
-  color: #f8f9fa;
-}
-
-/* Override the theme-toggle-btn in dark mode for a nice contrast */
-.dark-theme .theme-toggle-btn {
-  background: #343a40;
-  color: #f8f9fa;
-}
-.dark-theme .theme-toggle-btn:hover {
-  background: #495057;
-}
-
-.home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  text-align: center;
-}
-
-.home-title {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.home-text {
-  font-size: 1.1rem;
-  max-width: 600px;
-  line-height: 1.5;
-}
-
-.title {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  max-width: 1000px;
-  text-align: center;
 }
 
 .dropdown {
@@ -126,6 +51,115 @@ body {
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* The page-content can hold the content of Home, BubbleSort, etc. */
+.page-content {
+  margin: 20px;
+  padding: 20px;
+}
+
+/* =========================================
+   THEME TOGGLE AND SPECIFICS
+   ========================================= */
+.theme-toggle-container {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+}
+
+/* Theme button */
+.theme-toggle-btn {
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: #f8f9fa;
+  color: #343a40;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: background 0.3s ease;
+}
+
+/* Theme button hover */
+.theme-toggle-btn:hover {
+  background: #e9ecef;
+}
+
+/* Light Theme */
+.light-theme {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  color: #343a40;
+}
+
+/* Dark Theme */
+.dark-theme {
+  background: linear-gradient(135deg, #212529, #343a40);
+  color: #f8f9fa;
+}
+
+/* Override the theme-toggle-btn in dark mode */
+.dark-theme .theme-toggle-btn {
+  background: #343a40;
+  color: #f8f9fa;
+}
+
+.dark-theme .theme-toggle-btn:hover {
+  background: #495057;
+}
+
+/* =========================================
+   LEFT-HAND FOOTER
+   ========================================= */
+.footer-left {
+  min-width: 350px;
+  height: 50px;
+  font-size: 0.75rem;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0px;
+  left: 30px;
+}
+
+/* =========================================
+   HOME.ELM
+   ========================================= */
+/* Container for Pages.Home.elm */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  /* z-index and position for background array */
+  z-index: 0;
+  position: relative;
+  /* Big width and height for array to take up background */
+  min-width: 50vh;
+  min-height: 50vh;
+}
+
+/* Title: Algorithms and Data Structures */
+.home-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Brief description below title */
+.home-text {
+  font-size: 1.1rem;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.background-bar {
+  width: 100px;
+}
+
+/* =========================================
+   SORTING ALGORITHM PAGES
+   ========================================= */
 .sort-page {
   display: flex;
   flex-direction: column;
@@ -170,11 +204,13 @@ body {
 }
 
 .sorting-bar {
-  width: 20px;
+  width: 40px;
   transition: height 0.5s ease, background-color 0.5s ease;
 }
 
-/* Animations */
+/* =========================================
+   ANIMATIONS
+   ========================================= */
 @keyframes fadeIn {
   from {
       opacity: 0;
@@ -183,5 +219,68 @@ body {
   to {
       opacity: 1;
       transform: translateY(0);
+  }
+}
+
+/* =========================================
+   SMALLER MEDIA
+   ========================================= */
+@media (max-width: 600px) {
+
+  /* No label and reduced font on algorithm dropdown */
+  .dropdown-label {
+    font-size: 0rem;
+  }
+
+  .dropdown {
+    font-size: 0.7rem;
+  }
+
+  /* Theme button smaller and closer to corner */
+  .theme-toggle-container {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .theme-toggle-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  /* get rid of graph on small screens */
+  .home-container {
+    min-width: 1vh;
+    min-height: 1vh;
+  }
+
+  /* Fix text to specific place on page */
+  .home-text {
+    position: fixed;
+    margin-top: auto;
+    top: 350px;
+  }
+
+  /* Made bar chart less wide */
+  .sorting-bar {
+    width: 20px;
+  }
+
+  /* Reduced size of sorting buttons */
+  .sorting-button {
+    padding: 5px 10px;
+    margin: 10px;
+    font-size: 1rem;
+  }
+
+  /* Key indices take up a bit less space */
+  .indices {
+    font-size: smaller;
+  }
+
+  /* Reduced font-size */
+  .latex {
+    font-size: 15px;
+    align-items: center;
   }
 }
