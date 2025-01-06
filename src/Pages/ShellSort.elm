@@ -98,7 +98,7 @@ view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =
     div [ class "sort-page" ]
         [ -- Title
-          div [ class "title" ]
+          div [ class "sort-title" ]
               [ text "Shell Sort" ]
 
           -- Description
@@ -140,8 +140,8 @@ view track running toMsg =
               ]
 
           -- Big-O Notation
-        , div [ class "latex" ]
+        , div [ class "big-o" ]
               [ text """Similar to Insertion Sort, Shell Sort has a worst-case Time Complexity of O(n²).""" ]
-        , div [class "latex" ]
+        , div [class "big-o" ]
               [ text """Likewise, Shell Sort has a Space Complexity of O(1)."""]
         ]

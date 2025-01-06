@@ -80,7 +80,7 @@ view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =
     div [ class "sort-page" ]
         [ -- Title
-          div [ class "title" ]
+          div [ class "sort-title" ]
               [ text "Bubble Sort" ]
 
           -- Description
@@ -125,10 +125,10 @@ view track running toMsg =
               ]
 
           -- Big-O Notation
-        , div [ class "latex" ]
+        , div [ class "big-o" ]
               [ text """Bubble Sort has a worst-case Time Complexity of O(n²).
                         A reverse-sorted array will require the (array's length)² steps to sort the array.""" ]
-        , div [class "latex" ]
+        , div [class "big-o" ]
               [ text """Bubble Sort has a Space Complexity of O(1).
                         Swaps are done in place, so no extra room is needed to process the sorting algorithm."""]
         ]

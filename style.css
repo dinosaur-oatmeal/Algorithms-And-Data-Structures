@@ -167,6 +167,12 @@ body {
   padding: 20px;
 }
 
+.sort-title {
+  font-size: 2.5rem;
+  margin-left: -10px;
+  
+}
+
 .description {
   margin-bottom: 20px;
   text-align: center;
@@ -225,7 +231,7 @@ body {
 /* =========================================
    SMALLER MEDIA
    ========================================= */
-@media (max-width: 600px) {
+@media (max-width: 800px) {
 
   /* No label and reduced font on algorithm dropdown */
   .dropdown-label {
@@ -279,7 +285,7 @@ body {
   }
 
   /* Reduced font-size */
-  .latex {
+  .big-o {
     font-size: 15px;
     align-items: center;
   }

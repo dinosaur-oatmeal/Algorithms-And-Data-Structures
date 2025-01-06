@@ -79,7 +79,7 @@ view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =
     div [ class "sort-page" ]
         [ -- Title
-          div [ class "title" ]
+          div [ class "sort-title" ]
               [ text "Selection Sort" ]
 
           -- Description
@@ -119,11 +119,11 @@ view track running toMsg =
                   ]
               ]
 
-          -- LaTeX for Big-O Notation
-        , div [ class "latex" ]
+          -- big-o for Big-O Notation
+        , div [ class "big-o" ]
               [ text """Selection Sort has a consistent Time Complexity of O(n²).
                         Regardless of the initial array (even if it's sorted), it will take  (length)² steps."""]
-        , div [class "latex" ]
+        , div [class "big-o" ]
               [ text """Selection Sort has a Space Complexity of O(1).
                         Swaps are done in place, so no extra room is needed to process the sorting algorithm."""]
         ]

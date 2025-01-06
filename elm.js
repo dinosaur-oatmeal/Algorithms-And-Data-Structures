@@ -7277,7 +7277,7 @@ var $author$project$Pages$BubbleSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('title')
+							$elm$html$Html$Attributes$class('sort-title')
 						]),
 					_List_fromArray(
 						[
@@ -7291,7 +7291,7 @@ var $author$project$Pages$BubbleSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
+							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\n                  It does this repeatedly until the array is sorted.')
 						])),
 					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$Controls$view, running, toMsg),
@@ -7372,21 +7372,21 @@ var $author$project$Pages$BubbleSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort has a worst-case Time Complexity of O(n²).\r\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
+							$elm$html$Html$text('Bubble Sort has a worst-case Time Complexity of O(n²).\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+							$elm$html$Html$text('Bubble Sort has a Space Complexity of O(1).\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
 						]))
 				]));
 	});
@@ -7475,7 +7475,7 @@ var $author$project$Pages$InsertionSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('title')
+							$elm$html$Html$Attributes$class('sort-title')
 						]),
 					_List_fromArray(
 						[
@@ -7489,7 +7489,7 @@ var $author$project$Pages$InsertionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
+							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
 						])),
 					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$Controls$view, running, toMsg),
@@ -7548,21 +7548,21 @@ var $author$project$Pages$InsertionSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort has a worst-case Time Complexity of O(n²).\r\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
+							$elm$html$Html$text('Insertion Sort has a worst-case Time Complexity of O(n²).\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+							$elm$html$Html$text('Insertion Sort has a Space Complexity of O(1).\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
 						]))
 				]));
 	});
@@ -7580,7 +7580,7 @@ var $author$project$Pages$SelectionSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('title')
+							$elm$html$Html$Attributes$class('sort-title')
 						]),
 					_List_fromArray(
 						[
@@ -7594,7 +7594,7 @@ var $author$project$Pages$SelectionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.\r\n                  Once the smallest element is found, it swaps with the current element before moving on.\r\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
+							$elm$html$Html$text('Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.\n                  Once the smallest element is found, it swaps with the current element before moving on.\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
 						])),
 					A6(
 					$author$project$Visualization$renderComparison,
@@ -7671,21 +7671,21 @@ var $author$project$Pages$SelectionSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort has a consistent Time Complexity of O(n²).\r\n                        Regardless of the initial array (even if it\'s sorted), it will take  (length)² steps.')
+							$elm$html$Html$text('Selection Sort has a consistent Time Complexity of O(n²).\n                        Regardless of the initial array (even if it\'s sorted), it will take  (length)² steps.')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort has a Space Complexity of O(1).\r\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+							$elm$html$Html$text('Selection Sort has a Space Complexity of O(1).\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
 						]))
 				]));
 	});
@@ -7703,7 +7703,7 @@ var $author$project$Pages$ShellSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('title')
+							$elm$html$Html$Attributes$class('sort-title')
 						]),
 					_List_fromArray(
 						[
@@ -7717,7 +7717,7 @@ var $author$project$Pages$ShellSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Shell Sort is an optimization of Insertion Sort.\r\n              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.\r\n              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.\r\n              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).')
+							$elm$html$Html$text('Shell Sort is an optimization of Insertion Sort.\n              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.\n              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.\n              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).')
 						])),
 					A6(
 					$author$project$Visualization$renderComparison,
@@ -7792,7 +7792,7 @@ var $author$project$Pages$ShellSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
@@ -7802,7 +7802,7 @@ var $author$project$Pages$ShellSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('latex')
+							$elm$html$Html$Attributes$class('big-o')
 						]),
 					_List_fromArray(
 						[
