@@ -6902,7 +6902,7 @@ var $author$project$Pages$Home$update = F2(
 					_Utils_update(
 						model,
 						{typingIndex: model.typingIndex + 1}),
-					$elm$core$Platform$Cmd$none) : (((model.typingIndex > 0) && model.typingFlag) ? _Utils_Tuple2(
+					$elm$core$Platform$Cmd$none) : (((model.typingIndex > 1) && model.typingFlag) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{typingIndex: model.typingIndex - 1}),
@@ -7204,6 +7204,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $elm$html$Html$span = _VirtualDom_node('span');
 var $author$project$Controls$view = F2(
 	function (running, toMsg) {
 		return A2(
@@ -7224,7 +7225,16 @@ var $author$project$Controls$view = F2(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Pause')
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Pause')
+								]))
 						])) : A2(
 					$elm$html$Html$button,
 					_List_fromArray(
@@ -7235,7 +7245,16 @@ var $author$project$Controls$view = F2(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Run')
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Run')
+								]))
 						])),
 					A2(
 					$elm$html$Html$button,
@@ -7247,7 +7266,16 @@ var $author$project$Controls$view = F2(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Step')
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Step')
+								]))
 						])),
 					A2(
 					$elm$html$Html$button,
@@ -7259,7 +7287,16 @@ var $author$project$Controls$view = F2(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Reset')
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Reset')
+								]))
 						]))
 				]));
 	});
@@ -7372,21 +7409,99 @@ var $author$project$Pages$BubbleSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-title')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort has a worst-case Time Complexity of O(n²).\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
+							$elm$html$Html$text('Big(O) Notation')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-list')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort has a Space Complexity of O(1).\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Best-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Average-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Worst-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('space-complexity')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Space Complexity: O(1)')
 						]))
 				]));
 	});
@@ -7548,21 +7663,99 @@ var $author$project$Pages$InsertionSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-title')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort has a worst-case Time Complexity of O(n²).\n                        A reverse-sorted array will require the (array\'s length)² steps to sort the array.')
+							$elm$html$Html$text('Big(O) Notation')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-list')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort has a Space Complexity of O(1).\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Best-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Average-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Worst-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('space-complexity')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Space Complexity: O(1)')
 						]))
 				]));
 	});
@@ -7671,21 +7864,99 @@ var $author$project$Pages$SelectionSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-title')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort has a consistent Time Complexity of O(n²).\n                        Regardless of the initial array (even if it\'s sorted), it will take  (length)² steps.')
+							$elm$html$Html$text('Big(O) Notation')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-list')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort has a Space Complexity of O(1).\n                        Swaps are done in place, so no extra room is needed to process the sorting algorithm.')
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Best-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Average-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Worst-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('space-complexity')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Space Complexity: O(1)')
 						]))
 				]));
 	});
@@ -7792,21 +8063,99 @@ var $author$project$Pages$ShellSort$view = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-title')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Similar to Insertion Sort, Shell Sort has a worst-case Time Complexity of O(n²).')
+							$elm$html$Html$text('Big(O) Notation')
 						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('big-o')
+							$elm$html$Html$Attributes$class('big-o-list')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Likewise, Shell Sort has a Space Complexity of O(1).')
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Best-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n log(n))')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Average-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n log(n))')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Worst-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(n²)')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('space-complexity')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Space Complexity: O(1)')
 						]))
 				]));
 	});

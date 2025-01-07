@@ -167,12 +167,15 @@ body {
   padding: 20px;
 }
 
+/* Title of Sorting Algorithm */
 .sort-title {
   font-size: 2.5rem;
   margin-left: -10px;
+  font-weight: bold;
   
 }
 
+/* Description of how algorithm works */
 .description {
   margin-bottom: 20px;
   text-align: center;
@@ -189,20 +192,32 @@ body {
   color: #f8f9fa;
 }
 
+/* Button container */
 .control-buttons {
   margin: 15px;
+  justify-content: center;
+  display: flex;
+  gap: 1rem;
 }
 
+/* Individual buttons */
 .sorting-button {
-  padding: 10px 20px;
-  margin: 10px;
-  font-size: 1rem;
+  width: 80px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
   background-color: #2196F3;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+/* Text on buttons */
+.button-text {
+  text-align: center;
+  font-size: 1rem;
 }
 
 .sorting-button:hover {
@@ -212,6 +227,36 @@ body {
 .sorting-bar {
   width: 40px;
   transition: height 0.5s ease, background-color 0.5s ease;
+}
+
+/* Big(O) */
+.big-o-title {
+  font-size: 2rem;
+  font-weight: 100;
+}
+
+/* List of complexities */
+.big-o-list {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+/* Individual item in list */
+.big-o-item {
+  font-size: 1rem;
+}
+
+/* Align text in the divs */
+.big-o-item div {
+  text-align: center;
+}
+
+.space-complexity {
+  align-items: center;
+  margin-top: 20px;
 }
 
 /* =========================================
@@ -284,9 +329,11 @@ body {
     font-size: smaller;
   }
 
-  /* Reduced font-size */
-  .big-o {
-    font-size: 15px;
-    align-items: center;
+  .big-o-item {
+    font-size: 0.7rem;
+  }
+
+  .space-complexity {
+    font-size: 0.7rem;
   }
 }

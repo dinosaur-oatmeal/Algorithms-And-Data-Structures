@@ -112,10 +112,23 @@ view track running toMsg =
               ]
 
           -- Big-O Notation
-        , div [ class "big-o" ]
-              [ text """Insertion Sort has a worst-case Time Complexity of O(n²).
-                        A reverse-sorted array will require the (array's length)² steps to sort the array.""" ]
-        , div [class "big-o" ]
-              [ text """Insertion Sort has a Space Complexity of O(1).
-                        Swaps are done in place, so no extra room is needed to process the sorting algorithm."""]
+        , div [ class "big-o-title" ]
+              [ text """Big(O) Notation""" ]
+        , div [ class "big-o-list" ]
+            [ div [ class "big-o-item" ]
+                [ div [] [ text "Best-Case" ]
+                , div [] [ text "O(n)" ]
+                ]
+            , div [ class "big-o-item" ]
+                [ div [] [ text "Average-Case" ]
+                , div [] [ text "O(n²)" ]
+                ]
+            , div [ class "big-o-item" ]
+                [ div [] [ text "Worst-Case" ]
+                , div [] [ text "O(n²)" ]
+                ]
+            ]
+
+        , div [ class "space-complexity" ]
+            [ text "Space Complexity: O(1)" ]
         ]

@@ -84,7 +84,7 @@ update msg model =
                 ( { model | typingIndex = model.typingIndex + 1 }, Cmd.none )
 
             -- Remove letters from String
-            else if model.typingIndex > 0 && model.typingFlag then
+            else if model.typingIndex > 1 && model.typingFlag then
                 ( { model | typingIndex = model.typingIndex - 1 }, Cmd.none )
 
             -- Change directions

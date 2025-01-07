@@ -119,11 +119,24 @@ view track running toMsg =
                   ]
               ]
 
-          -- big-o for Big-O Notation
-        , div [ class "big-o" ]
-              [ text """Selection Sort has a consistent Time Complexity of O(n²).
-                        Regardless of the initial array (even if it's sorted), it will take  (length)² steps."""]
-        , div [class "big-o" ]
-              [ text """Selection Sort has a Space Complexity of O(1).
-                        Swaps are done in place, so no extra room is needed to process the sorting algorithm."""]
+          -- Big-O Notation
+        , div [ class "big-o-title" ]
+              [ text """Big(O) Notation""" ]
+        , div [ class "big-o-list" ]
+            [ div [ class "big-o-item" ]
+                [ div [] [ text "Best-Case" ]
+                , div [] [ text "O(n²)" ]
+                ]
+            , div [ class "big-o-item" ]
+                [ div [] [ text "Average-Case" ]
+                , div [] [ text "O(n²)" ]
+                ]
+            , div [ class "big-o-item" ]
+                [ div [] [ text "Worst-Case" ]
+                , div [] [ text "O(n²)" ]
+                ]
+            ]
+
+        , div [ class "space-complexity" ]
+            [ text "Space Complexity: O(1)" ]
         ]

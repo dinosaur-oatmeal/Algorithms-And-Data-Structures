@@ -1,7 +1,7 @@
 module Controls exposing (ControlMsg(..), view)
 
 -- HTML imports
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, div, text, span)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
@@ -16,11 +16,14 @@ type ControlMsg
 view : Bool -> (ControlMsg -> msg) -> Html msg
 view running toMsg =
     div [ class "control-buttons" ]
-        -- Show "Pause" if running, else show "Run"
         [ if running then
-            button [ class "sorting-button", onClick (toMsg Pause) ] [ text "Pause" ]
+            button [ class "sorting-button", onClick (toMsg Pause) ]
+                [ span [ class "button-text" ] [ text "Pause" ] ]
           else
-            button [ class "sorting-button", onClick (toMsg Run) ] [ text "Run" ]
-        , button [ class "sorting-button", onClick (toMsg Step) ] [ text "Step" ]
-        , button [ class "sorting-button", onClick (toMsg Reset) ] [ text "Reset" ]
+            button [ class "sorting-button", onClick (toMsg Run) ]
+                [ span [ class "button-text" ] [ text "Run" ] ]
+        , button [ class "sorting-button", onClick (toMsg Step) ]
+            [ span [ class "button-text" ] [ text "Step" ] ]
+        , button [ class "sorting-button", onClick (toMsg Reset) ]
+            [ span [ class "button-text" ] [ text "Reset" ] ]
         ]
