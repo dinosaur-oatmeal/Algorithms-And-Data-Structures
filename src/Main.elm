@@ -20,6 +20,8 @@ import Pages.BubbleSort as BubbleSort
 import Pages.SelectionSort as SelectionSort
 import Pages.InsertionSort as InsertionSort
 import Pages.ShellSort as ShellSort
+import Pages.MergeSort as MergeSort
+import Pages.QuickSort as QuickSort
 
 -- Custom structs imports (avoid circular import)
 import Structs exposing (defaultSortingTrack, SortingTrack)
@@ -47,7 +49,8 @@ type Route
     | SelectionSortRoute
     | InsertionSortRoute
     | ShellSortRoute
-
+    | MergeSortRoute
+    | QuickSortRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -56,7 +59,8 @@ type Page
     | SelectionSort
     | InsertionSort
     | ShellSort
-
+    | MergeSort
+    | QuickSort
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -80,6 +84,8 @@ routeParser =
         , Parser.map SelectionSortRoute (s "selection-sort")
         , Parser.map InsertionSortRoute (s "insertion-sort")
         , Parser.map ShellSortRoute (s "shell-sort")
+        , Parser.map MergeSortRoute (s "merge-sort")
+        , Parser.map QuickSortRoute (s "quick-sort")
         ]
 
 -- Convert URL into a page
@@ -102,9 +108,17 @@ parseUrl url =
         Just InsertionSortRoute ->
             InsertionSort
 
-        -- ShellSOrt Page
+        -- ShellSort Page
         Just ShellSortRoute ->
             ShellSort
+        
+        -- MergeSort Page
+        Just MergeSortRoute ->
+            MergeSort
+
+        -- QuickSort Page
+        Just QuickSortRoute ->
+            QuickSort
 
         -- Default to Home
         Nothing ->
@@ -186,6 +200,22 @@ update msg model =
                     , Cmd.none
                     )
 
+                "Merge Sort" ->
+                    ( { model | currentPage = MergeSort
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
+
+                "Quick Sort" ->
+                    ( { model | currentPage = QuickSort
+                              , sortingAlgorithm = defaultSortingTrack
+                              , running = False
+                      }
+                    , Cmd.none
+                    )
+
                 -- Default to home for algorithms not yet added
                 _ ->
                     ( { model | currentPage = Home
@@ -229,6 +259,12 @@ update msg model =
                                 ShellSort ->
                                     ShellSort.shellSortStep model.sortingAlgorithm
 
+                                MergeSort ->
+                                    MergeSort.mergeSortStep model.sortingAlgorithm
+
+                                QuickSort ->
+                                    QuickSort.quickSortStep model.sortingAlgorithm
+
                                 _ ->
                                     model.sortingAlgorithm
                     in
@@ -252,6 +288,12 @@ update msg model =
 
                             ShellSort ->
                                 ShellSort.shellSortStep model.sortingAlgorithm
+
+                            MergeSort ->
+                                MergeSort.mergeSortStep model.sortingAlgorithm
+
+                            QuickSort ->
+                                QuickSort.quickSortStep model.sortingAlgorithm
 
                             _ ->
                                 model.sortingAlgorithm
@@ -319,6 +361,12 @@ view model =
 
                     ShellSort ->
                         ShellSort.view model.sortingAlgorithm model.running ControlMsg
+
+                    MergeSort ->
+                        MergeSort.view model.sortingAlgorithm model.running ControlMsg
+
+                    QuickSort ->
+                        QuickSort.view model.sortingAlgorithm model.running ControlMsg
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -363,9 +411,9 @@ viewThemeToggle model =
     let
         ( icon, tooltip ) =
             if model.homeModel.theme == Home.Light then
-                ( "☾", "Switch to Dark Mode" )
+                ( "☀", "Switch to Dark Mode" )
             else
-                ( "☀", "Switch to Light Mode" )
+                ( "☾", "Switch to Light Mode" )
     in
     div [ class "theme-toggle-container" ]
         [ button

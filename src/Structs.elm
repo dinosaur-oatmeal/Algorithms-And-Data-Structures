@@ -27,7 +27,8 @@ defaultSortingTrack =
     , sorted = False
     , minIndex = 0
     , gap = 10 // 2
-    , stack = []
+    -- Initialize to Array Size for QuickSort
+    , stack = [ ( 0, 9 ) ]
     , didSwap = False
     , currentStep = 0
     }

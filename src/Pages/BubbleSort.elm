@@ -113,7 +113,7 @@ view track running toMsg =
           -- Breakdown
         , div [ class "variable-list" ]
               [ ul []
-                  [ li [] [ text "Current Index:  the left index being compared." ]
+                  [ li [] [ text "Current Index: the left index being compared." ]
                   , li [] [ text "Next Index: the right index being compared." ]
                   , li []
                       [ text "Element Swapped: tells us if an element has been swapped on the current pass of the array." 
