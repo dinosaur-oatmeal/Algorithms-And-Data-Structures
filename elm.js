@@ -4372,22 +4372,42 @@ function _Browser_load(url)
 }
 
 
-function _Url_percentEncode(string)
-{
-	return encodeURIComponent(string);
-}
 
-function _Url_percentDecode(string)
+var _Bitwise_and = F2(function(a, b)
 {
-	try
-	{
-		return $elm$core$Maybe$Just(decodeURIComponent(string));
-	}
-	catch (e)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-}
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
 
 
 function _Time_now(millisToPosix)
@@ -4435,42 +4455,22 @@ function _Time_getZoneName()
 }
 
 
-
-var _Bitwise_and = F2(function(a, b)
+function _Url_percentEncode(string)
 {
-	return a & b;
-});
+	return encodeURIComponent(string);
+}
 
-var _Bitwise_or = F2(function(a, b)
+function _Url_percentDecode(string)
 {
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
-var $author$project$Main$Home = {$: 'Home'};
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}var $author$project$Main$Home = {$: 'Home'};
 var $author$project$Main$NavigateTo = function (a) {
 	return {$: 'NavigateTo', a: a};
 };
@@ -5263,6 +5263,9 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
+var $author$project$Main$GotRandomArray = function (a) {
+	return {$: 'GotRandomArray', a: a};
+};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5298,22 +5301,131 @@ var $elm$core$Array$fromList = function (list) {
 		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
 	}
 };
-var $author$project$Structs$defaultSortingTrack = {
-	array: $elm$core$Array$fromList(
-		_List_fromArray(
-			[9, 6, 5, 8, 2, 1, 4, 10, 3, 7])),
-	currentIndex: 1,
-	currentStep: 0,
-	didSwap: false,
-	gap: (10 / 2) | 0,
-	minIndex: 0,
-	outerIndex: 0,
-	sorted: false,
-	stack: _List_fromArray(
-		[
-			_Utils_Tuple2(0, 9)
-		])
+var $author$project$Structs$defaultSortingTrack = function (list) {
+	return {
+		array: $elm$core$Array$fromList(list),
+		currentIndex: 1,
+		currentStep: 0,
+		didSwap: false,
+		gap: (10 / 2) | 0,
+		minIndex: 0,
+		outerIndex: 0,
+		sorted: false,
+		stack: _List_fromArray(
+			[
+				_Utils_Tuple2(
+				0,
+				$elm$core$List$length(list) - 1)
+			])
+	};
 };
+var $elm$random$Random$Generate = function (a) {
+	return {$: 'Generate', a: a};
+};
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 'Seed', a: a, b: b};
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
+var $elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $elm$random$Random$init = A2(
+	$elm$core$Task$andThen,
+	function (time) {
+		return $elm$core$Task$succeed(
+			$elm$random$Random$initialSeed(
+				$elm$time$Time$posixToMillis(time)));
+	},
+	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0.a;
+		return generator(seed);
+	});
+var $elm$random$Random$onEffects = F3(
+	function (router, commands, seed) {
+		if (!commands.b) {
+			return $elm$core$Task$succeed(seed);
+		} else {
+			var generator = commands.a.a;
+			var rest = commands.b;
+			var _v1 = A2($elm$random$Random$step, generator, seed);
+			var value = _v1.a;
+			var newSeed = _v1.b;
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$random$Random$onEffects, router, rest, newSeed);
+				},
+				A2($elm$core$Platform$sendToApp, router, value));
+		}
+	});
+var $elm$random$Random$onSelfMsg = F3(
+	function (_v0, _v1, seed) {
+		return $elm$core$Task$succeed(seed);
+	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
+	});
+var $elm$random$Random$cmdMap = F2(
+	function (func, _v0) {
+		var generator = _v0.a;
+		return $elm$random$Random$Generate(
+			A2($elm$random$Random$map, func, generator));
+	});
+_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
+var $elm$random$Random$command = _Platform_leaf('Random');
+var $elm$random$Random$generate = F2(
+	function (tagger, generator) {
+		return $elm$random$Random$command(
+			$elm$random$Random$Generate(
+				A2($elm$random$Random$map, tagger, generator)));
+	});
 var $author$project$Pages$Home$Dark = {$: 'Dark'};
 var $author$project$Pages$Home$initModel = {
 	backgroundArray: $elm$core$Array$fromList(
@@ -5324,8 +5436,6 @@ var $author$project$Pages$Home$initModel = {
 	typingFlag: false,
 	typingIndex: 0
 };
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
 var $author$project$Main$InsertionSort = {$: 'InsertionSort'};
 var $author$project$Main$MergeSort = {$: 'MergeSort'};
@@ -6126,6 +6236,124 @@ var $author$project$Main$parseUrl = function (url) {
 		return $author$project$Main$Home;
 	}
 };
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var $elm$random$Random$maxInt = 2147483647;
+var $elm$random$Random$minInt = -2147483648;
+var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
+var $elm$random$Random$map3 = F4(
+	function (func, _v0, _v1, _v2) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		var genC = _v2.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v3 = genA(seed0);
+				var a = _v3.a;
+				var seed1 = _v3.b;
+				var _v4 = genB(seed1);
+				var b = _v4.a;
+				var seed2 = _v4.b;
+				var _v5 = genC(seed2);
+				var c = _v5.a;
+				var seed3 = _v5.b;
+				return _Utils_Tuple2(
+					A3(func, a, b, c),
+					seed3);
+			});
+	});
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $elm$random$Random$independentSeed = $elm$random$Random$Generator(
+	function (seed0) {
+		var makeIndependentSeed = F3(
+			function (state, b, c) {
+				return $elm$random$Random$next(
+					A2($elm$random$Random$Seed, state, (1 | (b ^ c)) >>> 0));
+			});
+		var gen = A2($elm$random$Random$int, 0, 4294967295);
+		return A2(
+			$elm$random$Random$step,
+			A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
+			seed0);
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $elm_community$random_extra$Random$List$shuffle = function (list) {
+	return A2(
+		$elm$random$Random$map,
+		function (independentSeed) {
+			return A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2(
+					$elm$core$List$sortBy,
+					$elm$core$Tuple$second,
+					A3(
+						$elm$core$List$foldl,
+						F2(
+							function (item, _v0) {
+								var acc = _v0.a;
+								var seed = _v0.b;
+								var _v1 = A2($elm$random$Random$step, $elm_community$random_extra$Random$List$anyInt, seed);
+								var tag = _v1.a;
+								var nextSeed = _v1.b;
+								return _Utils_Tuple2(
+									A2(
+										$elm$core$List$cons,
+										_Utils_Tuple2(item, tag),
+										acc),
+									nextSeed);
+							}),
+						_Utils_Tuple2(_List_Nil, independentSeed),
+						list).a));
+		},
+		$elm$random$Random$independentSeed);
+};
+var $author$project$Structs$randomListGenerator = $elm_community$random_extra$Random$List$shuffle(
+	A2($elm$core$List$range, 1, 10));
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
 		return _Utils_Tuple2(
@@ -6134,9 +6362,9 @@ var $author$project$Main$init = F3(
 				homeModel: $author$project$Pages$Home$initModel,
 				key: key,
 				running: false,
-				sortingAlgorithm: $author$project$Structs$defaultSortingTrack
+				sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
 			},
-			$elm$core$Platform$Cmd$none);
+			A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 	});
 var $author$project$Main$HomeMsg = function (a) {
 	return {$: 'HomeMsg', a: a};
@@ -6263,17 +6491,6 @@ var $elm$core$Dict$merge = F6(
 			leftovers);
 	});
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
-var $elm$time$Time$Name = function (a) {
-	return {$: 'Name', a: a};
-};
-var $elm$time$Time$Offset = function (a) {
-	return {$: 'Offset', a: a};
-};
-var $elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 'Zone', a: a, b: b};
-	});
-var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$setInterval = _Time_setInterval;
 var $elm$core$Process$spawn = _Scheduler_spawn;
 var $elm$time$Time$spawnHelp = F3(
@@ -6364,11 +6581,6 @@ var $elm$time$Time$onEffects = F3(
 				},
 				killTask));
 	});
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
-var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
 		var _v0 = A2($elm$core$Dict$get, interval, state.taggers);
@@ -6451,8 +6663,6 @@ var $author$project$Main$subscriptions = function (model) {
 		return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
 };
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
 var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
@@ -7123,6 +7333,8 @@ var $author$project$Pages$MergeSort$mergeSortStep = function (track) {
 			sorted: isSorted
 		});
 };
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -7323,137 +7535,6 @@ var $author$project$Pages$Home$IndexSwap = function (a) {
 	return {$: 'IndexSwap', a: a};
 };
 var $author$project$Pages$Home$Light = {$: 'Light'};
-var $elm$random$Random$Generate = function (a) {
-	return {$: 'Generate', a: a};
-};
-var $elm$random$Random$Seed = F2(
-	function (a, b) {
-		return {$: 'Seed', a: a, b: b};
-	});
-var $elm$random$Random$next = function (_v0) {
-	var state0 = _v0.a;
-	var incr = _v0.b;
-	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
-};
-var $elm$random$Random$initialSeed = function (x) {
-	var _v0 = $elm$random$Random$next(
-		A2($elm$random$Random$Seed, 0, 1013904223));
-	var state1 = _v0.a;
-	var incr = _v0.b;
-	var state2 = (state1 + x) >>> 0;
-	return $elm$random$Random$next(
-		A2($elm$random$Random$Seed, state2, incr));
-};
-var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0.a;
-	return millis;
-};
-var $elm$random$Random$init = A2(
-	$elm$core$Task$andThen,
-	function (time) {
-		return $elm$core$Task$succeed(
-			$elm$random$Random$initialSeed(
-				$elm$time$Time$posixToMillis(time)));
-	},
-	$elm$time$Time$now);
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0.a;
-		return generator(seed);
-	});
-var $elm$random$Random$onEffects = F3(
-	function (router, commands, seed) {
-		if (!commands.b) {
-			return $elm$core$Task$succeed(seed);
-		} else {
-			var generator = commands.a.a;
-			var rest = commands.b;
-			var _v1 = A2($elm$random$Random$step, generator, seed);
-			var value = _v1.a;
-			var newSeed = _v1.b;
-			return A2(
-				$elm$core$Task$andThen,
-				function (_v2) {
-					return A3($elm$random$Random$onEffects, router, rest, newSeed);
-				},
-				A2($elm$core$Platform$sendToApp, router, value));
-		}
-	});
-var $elm$random$Random$onSelfMsg = F3(
-	function (_v0, _v1, seed) {
-		return $elm$core$Task$succeed(seed);
-	});
-var $elm$random$Random$Generator = function (a) {
-	return {$: 'Generator', a: a};
-};
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v1 = genA(seed0);
-				var a = _v1.a;
-				var seed1 = _v1.b;
-				return _Utils_Tuple2(
-					func(a),
-					seed1);
-			});
-	});
-var $elm$random$Random$cmdMap = F2(
-	function (func, _v0) {
-		var generator = _v0.a;
-		return $elm$random$Random$Generate(
-			A2($elm$random$Random$map, func, generator));
-	});
-_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
-var $elm$random$Random$command = _Platform_leaf('Random');
-var $elm$random$Random$generate = F2(
-	function (tagger, generator) {
-		return $elm$random$Random$command(
-			$elm$random$Random$Generate(
-				A2($elm$random$Random$map, tagger, generator)));
-	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$Bitwise$xor = _Bitwise_xor;
-var $elm$random$Random$peel = function (_v0) {
-	var state = _v0.a;
-	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
-	return ((word >>> 22) ^ word) >>> 0;
-};
-var $elm$random$Random$int = F2(
-	function (a, b) {
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
-				var lo = _v0.a;
-				var hi = _v0.b;
-				var range = (hi - lo) + 1;
-				if (!((range - 1) & range)) {
-					return _Utils_Tuple2(
-						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
-						$elm$random$Random$next(seed0));
-				} else {
-					var threshhold = (((-range) >>> 0) % range) >>> 0;
-					var accountForBias = function (seed) {
-						accountForBias:
-						while (true) {
-							var x = $elm$random$Random$peel(seed);
-							var seedN = $elm$random$Random$next(seed);
-							if (_Utils_cmp(x, threshhold) < 0) {
-								var $temp$seed = seedN;
-								seed = $temp$seed;
-								continue accountForBias;
-							} else {
-								return _Utils_Tuple2((x % range) + lo, seedN);
-							}
-						}
-					};
-					return accountForBias(seed0);
-				}
-			});
-	});
 var $elm$random$Random$map2 = F3(
 	function (func, _v0, _v1) {
 		var genA = _v0.a;
@@ -7563,7 +7644,11 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{currentPage: page, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
+						{
+							currentPage: page,
+							running: false,
+							sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+						}),
 					$elm$core$Platform$Cmd$none);
 			case 'HomeMsg':
 				var homeMsg = msg.a;
@@ -7582,43 +7667,71 @@ var $author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$BubbleSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									currentPage: $author$project$Main$BubbleSort,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					case 'Selection Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$SelectionSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									currentPage: $author$project$Main$SelectionSort,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					case 'Insertion Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$InsertionSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									currentPage: $author$project$Main$InsertionSort,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					case 'Shell Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$ShellSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									currentPage: $author$project$Main$ShellSort,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					case 'Merge Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$MergeSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									currentPage: $author$project$Main$MergeSort,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					case 'Quick Sort':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$QuickSort, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									currentPage: $author$project$Main$QuickSort,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					default:
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{currentPage: $author$project$Main$Home, running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
+								{
+									currentPage: $author$project$Main$Home,
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
 							$elm$core$Platform$Cmd$none);
 				}
 			case 'ControlMsg':
@@ -7640,8 +7753,11 @@ var $author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{running: false, sortingAlgorithm: $author$project$Structs$defaultSortingTrack}),
-							$elm$core$Platform$Cmd$none);
+								{
+									running: false,
+									sortingAlgorithm: $author$project$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$Structs$randomListGenerator));
 					default:
 						var updatedTrack = function () {
 							var _v4 = model.currentPage;
@@ -7668,6 +7784,14 @@ var $author$project$Main$update = F2(
 								{sortingAlgorithm: updatedTrack}),
 							$elm$core$Platform$Cmd$none);
 				}
+			case 'GotRandomArray':
+				var list = msg.a;
+				var newTrack = $author$project$Structs$defaultSortingTrack(list);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{sortingAlgorithm: newTrack}),
+					$elm$core$Platform$Cmd$none);
 			default:
 				if (model.running) {
 					var updatedTrack = function () {
@@ -7969,7 +8093,7 @@ var $author$project$Pages$BubbleSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\n                  It does this repeatedly until the array is sorted.')
+							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
 						])),
 					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$Controls$view, running, toMsg),
@@ -8245,7 +8369,7 @@ var $author$project$Pages$InsertionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
+							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
 						])),
 					A6($author$project$Visualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$Controls$view, running, toMsg),
@@ -8796,7 +8920,7 @@ var $author$project$Pages$SelectionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.\n                  Once the smallest element is found, it swaps with the current element before moving on.\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
+							$elm$html$Html$text('Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.\r\n                  Once the smallest element is found, it swaps with the current element before moving on.\r\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
 						])),
 					A6(
 					$author$project$Visualization$renderComparison,
@@ -8997,7 +9121,7 @@ var $author$project$Pages$ShellSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Shell Sort is an optimization of Insertion Sort.\n              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.\n              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.\n              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).')
+							$elm$html$Html$text('Shell Sort is an optimization of Insertion Sort.\r\n              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.\r\n              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.\r\n              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).')
 						])),
 					A6(
 					$author$project$Visualization$renderComparison,

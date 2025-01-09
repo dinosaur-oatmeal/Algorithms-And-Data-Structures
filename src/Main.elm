@@ -14,6 +14,9 @@ import Url.Parser as Parser exposing ((</>), s, top)
 -- Time for "Run" button
 import Time
 
+-- Random for random arrays on init and "Reset"
+import Random exposing (Generator, generate)
+
 -- Pages that can be visited
 import Pages.Home as Home
 import Pages.BubbleSort as BubbleSort
@@ -24,7 +27,7 @@ import Pages.MergeSort as MergeSort
 import Pages.QuickSort as QuickSort
 
 -- Custom structs imports (avoid circular import)
-import Structs exposing (defaultSortingTrack, SortingTrack)
+import Structs exposing (SortingTrack, defaultSortingTrack, randomListGenerator)
 
 -- Algorithm control buttons (run/pause/step/reset)
 import Controls exposing (ControlMsg(..))
@@ -74,6 +77,8 @@ type Msg
     | ControlMsg ControlMsg
     -- Timing for running the algorithm
     | Tick Time.Posix
+    -- Initialize random array
+    | GotRandomArray (List Int)
 
 -- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
@@ -132,13 +137,14 @@ init _ url key =
       , currentPage = parseUrl url
       -- Initialize Home.model
       , homeModel = Home.initModel
-      , sortingAlgorithm = defaultSortingTrack
+      -- Initialize to empty array
+      , sortingAlgorithm = defaultSortingTrack []
       -- Sorting algorithm shouldn't start as running
       , running = False
       }
-    , Cmd.none
+      -- Call function to generate random array
+    , Random.generate GotRandomArray randomListGenerator
     )
-
 
 -- UPDATE
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -149,7 +155,7 @@ update msg model =
             ( { model
                 | currentPage = page
                 -- Reset sorting information and set running to false
-                , sortingAlgorithm = defaultSortingTrack
+                , sortingAlgorithm = defaultSortingTrack []
                 , running = False
               }
             , Cmd.none
@@ -170,56 +176,56 @@ update msg model =
             case algName of
                 "Bubble Sort" ->
                     ( { model | currentPage = BubbleSort
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
-                    , Cmd.none
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 "Selection Sort" ->
                     ( { model | currentPage = SelectionSort
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
-                    , Cmd.none
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 "Insertion Sort" ->
                     ( { model | currentPage = InsertionSort
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
-                    , Cmd.none
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 "Shell Sort" ->
                     ( { model | currentPage = ShellSort
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
-                    , Cmd.none
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 "Merge Sort" ->
                     ( { model | currentPage = MergeSort
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
-                    , Cmd.none
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 "Quick Sort" ->
                     ( { model | currentPage = QuickSort
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
-                    , Cmd.none
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 -- Default to home for algorithms not yet added
                 _ ->
                     ( { model | currentPage = Home
-                              , sortingAlgorithm = defaultSortingTrack
+                              , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
                     , Cmd.none
@@ -236,10 +242,11 @@ update msg model =
 
                 Reset ->
                     ( { model
-                        | sortingAlgorithm = defaultSortingTrack
+                        | sortingAlgorithm = defaultSortingTrack []
                         , running = False
                       }
-                    , Cmd.none
+                    -- Call to get new array order
+                    , Random.generate GotRandomArray randomListGenerator
                     )
 
                 Step ->
@@ -269,6 +276,15 @@ update msg model =
                                     model.sortingAlgorithm
                     in
                     ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+        -- Generate new array order
+        GotRandomArray list ->
+                    let
+                        newTrack = defaultSortingTrack list
+                    in
+                    ( { model | sortingAlgorithm = newTrack }
+                    , Cmd.none
+                    )
 
         -- Running algorithm
         Tick _ ->
