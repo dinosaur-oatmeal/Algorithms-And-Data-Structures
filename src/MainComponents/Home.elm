@@ -25,6 +25,10 @@ type alias Model =
     { theme : Theme
     -- Array for swaps to take place
     , backgroundArray : Array Int
+    -- First index being swapped
+    , indexOne : Int
+    -- Second index being swapped
+    , indexTwo : Int
     -- Index of typing simulation for title
     , typingIndex : Int
     -- Final string typed before deleting
@@ -51,6 +55,9 @@ initModel =
     { theme = Dark
     -- Start with this array
     , backgroundArray = Array.fromList [ 5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10 ]
+    -- Start with indices being 0
+    , indexOne = 0
+    , indexTwo = 0
     -- Start at first index
     , typingIndex = 0
     -- Complete title to be typed
@@ -110,7 +117,13 @@ update msg model =
         -- Swap indices in array
         IndexSwap ( indexOne, indexTwo ) ->
             -- Call swap function for elements
-            ( { model | backgroundArray = swap indexOne indexTwo model.backgroundArray }, Cmd.none )
+            ( { model
+                | backgroundArray = swap indexOne indexTwo model.backgroundArray
+                , indexOne = indexOne
+                , indexTwo = indexTwo
+              }
+            , Cmd.none
+            )
 
 
 -- SUBSCRIPTIONS
@@ -144,8 +157,8 @@ swap indexOne indexTwo array =
 view : Model -> Html Msg
 view model =
     div [ class "home-container" ]
-        [ -- Renders the background bar chart given the array
-          renderBackgroundBars model.backgroundArray
+        [ -- Renders the background bar chart given the array and indices being swapped
+          renderBackgroundBars model.backgroundArray model.indexOne model.indexTwo
 
           -- Title string
         , h1 [ class "home-typed-title" ]

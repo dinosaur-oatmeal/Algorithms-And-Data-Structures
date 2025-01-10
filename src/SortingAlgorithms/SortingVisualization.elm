@@ -79,7 +79,7 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
         isMin = 
             case maybeMinIndex of
                 Just mi -> position == mi
-                Nothing -> False
+                _ -> False
 
         barColor =
             if sorted then
@@ -120,8 +120,8 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
 
 -- Renders background from Home.elm
     -- Needs to be different from previous renders for z-index and blur
-renderBackgroundBars : Array Int -> Html msg
-renderBackgroundBars array =
+renderBackgroundBars : Array Int -> Int -> Int -> Html msg
+renderBackgroundBars array indexOne indexTwo =
     div
         [ style "position" "absolute"
         , style "top" "0"
@@ -131,22 +131,33 @@ renderBackgroundBars array =
         , style "display" "flex"
         , style "justify-content" "center"
         , style "align-items" "flex-end"
-        -- Put behind text on the screen
         , style "z-index" "-1"
-        -- Blur the bars to emphasize title text
         , style "filter" "blur(10px) opacity(0.9)"
         , style "pointer-events" "none"
         ]
         (Array.toList array
-            |> List.map
-                (\val ->
+            |> List.indexedMap
+                (\idx val ->
+                    let
+                        -- Booleans to determine what color to make each bar
+                        isOne = idx == indexOne
+                        isTwo = idx == indexTwo
+
+                        -- Set bar color accordingly
+                        barColor =
+                            if isOne then
+                                "linear-gradient(180deg, #FF5722, #FF8A65)" -- Index one color
+                            else if isTwo then
+                                "linear-gradient(180deg, #FFC107, #FFE082)" -- Index two color
+                            else
+                                "linear-gradient(180deg, #2196F3, #64B5F6)" -- Default color
+                    in
                     div
-                        -- Make bars large to take up the whole background
                         [ style "width" "100px"
                         , style "margin" "0 10px"
+                        -- Increase Height for home page
                         , style "height" (String.fromInt (val * 30) ++ "px")
-                        -- Same gradient  and transitionas other bar charts
-                        , style "background-image" "linear-gradient(180deg, #2196F3, #64B5F6)" -- Gradient blue otherwise
+                        , style "background-image" barColor
                         , style "transition" "height 0.5s ease"
                         ]
                         []

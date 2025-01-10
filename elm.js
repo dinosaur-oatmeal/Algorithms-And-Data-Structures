@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.Q.G === region.Z.G)
+	if (region.S.G === region.aa.G)
 	{
-		return 'on line ' + region.Q.G;
+		return 'on line ' + region.S.G;
 	}
-	return 'on lines ' + region.Q.G + ' through ' + region.Z.G;
+	return 'on lines ' + region.S.G + ' through ' + region.aa.G;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aL,
-		impl.aZ,
-		impl.aW,
+		impl.aN,
+		impl.a$,
+		impl.aY,
 		function() { return function() {} }
 	);
 });
@@ -2720,8 +2720,8 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
 		t: func(record.t),
-		R: record.R,
-		O: record.O
+		T: record.T,
+		Q: record.Q
 	}
 });
 
@@ -2990,10 +2990,10 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 
 		var value = result.a;
 		var message = !tag ? value : tag < 3 ? value.a : value.t;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.R;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.T;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.O) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.Q) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3943,11 +3943,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aL,
-		impl.aZ,
-		impl.aW,
+		impl.aN,
+		impl.a$,
+		impl.aY,
 		function(sendToApp, initialModel) {
-			var view = impl.a_;
+			var view = impl.a0;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3979,12 +3979,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aL,
-		impl.aZ,
-		impl.aW,
+		impl.aN,
+		impl.a$,
+		impl.aY,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.P && impl.P(sendToApp)
-			var view = impl.a_;
+			var divertHrefToApp = impl.R && impl.R(sendToApp)
+			var view = impl.a0;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3992,12 +3992,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aB);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aD);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.aY) && (_VirtualDom_doc.title = title = doc.aY);
+				(title !== doc.a_) && (_VirtualDom_doc.title = title = doc.a_);
 			});
 		}
 	);
@@ -4053,12 +4053,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.aO;
-	var onUrlRequest = impl.aP;
+	var onUrlChange = impl.aQ;
+	var onUrlRequest = impl.aR;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		P: function(sendToApp)
+		R: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4074,9 +4074,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.am === next.am
-							&& curr.ad === next.ad
-							&& curr.aj.a === next.aj.a
+							&& curr.ao === next.ao
+							&& curr.af === next.af
+							&& curr.al.a === next.al.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4084,13 +4084,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		aL: function(flags)
+		aN: function(flags)
 		{
-			return A3(impl.aL, flags, _Browser_getUrl(), key);
+			return A3(impl.aN, flags, _Browser_getUrl(), key);
 		},
-		a_: impl.a_,
-		aZ: impl.aZ,
-		aW: impl.aW
+		a0: impl.a0,
+		a$: impl.a$,
+		aY: impl.aY
 	});
 }
 
@@ -4156,17 +4156,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { aJ: 'hidden', aD: 'visibilitychange' }
+		? { aL: 'hidden', aF: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { aJ: 'mozHidden', aD: 'mozvisibilitychange' }
+		? { aL: 'mozHidden', aF: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { aJ: 'msHidden', aD: 'msvisibilitychange' }
+		? { aL: 'msHidden', aF: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { aJ: 'webkitHidden', aD: 'webkitvisibilitychange' }
-		: { aJ: 'hidden', aD: 'visibilitychange' };
+		? { aL: 'webkitHidden', aF: 'webkitvisibilitychange' }
+		: { aL: 'hidden', aF: 'visibilitychange' };
 }
 
 
@@ -4247,12 +4247,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		aq: _Browser_getScene(),
-		av: {
-			ax: _Browser_window.pageXOffset,
-			ay: _Browser_window.pageYOffset,
-			aw: _Browser_doc.documentElement.clientWidth,
-			ac: _Browser_doc.documentElement.clientHeight
+		as: _Browser_getScene(),
+		ax: {
+			az: _Browser_window.pageXOffset,
+			aA: _Browser_window.pageYOffset,
+			ay: _Browser_doc.documentElement.clientWidth,
+			ae: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4262,8 +4262,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		aw: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		ac: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		ay: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		ae: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4286,15 +4286,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			aq: {
-				aw: node.scrollWidth,
-				ac: node.scrollHeight
+			as: {
+				ay: node.scrollWidth,
+				ae: node.scrollHeight
 			},
-			av: {
-				ax: node.scrollLeft,
-				ay: node.scrollTop,
-				aw: node.clientWidth,
-				ac: node.clientHeight
+			ax: {
+				az: node.scrollLeft,
+				aA: node.scrollTop,
+				ay: node.clientWidth,
+				ae: node.clientHeight
 			}
 		};
 	});
@@ -4324,18 +4324,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			aq: _Browser_getScene(),
-			av: {
-				ax: x,
-				ay: y,
-				aw: _Browser_doc.documentElement.clientWidth,
-				ac: _Browser_doc.documentElement.clientHeight
+			as: _Browser_getScene(),
+			ax: {
+				az: x,
+				aA: y,
+				ay: _Browser_doc.documentElement.clientWidth,
+				ae: _Browser_doc.documentElement.clientHeight
 			},
-			aG: {
-				ax: x + rect.left,
-				ay: y + rect.top,
-				aw: rect.width,
-				ac: rect.height
+			aI: {
+				az: x + rect.left,
+				aA: y + rect.top,
+				ay: rect.width,
+				ae: rect.height
 			}
 		};
 	});
@@ -4978,7 +4978,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {aa: fragment, ad: host, ah: path, aj: port_, am: protocol, an: query};
+		return {ac: fragment, af: host, aj: path, al: port_, ao: protocol, ap: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5297,15 +5297,15 @@ var $elm$core$Array$fromList = function (list) {
 };
 var $author$project$MainComponents$Structs$defaultSortingTrack = function (list) {
 	return {
-		T: $elm$core$Array$fromList(list),
-		aE: 1,
-		V: 0,
-		Y: false,
-		ab: (10 / 2) | 0,
-		aM: 0,
-		aR: 0,
-		aV: false,
-		ar: _List_fromArray(
+		V: $elm$core$Array$fromList(list),
+		aG: 1,
+		X: 0,
+		_: false,
+		ad: (10 / 2) | 0,
+		aO: 0,
+		aT: 0,
+		aX: false,
+		at: _List_fromArray(
 			[
 				_Utils_Tuple2(
 				0,
@@ -5416,8 +5416,10 @@ var $author$project$MainComponents$Home$initModel = {
 	A: $elm$core$Array$fromList(
 		_List_fromArray(
 			[5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10])),
-	L: 'Algorithms and Data Structures',
-	au: 0,
+	L: 0,
+	M: 0,
+	N: 'Algorithms and Data Structures',
+	aw: 0,
 	D: false,
 	p: 0
 };
@@ -6057,9 +6059,9 @@ var $elm$url$Url$Parser$parse = F2(
 				A5(
 					$elm$url$Url$Parser$State,
 					_List_Nil,
-					$elm$url$Url$Parser$preparePath(url.ah),
-					$elm$url$Url$Parser$prepareQuery(url.an),
-					url.aa,
+					$elm$url$Url$Parser$preparePath(url.aj),
+					$elm$url$Url$Parser$prepareQuery(url.ap),
+					url.ac,
 					$elm$core$Basics$identity)));
 	});
 var $author$project$Main$BubbleSortRoute = 1;
@@ -6345,7 +6347,7 @@ var $author$project$Main$init = F3(
 			{
 				g: $author$project$Main$parseUrl(url),
 				s: $author$project$MainComponents$Home$initModel,
-				ae: key,
+				ag: key,
 				b: false,
 				a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 			},
@@ -6363,7 +6365,7 @@ var $elm$time$Time$Every = F2(
 	});
 var $elm$time$Time$State = F2(
 	function (taggers, processes) {
-		return {al: processes, at: taggers};
+		return {an: processes, av: taggers};
 	});
 var $elm$time$Time$init = $elm$core$Task$succeed(
 	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
@@ -6502,7 +6504,7 @@ var $elm$time$Time$spawnHelp = F3(
 	});
 var $elm$time$Time$onEffects = F3(
 	function (router, subs, _v0) {
-		var processes = _v0.al;
+		var processes = _v0.an;
 		var rightStep = F3(
 			function (_v6, id, _v7) {
 				var spawns = _v7.a;
@@ -6568,7 +6570,7 @@ var $elm$time$Time$onEffects = F3(
 	});
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
-		var _v0 = A2($elm$core$Dict$get, interval, state.at);
+		var _v0 = A2($elm$core$Dict$get, interval, state.av);
 		if (_v0.$ === 1) {
 			return $elm$core$Task$succeed(state);
 		} else {
@@ -6741,11 +6743,11 @@ var $elm$core$Array$set = F3(
 			tail));
 	});
 var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (track) {
-	var outerIndex = track.aR;
-	var currentIndex = track.aE;
-	var arr = track.T;
+	var outerIndex = track.aT;
+	var currentIndex = track.aG;
+	var arr = track.V;
 	var length = $elm$core$Array$length(arr);
-	if (track.aV) {
+	if (track.aX) {
 		return track;
 	} else {
 		if (_Utils_cmp(currentIndex, length) < 0) {
@@ -6763,11 +6765,11 @@ var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (trac
 						A3($elm$core$Array$set, currentIndex, leftVal, arr));
 					return _Utils_update(
 						track,
-						{T: swappedArray, aE: currentIndex + 1, Y: true, aR: outerIndex + 1});
+						{V: swappedArray, aG: currentIndex + 1, _: true, aT: outerIndex + 1});
 				} else {
 					return _Utils_update(
 						track,
-						{aE: currentIndex + 1, aR: outerIndex + 1});
+						{aG: currentIndex + 1, aT: outerIndex + 1});
 				}
 			} else {
 				return track;
@@ -6775,24 +6777,24 @@ var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (trac
 		} else {
 			return _Utils_update(
 				track,
-				{aE: 1, Y: false, aR: 0, aV: !track.Y});
+				{aG: 1, _: false, aT: 0, aX: !track._});
 		}
 	}
 };
 var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function (track) {
-	var outer = track.aR;
-	var current = track.aE;
-	var arr = track.T;
+	var outer = track.aT;
+	var current = track.aG;
+	var arr = track.V;
 	var length = $elm$core$Array$length(arr);
-	if (track.aV || (_Utils_cmp(outer, length) > -1)) {
+	if (track.aX || (_Utils_cmp(outer, length) > -1)) {
 		return _Utils_update(
 			track,
-			{aV: true});
+			{aX: true});
 	} else {
 		if (current <= 0) {
 			return _Utils_update(
 				track,
-				{aE: outer + 1, aR: outer + 1});
+				{aG: outer + 1, aT: outer + 1});
 		} else {
 			var _v0 = _Utils_Tuple2(
 				A2($elm$core$Array$get, current, arr),
@@ -6808,11 +6810,11 @@ var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function
 						A3($elm$core$Array$set, current, previousValue, arr));
 					return _Utils_update(
 						track,
-						{T: swappedArray, aE: current - 1});
+						{V: swappedArray, aG: current - 1});
 				} else {
 					return _Utils_update(
 						track,
-						{aE: outer + 1, aR: outer + 1});
+						{aG: outer + 1, aT: outer + 1});
 				}
 			} else {
 				return track;
@@ -6821,17 +6823,17 @@ var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function
 	}
 };
 var $author$project$SearchAlgorithms$LinearSearch$linearSearchStep = function (track) {
-	var target = track.aE;
-	var scanningIndex = track.aR;
-	var arr = track.T;
+	var target = track.aG;
+	var scanningIndex = track.aT;
+	var arr = track.V;
 	var length = $elm$core$Array$length(arr);
-	return track.aV ? track : (_Utils_eq(scanningIndex, target) ? _Utils_update(
+	return track.aX ? track : (_Utils_eq(scanningIndex, target) ? _Utils_update(
 		track,
-		{aV: true}) : ((_Utils_cmp(scanningIndex + 1, length) < 0) ? _Utils_update(
+		{aX: true}) : ((_Utils_cmp(scanningIndex + 1, length) < 0) ? _Utils_update(
 		track,
-		{V: track.V + 1, aR: scanningIndex + 1}) : _Utils_update(
+		{X: track.X + 1, aT: scanningIndex + 1}) : _Utils_update(
 		track,
-		{V: track.V + 1, aV: false})));
+		{X: track.X, aX: false})));
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$Basics$pow = _Basics_pow;
@@ -7316,10 +7318,10 @@ var $author$project$SortingAlgorithms$MergeSort$processMergeStep = F3(
 		return A2(processSegments, 0, $elm$core$Array$empty);
 	});
 var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track) {
-	var outerIndex = track.aR;
-	var currentStep = track.V;
+	var outerIndex = track.aT;
+	var currentStep = track.X;
 	var halfStep = (A2($elm$core$Basics$pow, 2, currentStep) / 2) | 0;
-	var array = track.T;
+	var array = track.V;
 	var arrayLength = $elm$core$Array$length(array);
 	var totalSteps = $elm$core$Basics$ceiling(
 		A2($elm$core$Basics$logBase, 2, arrayLength));
@@ -7328,11 +7330,11 @@ var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track)
 	return _Utils_update(
 		track,
 		{
-			T: updatedArray,
-			aE: currentStep,
-			V: isSorted ? currentStep : (currentStep + 1),
-			aR: halfStep,
-			aV: isSorted
+			V: updatedArray,
+			aG: currentStep,
+			X: isSorted ? currentStep : (currentStep + 1),
+			aT: halfStep,
+			aX: isSorted
 		});
 };
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
@@ -7366,7 +7368,7 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 		var pivot = A2(
 			$elm$core$Maybe$withDefault,
 			0,
-			A2($elm$core$Array$get, high, track.T));
+			A2($elm$core$Array$get, high, track.V));
 		var loop = F2(
 			function (_v1, currentIndex) {
 				var currentTrack = _v1.a;
@@ -7374,13 +7376,13 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 				var currentElement = A2(
 					$elm$core$Maybe$withDefault,
 					0,
-					A2($elm$core$Array$get, currentIndex, currentTrack.T));
+					A2($elm$core$Array$get, currentIndex, currentTrack.V));
 				if (_Utils_cmp(currentElement, pivot) < 0) {
-					var updatedArray = A3($author$project$SortingAlgorithms$QuickSort$swap, currentIndex, partitionIndex, currentTrack.T);
+					var updatedArray = A3($author$project$SortingAlgorithms$QuickSort$swap, currentIndex, partitionIndex, currentTrack.V);
 					return _Utils_Tuple2(
 						_Utils_update(
 							currentTrack,
-							{T: updatedArray}),
+							{V: updatedArray}),
 						partitionIndex + 1);
 				} else {
 					return _Utils_Tuple2(currentTrack, partitionIndex);
@@ -7396,19 +7398,19 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 			A2($elm$core$List$range, low, high - 1));
 		var newTrack = _v0.a;
 		var pivotIndex = _v0.b;
-		var finalArray = A3($author$project$SortingAlgorithms$QuickSort$swap, pivotIndex, high, newTrack.T);
+		var finalArray = A3($author$project$SortingAlgorithms$QuickSort$swap, pivotIndex, high, newTrack.V);
 		return _Utils_Tuple2(
 			pivotIndex,
 			_Utils_update(
 				newTrack,
-				{T: finalArray}));
+				{V: finalArray}));
 	});
 var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track) {
-	var _v0 = track.ar;
+	var _v0 = track.at;
 	if (!_v0.b) {
 		return _Utils_update(
 			track,
-			{aV: true});
+			{aX: true});
 	} else {
 		var _v1 = _v0.a;
 		var low = _v1.a;
@@ -7427,26 +7429,26 @@ var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track)
 					rest));
 			return _Utils_update(
 				newTrack,
-				{aE: low, V: track.V + 1, aR: pivotIndex, ar: newStack});
+				{aG: low, X: track.X + 1, aT: pivotIndex, at: newStack});
 		} else {
 			return _Utils_update(
 				track,
-				{ar: rest});
+				{at: rest});
 		}
 	}
 };
 var $author$project$MainComponents$Structs$randomTargetGenerator = A2($elm$random$Random$int, 1, 10);
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function (track) {
-	var outer = track.aR;
-	var minimum = track.aM;
-	var current = track.aE;
-	var arr = track.T;
+	var outer = track.aT;
+	var minimum = track.aO;
+	var current = track.aG;
+	var arr = track.V;
 	var length = $elm$core$Array$length(arr);
-	if (track.aV || (_Utils_cmp(outer, length) > -1)) {
+	if (track.aX || (_Utils_cmp(outer, length) > -1)) {
 		return _Utils_update(
 			track,
-			{aV: true});
+			{aX: true});
 	} else {
 		if (_Utils_cmp(current, length) < 0) {
 			var _v0 = _Utils_Tuple2(
@@ -7457,9 +7459,9 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 				var minimumValue = _v0.b.a;
 				return (_Utils_cmp(currentValue, minimumValue) < 0) ? _Utils_update(
 					track,
-					{aE: current + 1, aM: current}) : _Utils_update(
+					{aG: current + 1, aO: current}) : _Utils_update(
 					track,
-					{aE: current + 1});
+					{aG: current + 1});
 			} else {
 				return track;
 			}
@@ -7477,7 +7479,7 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 					A3($elm$core$Array$set, minimum, outerValue, arr)) : arr;
 				return _Utils_update(
 					track,
-					{T: updatedArray, aE: outer + 2, aM: outer + 1, aR: outer + 1});
+					{V: updatedArray, aG: outer + 2, aO: outer + 1, aT: outer + 1});
 			} else {
 				return track;
 			}
@@ -7485,26 +7487,26 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 	}
 };
 var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track) {
-	var outer = track.aR;
-	var gap = track.ab;
-	var current = track.V;
-	var arr = track.T;
+	var outer = track.aT;
+	var gap = track.ad;
+	var current = track.X;
+	var arr = track.V;
 	var length = $elm$core$Array$length(arr);
-	if (track.aV || (gap <= 0)) {
+	if (track.aX || (gap <= 0)) {
 		return _Utils_update(
 			track,
-			{aV: true});
+			{aX: true});
 	} else {
 		if (_Utils_cmp(outer, length) > -1) {
 			var newGap = (gap === 1) ? 0 : ((gap / 2) | 0);
 			return _Utils_update(
 				track,
-				{V: newGap, ab: newGap, aR: newGap});
+				{X: newGap, ad: newGap, aT: newGap});
 		} else {
 			if (_Utils_cmp(current, gap) < 0) {
 				return _Utils_update(
 					track,
-					{V: outer + 1, aR: outer + 1});
+					{X: outer + 1, aT: outer + 1});
 			} else {
 				var _v0 = _Utils_Tuple2(
 					A2($elm$core$Array$get, current, arr),
@@ -7520,11 +7522,11 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 							A3($elm$core$Array$set, current - gap, currentValue, arr));
 						return _Utils_update(
 							track,
-							{T: updatedArray, aE: current - gap, V: current - gap});
+							{V: updatedArray, aG: current - gap, X: current - gap});
 					} else {
 						return _Utils_update(
 							track,
-							{V: outer + 1, aR: outer + 1});
+							{X: outer + 1, aT: outer + 1});
 					}
 				} else {
 					return track;
@@ -7586,7 +7588,7 @@ var $author$project$MainComponents$Home$update = F2(
 		switch (msg.$) {
 			case 0:
 				var switched = function () {
-					var _v1 = model.au;
+					var _v1 = model.aw;
 					if (_v1 === 1) {
 						return 0;
 					} else {
@@ -7596,12 +7598,12 @@ var $author$project$MainComponents$Home$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{au: switched}),
+						{aw: switched}),
 					$elm$core$Platform$Cmd$none);
 			case 1:
 				return ((_Utils_cmp(
 					model.p,
-					$elm$core$String$length(model.L) + 5) < 0) && (!model.D)) ? _Utils_Tuple2(
+					$elm$core$String$length(model.N) + 5) < 0) && (!model.D)) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{p: model.p + 1}),
@@ -7632,7 +7634,9 @@ var $author$project$MainComponents$Home$update = F2(
 					_Utils_update(
 						model,
 						{
-							A: A3($author$project$MainComponents$Home$swap, indexOne, indexTwo, model.A)
+							A: A3($author$project$MainComponents$Home$swap, indexOne, indexTwo, model.A),
+							L: indexOne,
+							M: indexTwo
 						}),
 					$elm$core$Platform$Cmd$none);
 		}
@@ -7831,7 +7835,7 @@ var $author$project$Main$update = F2(
 				var newTarget = msg.a;
 				var currentSortingAlgorithm = model.a;
 				var updatedSortingAlgorithm = function () {
-					var array = currentSortingAlgorithm.T;
+					var array = currentSortingAlgorithm.V;
 					var targetValue = function () {
 						var _v6 = A2($elm$core$Array$get, newTarget, array);
 						if (!_v6.$) {
@@ -7843,7 +7847,7 @@ var $author$project$Main$update = F2(
 					}();
 					return _Utils_update(
 						currentSortingAlgorithm,
-						{T: array, aE: newTarget, aM: targetValue, aR: 0, aV: false});
+						{V: array, aG: newTarget, aO: targetValue, aT: 0, aX: false});
 				}();
 				var updatedModel = _Utils_update(
 					model,
@@ -7887,7 +7891,7 @@ var $author$project$Main$ControlMsg = function (a) {
 };
 var $elm$browser$Browser$Document = F2(
 	function (title, body) {
-		return {aB: body, aY: title};
+		return {aD: body, a_: title};
 	});
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -7904,43 +7908,48 @@ var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars = function (array) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-				A2($elm$html$Html$Attributes$style, 'top', '0'),
-				A2($elm$html$Html$Attributes$style, 'left', '0'),
-				A2($elm$html$Html$Attributes$style, 'width', '100%'),
-				A2($elm$html$Html$Attributes$style, 'height', '100%'),
-				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-				A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-				A2($elm$html$Html$Attributes$style, 'align-items', 'flex-end'),
-				A2($elm$html$Html$Attributes$style, 'z-index', '-1'),
-				A2($elm$html$Html$Attributes$style, 'filter', 'blur(10px) opacity(0.9)'),
-				A2($elm$html$Html$Attributes$style, 'pointer-events', 'none')
-			]),
-		A2(
-			$elm$core$List$map,
-			function (val) {
-				return A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'width', '100px'),
-							A2($elm$html$Html$Attributes$style, 'margin', '0 10px'),
-							A2(
-							$elm$html$Html$Attributes$style,
-							'height',
-							$elm$core$String$fromInt(val * 30) + 'px'),
-							A2($elm$html$Html$Attributes$style, 'background-image', 'linear-gradient(180deg, #2196F3, #64B5F6)'),
-							A2($elm$html$Html$Attributes$style, 'transition', 'height 0.5s ease')
-						]),
-					_List_Nil);
-			},
-			$elm$core$Array$toList(array)));
-};
+var $author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars = F3(
+	function (array, indexOne, indexTwo) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'top', '0'),
+					A2($elm$html$Html$Attributes$style, 'left', '0'),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'height', '100%'),
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'flex-end'),
+					A2($elm$html$Html$Attributes$style, 'z-index', '-1'),
+					A2($elm$html$Html$Attributes$style, 'filter', 'blur(10px) opacity(0.9)'),
+					A2($elm$html$Html$Attributes$style, 'pointer-events', 'none')
+				]),
+			A2(
+				$elm$core$List$indexedMap,
+				F2(
+					function (idx, val) {
+						var isTwo = _Utils_eq(idx, indexTwo);
+						var isOne = _Utils_eq(idx, indexOne);
+						var barColor = isOne ? 'linear-gradient(180deg, #FF5722, #FF8A65)' : (isTwo ? 'linear-gradient(180deg, #FFC107, #FFE082)' : 'linear-gradient(180deg, #2196F3, #64B5F6)');
+						return A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'width', '100px'),
+									A2($elm$html$Html$Attributes$style, 'margin', '0 10px'),
+									A2(
+									$elm$html$Html$Attributes$style,
+									'height',
+									$elm$core$String$fromInt(val * 30) + 'px'),
+									A2($elm$html$Html$Attributes$style, 'background-image', barColor),
+									A2($elm$html$Html$Attributes$style, 'transition', 'height 0.5s ease')
+								]),
+							_List_Nil);
+					}),
+				$elm$core$Array$toList(array)));
+	});
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$MainComponents$Home$view = function (model) {
@@ -7952,7 +7961,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 			]),
 		_List_fromArray(
 			[
-				$author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars(model.A),
+				A3($author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars, model.A, model.L, model.M),
 				A2(
 				$elm$html$Html$h1,
 				_List_fromArray(
@@ -7962,7 +7971,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						A2($elm$core$String$left, model.p, model.L))
+						A2($elm$core$String$left, model.p, model.N))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -8225,7 +8234,7 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 						[
 							$elm$html$Html$text('Linear Search is the easiest searching algorithm.\r\n              It starts at the first element in the list and searches the list until it finds the target element or hits the end of the list.\r\n              If the target element in found, the searching stops and sees that the element is in the list.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.T, 'Walk through the steps below', track.aV, track.aR, track.aE, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8236,11 +8245,11 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Current Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Target: ' + $elm$core$String$fromInt(track.aM)),
+							' | Target: ' + $elm$core$String$fromInt(track.aO)),
 							$elm$html$Html$text(
-							' | Element Found: ' + (track.aV ? 'Yes' : 'No'))
+							' | Element Found: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8398,7 +8407,7 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 						[
 							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.T, 'Walk through the steps below', track.aV, track.aR, track.aE, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8409,13 +8418,13 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Current Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Next Index: ' + $elm$core$String$fromInt(track.aE)),
+							' | Next Index: ' + $elm$core$String$fromInt(track.aG)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.Y ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track._ ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aV ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8603,7 +8612,7 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 						[
 							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.T, 'Walk through the steps below', track.aV, track.aR, track.aE, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8614,11 +8623,11 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Outer Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aE)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.aG)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aV ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8786,7 +8795,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						[
 							$elm$html$Html$text('Merge Sort is a divide and conquer sorting algorithm.\r\n              First, it divides the array into subarrays until it can no longer be divided.\r\n              Then, it conquers by sorting each subarray individually.\r\n              Finally, it merges the subarray together until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.T, 'Walk through the steps below', track.aV, track.aR, track.aE, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8797,11 +8806,11 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Middle Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Middle Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Outer Index: ' + $elm$core$String$fromInt(track.aE)),
+							' | Outer Index: ' + $elm$core$String$fromInt(track.aG)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aV ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8969,7 +8978,7 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 						[
 							$elm$html$Html$text('Quick Sort follows a divide and conquer approach.\r\n              It selects an element of the array to be a pivot. In this example, it\'s the rightmost element.\r\n              Then, the algorithm partitions the array and rearranges around the pivot.\r\n              At the end of this step, all elements smaller than the pivot are to the left of it and larger are to the right.\r\n              Finally, the sort is recursively called while reducing the size of the subarrays until there is only one element in the left subarray.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.T, 'Walk through the steps below', track.aV, track.aR, track.aE, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8980,13 +8989,13 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Pivot Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Pivot Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aE)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.aG)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.Y ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track._ ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aV ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9156,12 +9165,12 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
-					track.T,
+					track.V,
 					'Walk through the steps below',
-					track.aV,
-					track.aR,
-					track.aE,
-					$elm$core$Maybe$Just(track.aM)),
+					track.aX,
+					track.aT,
+					track.aG,
+					$elm$core$Maybe$Just(track.aO)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9172,15 +9181,15 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Current Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Compare Index: ' + $elm$core$String$fromInt(track.aE)),
+							' | Compare Index: ' + $elm$core$String$fromInt(track.aG)),
 							$elm$html$Html$text(
-							' | Minimum Index: ' + $elm$core$String$fromInt(track.aM)),
+							' | Minimum Index: ' + $elm$core$String$fromInt(track.aO)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.Y ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track._ ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aV ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9357,12 +9366,12 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
-					track.T,
+					track.V,
 					'Walk through the steps below',
-					track.aV,
-					track.aR,
-					track.aE,
-					$elm$core$Maybe$Just(track.ab)),
+					track.aX,
+					track.aT,
+					track.aG,
+					$elm$core$Maybe$Just(track.ad)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9373,13 +9382,13 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.aR)),
+							'Outer Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aE)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.aG)),
 							$elm$html$Html$text(
-							' | Gap: ' + $elm$core$String$fromInt(track.ab)),
+							' | Gap: ' + $elm$core$String$fromInt(track.ad)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aV ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9729,7 +9738,7 @@ var $author$project$Main$viewHeader = A2(
 var $author$project$MainComponents$Home$ToggleTheme = {$: 0};
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Main$viewThemeToggle = function (model) {
-	var _v0 = (model.s.au === 1) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
+	var _v0 = (model.s.aw === 1) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
 	var icon = _v0.a;
 	var tooltip = _v0.b;
 	return A2(
@@ -9757,7 +9766,7 @@ var $author$project$Main$viewThemeToggle = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	var themeClass = function () {
-		var _v1 = model.s.au;
+		var _v1 = model.s.aw;
 		if (_v1 === 1) {
 			return 'light-theme';
 		} else {
@@ -9818,17 +9827,17 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{
-		aL: $author$project$Main$init,
-		aO: function (url) {
+		aN: $author$project$Main$init,
+		aQ: function (url) {
 			return $author$project$Main$NavigateTo(
 				$author$project$Main$parseUrl(url));
 		},
-		aP: function (_v0) {
+		aR: function (_v0) {
 			return $author$project$Main$NavigateTo(0);
 		},
-		aW: $author$project$Main$subscriptions,
-		aZ: $author$project$Main$update,
-		a_: $author$project$Main$view
+		aY: $author$project$Main$subscriptions,
+		a$: $author$project$Main$update,
+		a0: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
