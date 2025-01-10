@@ -1,4 +1,4 @@
-module Pages.BubbleSort exposing (view, bubbleSortStep)
+module SortingAlgorithms.BubbleSort exposing (view, bubbleSortStep)
 
 -- HTML Imports
 import Html exposing (Html, div, text, ul, li)
@@ -7,17 +7,14 @@ import Html.Attributes exposing (class)
 import Array exposing (Array)
 
 -- Import necessary structure to track state
-import Structs exposing (SortingTrack)
+import MainComponents.Structs exposing (SortingTrack)
 
--- Import visualization for graph
-import Visualization exposing (renderComparison)
+-- Import SortingVisualization for graph
+import SortingAlgorithms.SortingVisualization as Visualization exposing (renderComparison)
 
-import Controls exposing (ControlMsg, view)
+-- Import for control buttons (used in view)
+import MainComponents.Controls  as Controls exposing (ControlMsg, view)
 
-{-
-  One step of bubble sort. Takes the current Tracking state
-  and returns an updated state.
--}
 bubbleSortStep : SortingTrack -> SortingTrack
 bubbleSortStep track =
     let
@@ -34,7 +31,7 @@ bubbleSortStep track =
     else
         if currentIndex < length then
             -- Compare outer and current values
-            case ( Array.get outerIndex arr, Array.get currentIndex arr ) of
+            case (Array.get outerIndex arr, Array.get currentIndex arr) of
                 (Just leftVal, Just rightVal) ->
                     if leftVal > rightVal then
                         let
@@ -61,7 +58,7 @@ bubbleSortStep track =
                 -- Default constructor
                 _ ->
                     track
-        -- Go to next pass and update to see if hte array is sorted
+        -- Go to next pass and update to see if the array is sorted
         else
             { track
                 | outerIndex = 0
@@ -72,9 +69,9 @@ bubbleSortStep track =
 
 
 {-
-  Basic page view for Bubble Sort
-    Title, Description, Graph, Buttons, Variables, Breakdown
-    (ControlMsg -> msg) is ControlMsg in Main.elm
+    Basic page view for Bubble Sort
+        Title, Description, Graph, Buttons, Variables, Breakdown, & Big-O Notation
+        (ControlMsg -> msg) is ControlMsg in Main.elm
 -}
 view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =

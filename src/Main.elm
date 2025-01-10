@@ -17,20 +17,28 @@ import Time
 -- Random for random arrays on init and "Reset"
 import Random exposing (Generator, generate)
 
--- Pages that can be visited
-import Pages.Home as Home
-import Pages.BubbleSort as BubbleSort
-import Pages.SelectionSort as SelectionSort
-import Pages.InsertionSort as InsertionSort
-import Pages.ShellSort as ShellSort
-import Pages.MergeSort as MergeSort
-import Pages.QuickSort as QuickSort
+-- Import Array for random Functions
+import Array exposing (Array)
+
+-- Home Page
+import MainComponents.Home as Home
+
+-- Sorting Algorithm pages that can be visited
+import SortingAlgorithms.BubbleSort as BubbleSort
+import SortingAlgorithms.SelectionSort as SelectionSort
+import SortingAlgorithms.InsertionSort as InsertionSort
+import SortingAlgorithms.ShellSort as ShellSort
+import SortingAlgorithms.MergeSort as MergeSort
+import SortingAlgorithms.QuickSort as QuickSort
+
+-- Searching Algorithm pages that can be visited
+import SearchAlgorithms.LinearSearch as LinearSearch
 
 -- Custom structs imports (avoid circular import)
-import Structs exposing (SortingTrack, defaultSortingTrack, randomListGenerator)
+import MainComponents.Structs exposing (..)
 
 -- Algorithm control buttons (run/pause/step/reset)
-import Controls exposing (ControlMsg(..))
+import MainComponents.Controls exposing (ControlMsg(..))
 
 -- Model (info stored during interactions)
 type alias Model =
@@ -54,6 +62,7 @@ type Route
     | ShellSortRoute
     | MergeSortRoute
     | QuickSortRoute
+    | LinearSearchRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -64,6 +73,7 @@ type Page
     | ShellSort
     | MergeSort
     | QuickSort
+    | LinearSearch
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -77,8 +87,10 @@ type Msg
     | ControlMsg ControlMsg
     -- Timing for running the algorithm
     | Tick Time.Posix
-    -- Initialize random array
+    -- Initialize random array (sorts and searches)
     | GotRandomArray (List Int)
+    -- Initialize random target (searches)
+    | GotRandomTarget Int
 
 -- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
@@ -91,6 +103,7 @@ routeParser =
         , Parser.map ShellSortRoute (s "shell-sort")
         , Parser.map MergeSortRoute (s "merge-sort")
         , Parser.map QuickSortRoute (s "quick-sort")
+        , Parser.map LinearSearchRoute (s "linear-search")
         ]
 
 -- Convert URL into a page
@@ -125,6 +138,10 @@ parseUrl url =
         Just QuickSortRoute ->
             QuickSort
 
+        -- LinearSearch Page
+        Just LinearSearchRoute ->
+            LinearSearch
+
         -- Default to Home
         Nothing ->
             Home
@@ -134,15 +151,15 @@ parseUrl url =
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { key = key
-      , currentPage = parseUrl url
-      -- Initialize Home.model
-      , homeModel = Home.initModel
-      -- Initialize to empty array
-      , sortingAlgorithm = defaultSortingTrack []
-      -- Sorting algorithm shouldn't start as running
-      , running = False
-      }
-      -- Call function to generate random array
+    , currentPage = parseUrl url
+    -- Initialize Home.model
+    , homeModel = Home.initModel
+    -- Initialize to empty array
+    , sortingAlgorithm = defaultSortingTrack []
+    -- Sorting algorithm shouldn't start as running
+    , running = False
+    }
+    -- Call function to generate random array
     , Random.generate GotRandomArray randomListGenerator
     )
 
@@ -176,9 +193,11 @@ update msg model =
             case algName of
                 "Bubble Sort" ->
                     ( { model | currentPage = BubbleSort
+                                -- Initialize to empty array
                               , sortingAlgorithm = defaultSortingTrack []
                               , running = False
                       }
+                    -- Call to generate random array
                     , Random.generate GotRandomArray randomListGenerator
                     )
 
@@ -222,6 +241,18 @@ update msg model =
                     , Random.generate GotRandomArray randomListGenerator
                     )
 
+                "Linear Search" ->
+                    ( { model | currentPage = LinearSearch
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    -- Batch random array generation and random target to find
+                    , Cmd.batch
+                        [ Random.generate GotRandomTarget randomTargetGenerator
+                        , Random.generate GotRandomArray randomListGenerator
+                        ]
+                    )
+
                 -- Default to home for algorithms not yet added
                 _ ->
                     ( { model | currentPage = Home
@@ -240,19 +271,34 @@ update msg model =
                 Pause ->
                     ( { model | running = False }, Cmd.none )
 
+                -- Multiple versions of "Reset" depending on what page
                 Reset ->
+                    let
+                        resetCmds =
+                            case model.currentPage of
+                                -- Regenerate array and target for LinearSearch
+                                LinearSearch ->
+                                    [ Random.generate GotRandomTarget randomTargetGenerator
+                                    , Random.generate GotRandomArray randomListGenerator
+                                    ]
+
+                                -- Only regenerate array for sorting
+                                _ ->
+                                    [ Random.generate GotRandomArray randomListGenerator ]
+                    in
                     ( { model
                         | sortingAlgorithm = defaultSortingTrack []
                         , running = False
-                      }
-                    -- Call to get new array order
-                    , Random.generate GotRandomArray randomListGenerator
+                    }
+                    -- Batch resetCmds because there may be more than one command executed
+                    , Cmd.batch resetCmds
                     )
+
 
                 Step ->
                     let
                         updatedTrack =
-                            -- One step of specific algorithm depending on what currentPage is
+                            -- One step of algorithm depending on currentPage
                             case model.currentPage of
                                 BubbleSort ->
                                     BubbleSort.bubbleSortStep model.sortingAlgorithm
@@ -272,6 +318,9 @@ update msg model =
                                 QuickSort ->
                                     QuickSort.quickSortStep model.sortingAlgorithm
 
+                                LinearSearch ->
+                                    LinearSearch.linearSearchStep model.sortingAlgorithm
+
                                 _ ->
                                     model.sortingAlgorithm
                     in
@@ -279,19 +328,55 @@ update msg model =
 
         -- Generate new array order
         GotRandomArray list ->
+            let
+                newTrack = defaultSortingTrack list
+            in
+            ( { model | sortingAlgorithm = defaultSortingTrack list }
+            , Cmd.none
+            )
+
+        -- Generate new target index
+        GotRandomTarget newTarget ->
+            let
+                -- Current SortingAlgorithm
+                currentSortingAlgorithm =
+                    model.sortingAlgorithm
+
+                -- Updated SortingAlgorithm
+                updatedSortingAlgorithm =
                     let
-                        newTrack = defaultSortingTrack list
+                        array = currentSortingAlgorithm.array
+                        -- Get value at new target index
+                        targetValue =
+                            case Array.get newTarget array of
+                                Just value -> value
+
+                                -- Default to 0 (not found in array)
+                                _ -> 0
                     in
-                    ( { model | sortingAlgorithm = newTrack }
-                    , Cmd.none
-                    )
+                    { currentSortingAlgorithm
+                        | array = array
+                        , outerIndex = 0
+                        , currentIndex = newTarget
+                        , sorted = False
+                        -- Set minIndex to targetValue
+                            -- Needed for indices under array to work correctly
+                        , minIndex = targetValue
+                    }
+
+                -- Update model to reflect updatedSortingAlgorithm
+                updatedModel =
+                    { model | sortingAlgorithm = updatedSortingAlgorithm }
+            in
+            ( updatedModel, Cmd.none )
+
 
         -- Running algorithm
         Tick _ ->
             if model.running then
                 let
                     updatedTrack =
-                        -- Run specific algorithm depending on what currentPage is
+                        -- Run specific algorithm depending on currentPage
                         case model.currentPage of
                             BubbleSort ->
                                 BubbleSort.bubbleSortStep model.sortingAlgorithm
@@ -311,6 +396,9 @@ update msg model =
                             QuickSort ->
                                 QuickSort.quickSortStep model.sortingAlgorithm
 
+                            LinearSearch ->
+                                LinearSearch.linearSearchStep model.sortingAlgorithm
+
                             _ ->
                                 model.sortingAlgorithm
                 in
@@ -319,7 +407,6 @@ update msg model =
             else
                 -- Don't update if "Run" not active
                 ( model, Cmd.none )
-
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -383,6 +470,9 @@ view model =
 
                     QuickSort ->
                         QuickSort.view model.sortingAlgorithm model.running ControlMsg
+
+                    LinearSearch ->
+                        LinearSearch.view model.sortingAlgorithm model.running ControlMsg
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -391,7 +481,11 @@ view model =
             ]
         ]
 
--- Algorithm Dropdown
+------------------------------
+-- ON EVERY PAGE ON WEBSITE --
+------------------------------
+
+-- Algorithm dropdown with buttons for pages
 viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
@@ -408,16 +502,8 @@ viewHeader =
                 [ option [ value "Merge Sort" ] [ text "Merge Sort" ]
                 , option [ value "Quick Sort" ] [ text "Quick Sort" ]
                 ]
-            , node "optgroup" [ attribute "label" "Heaps" ]
-                [ option [ value "Heap Sort" ] [ text "Heap Sort" ]
-                ]
-            , node "optgroup" [ attribute "label" "Graphs" ]
-                [ option [ value "Topological Sort" ] [ text "Topological Sort" ]
-                ]
-            , node "optgroup" [ attribute "label" "Trees" ]
-                [ option [ value "AVL Tree" ] [ text "AVL Tree" ]
-                , option [ value "Binary Search Tree" ] [ text "Binary Search Tree" ]
-                ]
+            , node "optgroup" [ attribute "label" "Searching" ]
+                [ option [ value "Linear Search" ] [ text "Linear Search" ] ]
             ]
         ]
 
@@ -434,6 +520,7 @@ viewThemeToggle model =
     div [ class "theme-toggle-container" ]
         [ button
             [ class "theme-toggle-btn"
+            -- Call Home.elm if clicked
             , onClick (HomeMsg Home.ToggleTheme)
             , title tooltip
             ]

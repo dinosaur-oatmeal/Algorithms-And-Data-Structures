@@ -1,4 +1,4 @@
-module Visualization exposing (renderComparison, renderBackgroundBars)
+module SortingAlgorithms.SortingVisualization exposing (renderComparison, renderBackgroundBars)
 
 -- HTML Elements
 import Html exposing (Html, div, text)
@@ -6,7 +6,6 @@ import Html.Attributes exposing (class, style)
 
 -- Array
 import Array exposing (Array)
-
 
 renderComparison : 
     -- Array being sorted
@@ -47,9 +46,9 @@ renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
             , style "height" "300px"
             , style "padding" "10px"
             ]
+            -- Render each bar in chart
             (Array.toList array |> List.indexedMap (renderBar sorted outerIndex currentIndex maybeMinIndex))
         ]
-
 
 renderBar :
     -- Flag if the array is currently sorted

@@ -1,4 +1,4 @@
-module Controls exposing (ControlMsg(..), view)
+module MainComponents.Controls exposing (ControlMsg(..), view)
 
 -- HTML imports
 import Html exposing (Html, button, div, text, span)
@@ -15,11 +15,14 @@ type ControlMsg
 -- VIEW
 view : Bool -> (ControlMsg -> msg) -> Html msg
 view running toMsg =
+    -- Control button container
     div [ class "control-buttons" ]
         [ if running then
+            -- Pause if algorithm is running
             button [ class "sorting-button", onClick (toMsg Pause) ]
                 [ span [ class "button-text" ] [ text "Pause" ] ]
           else
+            -- Run if algorithm isn't running
             button [ class "sorting-button", onClick (toMsg Run) ]
                 [ span [ class "button-text" ] [ text "Run" ] ]
         , button [ class "sorting-button", onClick (toMsg Step) ]

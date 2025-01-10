@@ -1,17 +1,20 @@
-module Pages.SelectionSort exposing (view, selectionSortStep)
+module SortingAlgorithms.SelectionSort exposing (view, selectionSortStep)
 
+-- HTML Imports
 import Html exposing (Html, div, text, ul, li)
 import Html.Attributes exposing (class)
+
 import Array exposing (Array)
-import Structs exposing (SortingTrack)
-import Visualization exposing (renderComparison)
 
-import Controls exposing (ControlMsg, view)
+-- Import necessary structure to track state
+import MainComponents.Structs exposing (SortingTrack)
 
-{-
-  One step of selection sort.
-  Takes current track and returns new track.
--}
+-- Import SortingVisualization for graph
+import SortingAlgorithms.SortingVisualization as Visualization exposing (renderComparison)
+
+-- Import for control buttons (used in view)
+import MainComponents.Controls  as Controls exposing (ControlMsg, view)
+
 selectionSortStep : SortingTrack -> SortingTrack
 selectionSortStep track =
     let
@@ -72,8 +75,9 @@ selectionSortStep track =
                     track
 
 {-
-  Basic page view for Selection Sort
-    Title, Description, Graph, Variables, Breakdown
+    Basic page view for Selection Sort
+        Title, Description, Graph, Buttons, Variables, Breakdown, & Big-O Notation
+        (ControlMsg -> msg) is ControlMsg in Main.elm
 -}
 view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =

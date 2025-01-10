@@ -2,14 +2,16 @@
     Keeping it in a separate file removes the potential
         of circular imports.
 -}
-module Structs exposing (SortingTrack, defaultSortingTrack, randomListGenerator)
+module MainComponents.Structs exposing (..)
 
 -- Random List Generation
 import Random exposing (Generator)
 import Random.List exposing (shuffle)
+import Random.Extra
 
 import Array exposing (Array)
 
+-- Record to hold all data for sorting and searching algorithms
 type alias SortingTrack =
     { array : Array Int
     , outerIndex : Int
@@ -30,14 +32,21 @@ defaultSortingTrack list =
     , currentIndex = 1
     , sorted = False
     , minIndex = 0
+    -- Initialize for ShellSort
     , gap = 10 // 2
     -- Initialize to Array Size for QuickSort
     , stack = [ ( 0, List.length list - 1 ) ]
+    -- Initialize for BubbleSort
     , didSwap = False
     , currentStep = 0
     }
 
--- Generator helper function
+-- Shuffle list for arrays
 randomListGenerator : Generator (List Int)
 randomListGenerator =
     shuffle (List.range 1 10)
+
+-- Grab a random int for target in searching
+randomTargetGenerator : Generator Int
+randomTargetGenerator =
+    Random.int 1 10

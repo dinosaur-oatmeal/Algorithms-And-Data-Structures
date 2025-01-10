@@ -1,4 +1,4 @@
-module Pages.MergeSort exposing (view, mergeSortStep)
+module SortingAlgorithms.MergeSort exposing (view, mergeSortStep)
 
 -- HTML Imports
 import Html exposing (Html, div, text, ul, li)
@@ -7,17 +7,14 @@ import Html.Attributes exposing (class)
 import Array exposing (Array)
 
 -- Import necessary structure to track state
-import Structs exposing (SortingTrack)
+import MainComponents.Structs exposing (SortingTrack)
 
--- Import visualization for graph
-import Visualization exposing (renderComparison)
+-- Import SortingVisualization for graph
+import SortingAlgorithms.SortingVisualization as Visualization exposing (renderComparison)
 
-import Controls exposing (ControlMsg, view)
+-- Import for control buttons (used in view)
+import MainComponents.Controls  as Controls exposing (ControlMsg, view)
 
-{-
-  One step of merge sort. Takes the current Tracking state
-  and returns an updated state.
--}
 mergeSortStep : SortingTrack -> SortingTrack
 mergeSortStep track =
     let
@@ -117,9 +114,9 @@ mergeArrays leftArray rightArray =
     mergeHelper 0 0 Array.empty
 
 {-
-  Basic page view for Merge Sort
-    Title, Description, Graph, Buttons, Variables, Breakdown
-    (ControlMsg -> msg) is ControlMsg in Main.elm
+    Basic page view for Merge Sort
+        Title, Description, Graph, Buttons, Variables, Breakdown, & Big-O Notation
+        (ControlMsg -> msg) is ControlMsg in Main.elm
 -}
 view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =

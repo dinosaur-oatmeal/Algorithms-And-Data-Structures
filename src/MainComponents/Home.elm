@@ -1,5 +1,5 @@
 -- Expose everything needed by Main.elm
-module Pages.Home exposing (Model, Theme(..), Msg(..), initModel, update, view, subscriptions)
+module MainComponents.Home exposing (..)
 
 -- HTML imports
 import Html exposing (Html, div, text, h1)
@@ -12,7 +12,7 @@ import Random
 import Time
 
 -- Used to render background bar chart
-import Visualization exposing(renderBackgroundBars)
+import SortingAlgorithms.SortingVisualization as Visualization exposing(renderBackgroundBars)
 
 -- Theme type for dark/light mode
 type Theme
@@ -29,7 +29,7 @@ type alias Model =
     , typingIndex : Int
     -- Final string typed before deleting
     , targetString : String
-    -- Determines whether to add or remove letter from string
+    -- Determines whether to add or remove letter from title string
     , typingFlag : Bool
     }
 
@@ -47,13 +47,13 @@ type Msg
 -- INIT (initial state of model)
 initModel : Model
 initModel =
-    -- Default to the superior theme
+    -- Default to superior theme
     { theme = Dark
     -- Start with this array
     , backgroundArray = Array.fromList [ 5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10 ]
-    -- Start at the first index
+    -- Start at first index
     , typingIndex = 0
-    -- Complete title
+    -- Complete title to be typed
     , targetString = "Algorithms and Data Structures"
     -- Whole word has not yet been typed
     , typingFlag = False
@@ -79,8 +79,8 @@ update msg model =
 
         -- Typing Effect on title
         TypingSimulation ->
-            -- Add letters to String
-            if model.typingIndex < String.length model.targetString && not model.typingFlag then
+            -- Add letters to String (keep string fully typed for a bit longer)
+            if model.typingIndex < ( String.length model.targetString + 5 ) && not model.typingFlag then
                 ( { model | typingIndex = model.typingIndex + 1 }, Cmd.none )
 
             -- Remove letters from String
@@ -151,7 +151,7 @@ view model =
         , h1 [ class "home-typed-title" ]
             [ text (String.left model.typingIndex model.targetString) ]
 
-          -- 
+          -- Description text
         , div [ class "home-text" ]
             [ text "Select and algorithm to learn about from the dropdown above." ]
         ]

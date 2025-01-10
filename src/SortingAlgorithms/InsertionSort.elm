@@ -1,4 +1,4 @@
-module Pages.InsertionSort exposing (view, insertionSortStep)
+module SortingAlgorithms.InsertionSort exposing (view, insertionSortStep)
 
 -- HTML Imports
 import Html exposing (Html, div, text, ul, li)
@@ -7,17 +7,14 @@ import Html.Attributes exposing (class)
 import Array exposing (Array)
 
 -- Import necessary structure to track state
-import Structs exposing (SortingTrack)
+import MainComponents.Structs exposing (SortingTrack)
 
--- Import visualization for graph
-import Visualization exposing (renderComparison)
+-- Import SortingVisualization for graph
+import SortingAlgorithms.SortingVisualization as Visualization exposing (renderComparison)
 
-import Controls exposing (ControlMsg, view)
+-- Import for control buttons (used in view)
+import MainComponents.Controls  as Controls exposing (ControlMsg, view)
 
-{-
-  One step of insertion sort. Takes the current Tracking state
-  and returns an updated state.
--}
 insertionSortStep : SortingTrack -> SortingTrack
 insertionSortStep track =
     let
@@ -66,9 +63,9 @@ insertionSortStep track =
                     track
 
 {-
-  Basic page view for Insertion Sort
-    Title, Description, Graph, Buttons, Variables, Breakdown
-    (ControlMsg -> msg) is ControlMsg in Main.elm
+    Basic page view for Insertion Sort
+        Title, Description, Graph, Buttons, Variables, Breakdown, & Big-O Notation
+        (ControlMsg -> msg) is ControlMsg in Main.elm
 -}
 view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
 view track running toMsg =
