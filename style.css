@@ -15,6 +15,7 @@ body {
 /* =========================================
    ALGORITHM DROPDOWN
    ========================================= */
+
 /* The top header (navbar) for the dropdown. */
 .header {
   display: flex;
@@ -60,6 +61,7 @@ body {
 /* =========================================
    THEME TOGGLE AND SPECIFICS
    ========================================= */
+
 .theme-toggle-container {
   position: absolute;
   bottom: 30px;
@@ -160,6 +162,7 @@ body {
 /* =========================================
    SORTING ALGORITHM PAGES
    ========================================= */
+
 .sort-page {
   display: flex;
   flex-direction: column;
@@ -260,8 +263,76 @@ body {
 }
 
 /* =========================================
+   TREE STYLING
+   ========================================= */
+
+.tree-page {
+  text-align: center;
+  margin: 20px auto;
+  width: 80%;
+}
+
+.tree-node-wrapper {
+  position: relative;
+  display: inline-block; 
+  margin: 0.8rem;
+  vertical-align: top;
+}
+
+.tree-node {
+  display: inline-block;
+  padding: 0.8rem 1.2rem;
+  width: 25px;
+  height: 25px;
+  border: 2px solid #2196F3;
+  border-radius: 1rem;
+  font-weight: bold;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.active-node {
+  border: 2px solid #FFC107;
+}
+
+.tree-children {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.tree-children > .tree-node-wrapper::before,
+.tree-children > .tree-node-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 20px; /* adjust to taste */
+  background-color: #007bbb;
+  top: -1rem; 
+}
+
+.tree-children > .tree-node-wrapper:first-child::before {
+  left: 50%;
+  transform-origin: top;
+  transform: translateX(-50%) rotate(30deg);
+}
+
+.tree-children > .tree-node-wrapper:last-child::before {
+  left: 50%;
+  transform-origin: top;
+  transform: translateX(-50%) rotate(-30deg);
+}
+
+.tree-empty {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* =========================================
    ANIMATIONS
    ========================================= */
+
 @keyframes fadeIn {
   from {
       opacity: 0;
@@ -276,6 +347,7 @@ body {
 /* =========================================
    SMALLER MEDIA
    ========================================= */
+
 @media (max-width: 800px) {
 
   /* No label and reduced font on algorithm dropdown */

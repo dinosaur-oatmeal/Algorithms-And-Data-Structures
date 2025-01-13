@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.S.G === region.aa.G)
+	if (region.X.J === region.af.J)
 	{
-		return 'on line ' + region.S.G;
+		return 'on line ' + region.X.J;
 	}
-	return 'on lines ' + region.S.G + ' through ' + region.aa.G;
+	return 'on lines ' + region.X.J + ' through ' + region.af.J;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aN,
-		impl.a$,
-		impl.aY,
+		impl.aS,
+		impl.a4,
+		impl.a1,
 		function() { return function() {} }
 	);
 });
@@ -2719,9 +2719,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		t: func(record.t),
-		T: record.T,
-		Q: record.Q
+		u: func(record.u),
+		Y: record.Y,
+		V: record.V
 	}
 });
 
@@ -2989,11 +2989,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.t;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.T;
+		var message = !tag ? value : tag < 3 ? value.a : value.u;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.Y;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.Q) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.V) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3943,11 +3943,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aN,
-		impl.a$,
-		impl.aY,
+		impl.aS,
+		impl.a4,
+		impl.a1,
 		function(sendToApp, initialModel) {
-			var view = impl.a0;
+			var view = impl.a5;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3979,12 +3979,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aN,
-		impl.a$,
-		impl.aY,
+		impl.aS,
+		impl.a4,
+		impl.a1,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.R && impl.R(sendToApp)
-			var view = impl.a0;
+			var divertHrefToApp = impl.W && impl.W(sendToApp)
+			var view = impl.a5;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3992,12 +3992,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aD);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aI);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.a_) && (_VirtualDom_doc.title = title = doc.a_);
+				(title !== doc.a3) && (_VirtualDom_doc.title = title = doc.a3);
 			});
 		}
 	);
@@ -4053,12 +4053,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.aQ;
-	var onUrlRequest = impl.aR;
+	var onUrlChange = impl.aV;
+	var onUrlRequest = impl.aW;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		R: function(sendToApp)
+		W: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4074,9 +4074,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.ao === next.ao
-							&& curr.af === next.af
-							&& curr.al.a === next.al.a
+							&& curr.at === next.at
+							&& curr.ak === next.ak
+							&& curr.aq.a === next.aq.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4084,13 +4084,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		aN: function(flags)
+		aS: function(flags)
 		{
-			return A3(impl.aN, flags, _Browser_getUrl(), key);
+			return A3(impl.aS, flags, _Browser_getUrl(), key);
 		},
-		a0: impl.a0,
-		a$: impl.a$,
-		aY: impl.aY
+		a5: impl.a5,
+		a4: impl.a4,
+		a1: impl.a1
 	});
 }
 
@@ -4156,17 +4156,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { aL: 'hidden', aF: 'visibilitychange' }
+		? { aQ: 'hidden', aK: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { aL: 'mozHidden', aF: 'mozvisibilitychange' }
+		? { aQ: 'mozHidden', aK: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { aL: 'msHidden', aF: 'msvisibilitychange' }
+		? { aQ: 'msHidden', aK: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { aL: 'webkitHidden', aF: 'webkitvisibilitychange' }
-		: { aL: 'hidden', aF: 'visibilitychange' };
+		? { aQ: 'webkitHidden', aK: 'webkitvisibilitychange' }
+		: { aQ: 'hidden', aK: 'visibilitychange' };
 }
 
 
@@ -4247,12 +4247,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		as: _Browser_getScene(),
-		ax: {
-			az: _Browser_window.pageXOffset,
-			aA: _Browser_window.pageYOffset,
-			ay: _Browser_doc.documentElement.clientWidth,
-			ae: _Browser_doc.documentElement.clientHeight
+		ax: _Browser_getScene(),
+		aC: {
+			aE: _Browser_window.pageXOffset,
+			aF: _Browser_window.pageYOffset,
+			aD: _Browser_doc.documentElement.clientWidth,
+			aj: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4262,8 +4262,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		ay: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		ae: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		aD: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		aj: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4286,15 +4286,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			as: {
-				ay: node.scrollWidth,
-				ae: node.scrollHeight
-			},
 			ax: {
-				az: node.scrollLeft,
-				aA: node.scrollTop,
-				ay: node.clientWidth,
-				ae: node.clientHeight
+				aD: node.scrollWidth,
+				aj: node.scrollHeight
+			},
+			aC: {
+				aE: node.scrollLeft,
+				aF: node.scrollTop,
+				aD: node.clientWidth,
+				aj: node.clientHeight
 			}
 		};
 	});
@@ -4324,18 +4324,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			as: _Browser_getScene(),
-			ax: {
-				az: x,
-				aA: y,
-				ay: _Browser_doc.documentElement.clientWidth,
-				ae: _Browser_doc.documentElement.clientHeight
+			ax: _Browser_getScene(),
+			aC: {
+				aE: x,
+				aF: y,
+				aD: _Browser_doc.documentElement.clientWidth,
+				aj: _Browser_doc.documentElement.clientHeight
 			},
-			aI: {
-				az: x + rect.left,
-				aA: y + rect.top,
-				ay: rect.width,
-				ae: rect.height
+			aN: {
+				aE: x + rect.left,
+				aF: y + rect.top,
+				aD: rect.width,
+				aj: rect.height
 			}
 		};
 	});
@@ -4372,42 +4372,22 @@ function _Browser_load(url)
 }
 
 
-
-var _Bitwise_and = F2(function(a, b)
+function _Url_percentEncode(string)
 {
-	return a & b;
-});
+	return encodeURIComponent(string);
+}
 
-var _Bitwise_or = F2(function(a, b)
+function _Url_percentDecode(string)
 {
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
-
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}
 
 
 function _Time_now(millisToPosix)
@@ -4455,22 +4435,42 @@ function _Time_getZoneName()
 }
 
 
-function _Url_percentEncode(string)
-{
-	return encodeURIComponent(string);
-}
 
-function _Url_percentDecode(string)
+var _Bitwise_and = F2(function(a, b)
 {
-	try
-	{
-		return $elm$core$Maybe$Just(decodeURIComponent(string));
-	}
-	catch (e)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-}var $author$project$Main$Home = 0;
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+var $author$project$Main$Home = 0;
 var $author$project$Main$NavigateTo = function (a) {
 	return {$: 0, a: a};
 };
@@ -4891,7 +4891,7 @@ var $elm$core$Array$builderToArray = F2(
 			var treeLen = builder.c * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.f) : builder.f;
+			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.g) : builder.g;
 			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.c);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
@@ -4911,7 +4911,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{f: nodeList, c: (len / $elm$core$Array$branchFactor) | 0, e: tail});
+					{g: nodeList, c: (len / $elm$core$Array$branchFactor) | 0, e: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -4978,7 +4978,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {ac: fragment, af: host, aj: path, al: port_, ao: protocol, ap: query};
+		return {ah: fragment, ak: host, ao: path, aq: port_, at: protocol, au: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5257,9 +5257,6 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$application = _Browser_application;
-var $author$project$Main$GotRandomArray = function (a) {
-	return {$: 5, a: a};
-};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5273,7 +5270,7 @@ var $elm$core$Array$fromListHelp = F3(
 				return A2(
 					$elm$core$Array$builderToArray,
 					true,
-					{f: nodeList, c: nodeListSize, e: jsArray});
+					{g: nodeList, c: nodeListSize, e: jsArray});
 			} else {
 				var $temp$list = remainingItems,
 					$temp$nodeList = A2(
@@ -5297,15 +5294,15 @@ var $elm$core$Array$fromList = function (list) {
 };
 var $author$project$MainComponents$Structs$defaultSortingTrack = function (list) {
 	return {
-		V: $elm$core$Array$fromList(list),
-		aG: 1,
-		X: 0,
-		_: false,
-		ad: (10 / 2) | 0,
-		aO: 0,
+		_: $elm$core$Array$fromList(list),
+		aL: 1,
+		ab: 0,
+		ae: false,
+		ai: (10 / 2) | 0,
 		aT: 0,
-		aX: false,
-		at: _List_fromArray(
+		aY: 0,
+		a0: false,
+		ay: _List_fromArray(
 			[
 				_Utils_Tuple2(
 				0,
@@ -5313,116 +5310,23 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 			])
 	};
 };
-var $elm$random$Random$Generate = $elm$core$Basics$identity;
-var $elm$random$Random$Seed = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
-var $elm$random$Random$next = function (_v0) {
-	var state0 = _v0.a;
-	var incr = _v0.b;
-	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
-};
-var $elm$random$Random$initialSeed = function (x) {
-	var _v0 = $elm$random$Random$next(
-		A2($elm$random$Random$Seed, 0, 1013904223));
-	var state1 = _v0.a;
-	var incr = _v0.b;
-	var state2 = (state1 + x) >>> 0;
-	return $elm$random$Random$next(
-		A2($elm$random$Random$Seed, state2, incr));
-};
-var $elm$time$Time$Name = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$time$Time$Offset = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $elm$time$Time$customZone = $elm$time$Time$Zone;
-var $elm$time$Time$Posix = $elm$core$Basics$identity;
-var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
-var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
-var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0;
-	return millis;
-};
-var $elm$random$Random$init = A2(
-	$elm$core$Task$andThen,
-	function (time) {
-		return $elm$core$Task$succeed(
-			$elm$random$Random$initialSeed(
-				$elm$time$Time$posixToMillis(time)));
-	},
-	$elm$time$Time$now);
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0;
-		return generator(seed);
-	});
-var $elm$random$Random$onEffects = F3(
-	function (router, commands, seed) {
-		if (!commands.b) {
-			return $elm$core$Task$succeed(seed);
-		} else {
-			var generator = commands.a;
-			var rest = commands.b;
-			var _v1 = A2($elm$random$Random$step, generator, seed);
-			var value = _v1.a;
-			var newSeed = _v1.b;
-			return A2(
-				$elm$core$Task$andThen,
-				function (_v2) {
-					return A3($elm$random$Random$onEffects, router, rest, newSeed);
-				},
-				A2($elm$core$Platform$sendToApp, router, value));
-		}
-	});
-var $elm$random$Random$onSelfMsg = F3(
-	function (_v0, _v1, seed) {
-		return $elm$core$Task$succeed(seed);
-	});
-var $elm$random$Random$Generator = $elm$core$Basics$identity;
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0;
-		return function (seed0) {
-			var _v1 = genA(seed0);
-			var a = _v1.a;
-			var seed1 = _v1.b;
-			return _Utils_Tuple2(
-				func(a),
-				seed1);
-		};
-	});
-var $elm$random$Random$cmdMap = F2(
-	function (func, _v0) {
-		var generator = _v0;
-		return A2($elm$random$Random$map, func, generator);
-	});
-_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
-var $elm$random$Random$command = _Platform_leaf('Random');
-var $elm$random$Random$generate = F2(
-	function (tagger, generator) {
-		return $elm$random$Random$command(
-			A2($elm$random$Random$map, tagger, generator));
-	});
 var $author$project$MainComponents$Home$Dark = 0;
 var $author$project$MainComponents$Home$initModel = {
-	A: $elm$core$Array$fromList(
+	C: $elm$core$Array$fromList(
 		_List_fromArray(
 			[5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10])),
-	L: 0,
-	M: 0,
-	N: 'Algorithms and Data Structures',
-	aw: 0,
-	D: false,
-	p: 0
+	Q: 0,
+	R: 0,
+	S: 'Algorithms and Data Structures',
+	aB: 0,
+	G: false,
+	q: 0
 };
+var $author$project$MainComponents$Structs$Empty = {$: 0};
+var $author$project$Trees$TreeTraversal$Inorder = 1;
+var $author$project$Trees$TreeTraversal$initModel = {P: 1, m: 0, b: false, A: _List_Nil, F: $author$project$MainComponents$Structs$Empty};
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$BubbleSort = 1;
 var $author$project$Main$InsertionSort = 3;
 var $author$project$Main$LinearSearch = 7;
@@ -5430,9 +5334,10 @@ var $author$project$Main$MergeSort = 5;
 var $author$project$Main$QuickSort = 6;
 var $author$project$Main$SelectionSort = 2;
 var $author$project$Main$ShellSort = 4;
+var $author$project$Main$TreeTraversal = 8;
 var $elm$url$Url$Parser$State = F5(
 	function (visited, unvisited, params, frag, value) {
-		return {w: frag, x: params, v: unvisited, q: value, z: visited};
+		return {x: frag, y: params, w: unvisited, r: value, B: visited};
 	});
 var $elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:
@@ -5442,12 +5347,12 @@ var $elm$url$Url$Parser$getFirstMatch = function (states) {
 		} else {
 			var state = states.a;
 			var rest = states.b;
-			var _v1 = state.v;
+			var _v1 = state.w;
 			if (!_v1.b) {
-				return $elm$core$Maybe$Just(state.q);
+				return $elm$core$Maybe$Just(state.r);
 			} else {
 				if ((_v1.a === '') && (!_v1.b.b)) {
-					return $elm$core$Maybe$Just(state.q);
+					return $elm$core$Maybe$Just(state.r);
 				} else {
 					var $temp$states = rest;
 					states = $temp$states;
@@ -6059,9 +5964,9 @@ var $elm$url$Url$Parser$parse = F2(
 				A5(
 					$elm$url$Url$Parser$State,
 					_List_Nil,
-					$elm$url$Url$Parser$preparePath(url.aj),
-					$elm$url$Url$Parser$prepareQuery(url.ap),
-					url.ac,
+					$elm$url$Url$Parser$preparePath(url.ao),
+					$elm$url$Url$Parser$prepareQuery(url.au),
+					url.ah,
 					$elm$core$Basics$identity)));
 	});
 var $author$project$Main$BubbleSortRoute = 1;
@@ -6072,14 +5977,15 @@ var $author$project$Main$MergeSortRoute = 5;
 var $author$project$Main$QuickSortRoute = 6;
 var $author$project$Main$SelectionSortRoute = 2;
 var $author$project$Main$ShellSortRoute = 4;
+var $author$project$Main$TreeRoute = 8;
 var $elm$url$Url$Parser$Parser = $elm$core$Basics$identity;
 var $elm$url$Url$Parser$mapState = F2(
 	function (func, _v0) {
-		var visited = _v0.z;
-		var unvisited = _v0.v;
-		var params = _v0.x;
-		var frag = _v0.w;
-		var value = _v0.q;
+		var visited = _v0.B;
+		var unvisited = _v0.w;
+		var params = _v0.y;
+		var frag = _v0.x;
+		var value = _v0.r;
 		return A5(
 			$elm$url$Url$Parser$State,
 			visited,
@@ -6092,11 +5998,11 @@ var $elm$url$Url$Parser$map = F2(
 	function (subValue, _v0) {
 		var parseArg = _v0;
 		return function (_v1) {
-			var visited = _v1.z;
-			var unvisited = _v1.v;
-			var params = _v1.x;
-			var frag = _v1.w;
-			var value = _v1.q;
+			var visited = _v1.B;
+			var unvisited = _v1.w;
+			var params = _v1.y;
+			var frag = _v1.x;
+			var value = _v1.r;
 			return A2(
 				$elm$core$List$map,
 				$elm$url$Url$Parser$mapState(value),
@@ -6133,11 +6039,11 @@ var $elm$url$Url$Parser$oneOf = function (parsers) {
 };
 var $elm$url$Url$Parser$s = function (str) {
 	return function (_v0) {
-		var visited = _v0.z;
-		var unvisited = _v0.v;
-		var params = _v0.x;
-		var frag = _v0.w;
-		var value = _v0.q;
+		var visited = _v0.B;
+		var unvisited = _v0.w;
+		var params = _v0.y;
+		var frag = _v0.x;
+		var value = _v0.r;
 		if (!unvisited.b) {
 			return _List_Nil;
 		} else {
@@ -6191,7 +6097,11 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			7,
-			$elm$url$Url$Parser$s('linear-search'))
+			$elm$url$Url$Parser$s('linear-search')),
+			A2(
+			$elm$url$Url$Parser$map,
+			8,
+			$elm$url$Url$Parser$s('tree-traversal'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6218,140 +6128,28 @@ var $author$project$Main$parseUrl = function (url) {
 			case 6:
 				var _v7 = _v0.a;
 				return 6;
-			default:
+			case 7:
 				var _v8 = _v0.a;
 				return 7;
+			default:
+				var _v9 = _v0.a;
+				return 8;
 		}
 	} else {
 		return 0;
 	}
 };
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$Bitwise$xor = _Bitwise_xor;
-var $elm$random$Random$peel = function (_v0) {
-	var state = _v0.a;
-	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
-	return ((word >>> 22) ^ word) >>> 0;
-};
-var $elm$random$Random$int = F2(
-	function (a, b) {
-		return function (seed0) {
-			var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
-			var lo = _v0.a;
-			var hi = _v0.b;
-			var range = (hi - lo) + 1;
-			if (!((range - 1) & range)) {
-				return _Utils_Tuple2(
-					(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
-					$elm$random$Random$next(seed0));
-			} else {
-				var threshhold = (((-range) >>> 0) % range) >>> 0;
-				var accountForBias = function (seed) {
-					accountForBias:
-					while (true) {
-						var x = $elm$random$Random$peel(seed);
-						var seedN = $elm$random$Random$next(seed);
-						if (_Utils_cmp(x, threshhold) < 0) {
-							var $temp$seed = seedN;
-							seed = $temp$seed;
-							continue accountForBias;
-						} else {
-							return _Utils_Tuple2((x % range) + lo, seedN);
-						}
-					}
-				};
-				return accountForBias(seed0);
-			}
-		};
-	});
-var $elm$random$Random$maxInt = 2147483647;
-var $elm$random$Random$minInt = -2147483648;
-var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
-var $elm$random$Random$map3 = F4(
-	function (func, _v0, _v1, _v2) {
-		var genA = _v0;
-		var genB = _v1;
-		var genC = _v2;
-		return function (seed0) {
-			var _v3 = genA(seed0);
-			var a = _v3.a;
-			var seed1 = _v3.b;
-			var _v4 = genB(seed1);
-			var b = _v4.a;
-			var seed2 = _v4.b;
-			var _v5 = genC(seed2);
-			var c = _v5.a;
-			var seed3 = _v5.b;
-			return _Utils_Tuple2(
-				A3(func, a, b, c),
-				seed3);
-		};
-	});
-var $elm$core$Bitwise$or = _Bitwise_or;
-var $elm$random$Random$independentSeed = function (seed0) {
-	var makeIndependentSeed = F3(
-		function (state, b, c) {
-			return $elm$random$Random$next(
-				A2($elm$random$Random$Seed, state, (1 | (b ^ c)) >>> 0));
-		});
-	var gen = A2($elm$random$Random$int, 0, 4294967295);
-	return A2(
-		$elm$random$Random$step,
-		A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
-		seed0);
-};
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm$core$List$sortBy = _List_sortBy;
-var $elm_community$random_extra$Random$List$shuffle = function (list) {
-	return A2(
-		$elm$random$Random$map,
-		function (independentSeed) {
-			return A2(
-				$elm$core$List$map,
-				$elm$core$Tuple$first,
-				A2(
-					$elm$core$List$sortBy,
-					$elm$core$Tuple$second,
-					A3(
-						$elm$core$List$foldl,
-						F2(
-							function (item, _v0) {
-								var acc = _v0.a;
-								var seed = _v0.b;
-								var _v1 = A2($elm$random$Random$step, $elm_community$random_extra$Random$List$anyInt, seed);
-								var tag = _v1.a;
-								var nextSeed = _v1.b;
-								return _Utils_Tuple2(
-									A2(
-										$elm$core$List$cons,
-										_Utils_Tuple2(item, tag),
-										acc),
-									nextSeed);
-							}),
-						_Utils_Tuple2(_List_Nil, independentSeed),
-						list).a));
-		},
-		$elm$random$Random$independentSeed);
-};
-var $author$project$MainComponents$Structs$randomListGenerator = $elm_community$random_extra$Random$List$shuffle(
-	A2($elm$core$List$range, 1, 10));
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
-		return _Utils_Tuple2(
-			{
-				g: $author$project$Main$parseUrl(url),
-				s: $author$project$MainComponents$Home$initModel,
-				ag: key,
-				b: false,
-				a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
-			},
-			A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
+		var model = {
+			f: $author$project$Main$parseUrl(url),
+			t: $author$project$MainComponents$Home$initModel,
+			al: key,
+			b: false,
+			a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil),
+			M: $author$project$Trees$TreeTraversal$initModel
+		};
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$HomeMsg = function (a) {
 	return {$: 1, a: a};
@@ -6365,7 +6163,7 @@ var $elm$time$Time$Every = F2(
 	});
 var $elm$time$Time$State = F2(
 	function (taggers, processes) {
-		return {an: processes, av: taggers};
+		return {as: processes, aA: taggers};
 	});
 var $elm$time$Time$init = $elm$core$Task$succeed(
 	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
@@ -6478,6 +6276,17 @@ var $elm$core$Dict$merge = F6(
 			leftovers);
 	});
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+var $elm$time$Time$Name = function (a) {
+	return {$: 0, a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 1, a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$setInterval = _Time_setInterval;
 var $elm$core$Process$spawn = _Scheduler_spawn;
 var $elm$time$Time$spawnHelp = F3(
@@ -6504,7 +6313,7 @@ var $elm$time$Time$spawnHelp = F3(
 	});
 var $elm$time$Time$onEffects = F3(
 	function (router, subs, _v0) {
-		var processes = _v0.an;
+		var processes = _v0.as;
 		var rightStep = F3(
 			function (_v6, id, _v7) {
 				var spawns = _v7.a;
@@ -6568,9 +6377,12 @@ var $elm$time$Time$onEffects = F3(
 				},
 				killTask));
 	});
+var $elm$time$Time$Posix = $elm$core$Basics$identity;
+var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
-		var _v0 = A2($elm$core$Dict$get, interval, state.av);
+		var _v0 = A2($elm$core$Dict$get, interval, state.aA);
 		if (_v0.$ === 1) {
 			return $elm$core$Task$succeed(state);
 		} else {
@@ -6640,20 +6452,27 @@ var $author$project$MainComponents$Home$subscriptions = function (model) {
 			]));
 };
 var $author$project$Main$subscriptions = function (model) {
-	var _v0 = model.g;
+	var _v0 = model.f;
 	if (!_v0) {
 		return A2(
 			$elm$core$Platform$Sub$map,
 			$author$project$Main$HomeMsg,
-			$author$project$MainComponents$Home$subscriptions(model.s));
+			$author$project$MainComponents$Home$subscriptions(model.t));
 	} else {
 		return model.b ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
 };
+var $author$project$Main$GotRandomArray = function (a) {
+	return {$: 5, a: a};
+};
 var $author$project$Main$GotRandomTarget = function (a) {
 	return {$: 6, a: a};
 };
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$Main$TreeTraversalMsg = function (a) {
+	return {$: 7, a: a};
+};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
 var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
@@ -6743,11 +6562,11 @@ var $elm$core$Array$set = F3(
 			tail));
 	});
 var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (track) {
-	var outerIndex = track.aT;
-	var currentIndex = track.aG;
-	var arr = track.V;
+	var outerIndex = track.aY;
+	var currentIndex = track.aL;
+	var arr = track._;
 	var length = $elm$core$Array$length(arr);
-	if (track.aX) {
+	if (track.a0) {
 		return track;
 	} else {
 		if (_Utils_cmp(currentIndex, length) < 0) {
@@ -6765,11 +6584,11 @@ var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (trac
 						A3($elm$core$Array$set, currentIndex, leftVal, arr));
 					return _Utils_update(
 						track,
-						{V: swappedArray, aG: currentIndex + 1, _: true, aT: outerIndex + 1});
+						{_: swappedArray, aL: currentIndex + 1, ae: true, aY: outerIndex + 1});
 				} else {
 					return _Utils_update(
 						track,
-						{aG: currentIndex + 1, aT: outerIndex + 1});
+						{aL: currentIndex + 1, aY: outerIndex + 1});
 				}
 			} else {
 				return track;
@@ -6777,24 +6596,107 @@ var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (trac
 		} else {
 			return _Utils_update(
 				track,
-				{aG: 1, _: false, aT: 0, aX: !track._});
+				{aL: 1, ae: false, aY: 0, a0: !track.ae});
 		}
 	}
 };
+var $elm$random$Random$Generate = $elm$core$Basics$identity;
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0;
+	return millis;
+};
+var $elm$random$Random$init = A2(
+	$elm$core$Task$andThen,
+	function (time) {
+		return $elm$core$Task$succeed(
+			$elm$random$Random$initialSeed(
+				$elm$time$Time$posixToMillis(time)));
+	},
+	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0;
+		return generator(seed);
+	});
+var $elm$random$Random$onEffects = F3(
+	function (router, commands, seed) {
+		if (!commands.b) {
+			return $elm$core$Task$succeed(seed);
+		} else {
+			var generator = commands.a;
+			var rest = commands.b;
+			var _v1 = A2($elm$random$Random$step, generator, seed);
+			var value = _v1.a;
+			var newSeed = _v1.b;
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$random$Random$onEffects, router, rest, newSeed);
+				},
+				A2($elm$core$Platform$sendToApp, router, value));
+		}
+	});
+var $elm$random$Random$onSelfMsg = F3(
+	function (_v0, _v1, seed) {
+		return $elm$core$Task$succeed(seed);
+	});
+var $elm$random$Random$Generator = $elm$core$Basics$identity;
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0;
+		return function (seed0) {
+			var _v1 = genA(seed0);
+			var a = _v1.a;
+			var seed1 = _v1.b;
+			return _Utils_Tuple2(
+				func(a),
+				seed1);
+		};
+	});
+var $elm$random$Random$cmdMap = F2(
+	function (func, _v0) {
+		var generator = _v0;
+		return A2($elm$random$Random$map, func, generator);
+	});
+_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
+var $elm$random$Random$command = _Platform_leaf('Random');
+var $elm$random$Random$generate = F2(
+	function (tagger, generator) {
+		return $elm$random$Random$command(
+			A2($elm$random$Random$map, tagger, generator));
+	});
 var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function (track) {
-	var outer = track.aT;
-	var current = track.aG;
-	var arr = track.V;
+	var outer = track.aY;
+	var current = track.aL;
+	var arr = track._;
 	var length = $elm$core$Array$length(arr);
-	if (track.aX || (_Utils_cmp(outer, length) > -1)) {
+	if (track.a0 || (_Utils_cmp(outer, length) > -1)) {
 		return _Utils_update(
 			track,
-			{aX: true});
+			{a0: true});
 	} else {
 		if (current <= 0) {
 			return _Utils_update(
 				track,
-				{aG: outer + 1, aT: outer + 1});
+				{aL: outer + 1, aY: outer + 1});
 		} else {
 			var _v0 = _Utils_Tuple2(
 				A2($elm$core$Array$get, current, arr),
@@ -6810,11 +6712,11 @@ var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function
 						A3($elm$core$Array$set, current, previousValue, arr));
 					return _Utils_update(
 						track,
-						{V: swappedArray, aG: current - 1});
+						{_: swappedArray, aL: current - 1});
 				} else {
 					return _Utils_update(
 						track,
-						{aG: outer + 1, aT: outer + 1});
+						{aL: outer + 1, aY: outer + 1});
 				}
 			} else {
 				return track;
@@ -6823,17 +6725,17 @@ var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function
 	}
 };
 var $author$project$SearchAlgorithms$LinearSearch$linearSearchStep = function (track) {
-	var target = track.aG;
-	var scanningIndex = track.aT;
-	var arr = track.V;
+	var target = track.aL;
+	var scanningIndex = track.aY;
+	var arr = track._;
 	var length = $elm$core$Array$length(arr);
-	return track.aX ? track : (_Utils_eq(scanningIndex, target) ? _Utils_update(
+	return track.a0 ? track : (_Utils_eq(scanningIndex, target) ? _Utils_update(
 		track,
-		{aX: true}) : ((_Utils_cmp(scanningIndex + 1, length) < 0) ? _Utils_update(
+		{a0: true}) : ((_Utils_cmp(scanningIndex + 1, length) < 0) ? _Utils_update(
 		track,
-		{X: track.X + 1, aT: scanningIndex + 1}) : _Utils_update(
+		{ab: track.ab + 1, aY: scanningIndex + 1}) : _Utils_update(
 		track,
-		{X: track.X, aX: false})));
+		{ab: track.ab, a0: false})));
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$Basics$pow = _Basics_pow;
@@ -6845,20 +6747,20 @@ var $elm$core$Array$appendHelpBuilder = F2(
 		var notAppended = ($elm$core$Array$branchFactor - $elm$core$Elm$JsArray$length(builder.e)) - tailLen;
 		var appended = A3($elm$core$Elm$JsArray$appendN, $elm$core$Array$branchFactor, builder.e, tail);
 		return (notAppended < 0) ? {
-			f: A2(
+			g: A2(
 				$elm$core$List$cons,
 				$elm$core$Array$Leaf(appended),
-				builder.f),
+				builder.g),
 			c: builder.c + 1,
 			e: A3($elm$core$Elm$JsArray$slice, notAppended, tailLen, tail)
 		} : ((!notAppended) ? {
-			f: A2(
+			g: A2(
 				$elm$core$List$cons,
 				$elm$core$Array$Leaf(appended),
-				builder.f),
+				builder.g),
 			c: builder.c + 1,
 			e: $elm$core$Elm$JsArray$empty
-		} : {f: builder.f, c: builder.c, e: appended});
+		} : {g: builder.g, c: builder.c, e: appended});
 	});
 var $elm$core$Elm$JsArray$push = _JsArray_push;
 var $elm$core$Elm$JsArray$singleton = _JsArray_singleton;
@@ -6961,7 +6863,7 @@ var $elm$core$Array$builderFromArray = function (_v0) {
 			}
 		});
 	return {
-		f: A3($elm$core$Elm$JsArray$foldl, helper, _List_Nil, tree),
+		g: A3($elm$core$Elm$JsArray$foldl, helper, _List_Nil, tree),
 		c: (len / $elm$core$Array$branchFactor) | 0,
 		e: tail
 	};
@@ -7161,7 +7063,7 @@ var $elm$core$Array$sliceLeft = F2(
 					var rest = nodesToInsert.b;
 					var firstSlice = from - (skipNodes * $elm$core$Array$branchFactor);
 					var initialBuilder = {
-						f: _List_Nil,
+						g: _List_Nil,
 						c: 0,
 						e: A3(
 							$elm$core$Elm$JsArray$slice,
@@ -7318,10 +7220,10 @@ var $author$project$SortingAlgorithms$MergeSort$processMergeStep = F3(
 		return A2(processSegments, 0, $elm$core$Array$empty);
 	});
 var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track) {
-	var outerIndex = track.aT;
-	var currentStep = track.X;
+	var outerIndex = track.aY;
+	var currentStep = track.ab;
 	var halfStep = (A2($elm$core$Basics$pow, 2, currentStep) / 2) | 0;
-	var array = track.V;
+	var array = track._;
 	var arrayLength = $elm$core$Array$length(array);
 	var totalSteps = $elm$core$Basics$ceiling(
 		A2($elm$core$Basics$logBase, 2, arrayLength));
@@ -7330,14 +7232,13 @@ var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track)
 	return _Utils_update(
 		track,
 		{
-			V: updatedArray,
-			aG: currentStep,
-			X: isSorted ? currentStep : (currentStep + 1),
-			aT: halfStep,
-			aX: isSorted
+			_: updatedArray,
+			aL: currentStep,
+			ab: isSorted ? currentStep : (currentStep + 1),
+			aY: halfStep,
+			a0: isSorted
 		});
 };
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (!maybe.$) {
@@ -7368,7 +7269,7 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 		var pivot = A2(
 			$elm$core$Maybe$withDefault,
 			0,
-			A2($elm$core$Array$get, high, track.V));
+			A2($elm$core$Array$get, high, track._));
 		var loop = F2(
 			function (_v1, currentIndex) {
 				var currentTrack = _v1.a;
@@ -7376,13 +7277,13 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 				var currentElement = A2(
 					$elm$core$Maybe$withDefault,
 					0,
-					A2($elm$core$Array$get, currentIndex, currentTrack.V));
+					A2($elm$core$Array$get, currentIndex, currentTrack._));
 				if (_Utils_cmp(currentElement, pivot) < 0) {
-					var updatedArray = A3($author$project$SortingAlgorithms$QuickSort$swap, currentIndex, partitionIndex, currentTrack.V);
+					var updatedArray = A3($author$project$SortingAlgorithms$QuickSort$swap, currentIndex, partitionIndex, currentTrack._);
 					return _Utils_Tuple2(
 						_Utils_update(
 							currentTrack,
-							{V: updatedArray}),
+							{_: updatedArray}),
 						partitionIndex + 1);
 				} else {
 					return _Utils_Tuple2(currentTrack, partitionIndex);
@@ -7398,19 +7299,19 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 			A2($elm$core$List$range, low, high - 1));
 		var newTrack = _v0.a;
 		var pivotIndex = _v0.b;
-		var finalArray = A3($author$project$SortingAlgorithms$QuickSort$swap, pivotIndex, high, newTrack.V);
+		var finalArray = A3($author$project$SortingAlgorithms$QuickSort$swap, pivotIndex, high, newTrack._);
 		return _Utils_Tuple2(
 			pivotIndex,
 			_Utils_update(
 				newTrack,
-				{V: finalArray}));
+				{_: finalArray}));
 	});
 var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track) {
-	var _v0 = track.at;
+	var _v0 = track.ay;
 	if (!_v0.b) {
 		return _Utils_update(
 			track,
-			{aX: true});
+			{a0: true});
 	} else {
 		var _v1 = _v0.a;
 		var low = _v1.a;
@@ -7429,26 +7330,323 @@ var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track)
 					rest));
 			return _Utils_update(
 				newTrack,
-				{aG: low, X: track.X + 1, aT: pivotIndex, at: newStack});
+				{aL: low, ab: track.ab + 1, aY: pivotIndex, ay: newStack});
 		} else {
 			return _Utils_update(
 				track,
-				{at: rest});
+				{ay: rest});
 		}
 	}
 };
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return function (seed0) {
+			var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+			var lo = _v0.a;
+			var hi = _v0.b;
+			var range = (hi - lo) + 1;
+			if (!((range - 1) & range)) {
+				return _Utils_Tuple2(
+					(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+					$elm$random$Random$next(seed0));
+			} else {
+				var threshhold = (((-range) >>> 0) % range) >>> 0;
+				var accountForBias = function (seed) {
+					accountForBias:
+					while (true) {
+						var x = $elm$random$Random$peel(seed);
+						var seedN = $elm$random$Random$next(seed);
+						if (_Utils_cmp(x, threshhold) < 0) {
+							var $temp$seed = seedN;
+							seed = $temp$seed;
+							continue accountForBias;
+						} else {
+							return _Utils_Tuple2((x % range) + lo, seedN);
+						}
+					}
+				};
+				return accountForBias(seed0);
+			}
+		};
+	});
+var $elm$random$Random$maxInt = 2147483647;
+var $elm$random$Random$minInt = -2147483648;
+var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
+var $elm$random$Random$map3 = F4(
+	function (func, _v0, _v1, _v2) {
+		var genA = _v0;
+		var genB = _v1;
+		var genC = _v2;
+		return function (seed0) {
+			var _v3 = genA(seed0);
+			var a = _v3.a;
+			var seed1 = _v3.b;
+			var _v4 = genB(seed1);
+			var b = _v4.a;
+			var seed2 = _v4.b;
+			var _v5 = genC(seed2);
+			var c = _v5.a;
+			var seed3 = _v5.b;
+			return _Utils_Tuple2(
+				A3(func, a, b, c),
+				seed3);
+		};
+	});
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $elm$random$Random$independentSeed = function (seed0) {
+	var makeIndependentSeed = F3(
+		function (state, b, c) {
+			return $elm$random$Random$next(
+				A2($elm$random$Random$Seed, state, (1 | (b ^ c)) >>> 0));
+		});
+	var gen = A2($elm$random$Random$int, 0, 4294967295);
+	return A2(
+		$elm$random$Random$step,
+		A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
+		seed0);
+};
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $elm_community$random_extra$Random$List$shuffle = function (list) {
+	return A2(
+		$elm$random$Random$map,
+		function (independentSeed) {
+			return A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2(
+					$elm$core$List$sortBy,
+					$elm$core$Tuple$second,
+					A3(
+						$elm$core$List$foldl,
+						F2(
+							function (item, _v0) {
+								var acc = _v0.a;
+								var seed = _v0.b;
+								var _v1 = A2($elm$random$Random$step, $elm_community$random_extra$Random$List$anyInt, seed);
+								var tag = _v1.a;
+								var nextSeed = _v1.b;
+								return _Utils_Tuple2(
+									A2(
+										$elm$core$List$cons,
+										_Utils_Tuple2(item, tag),
+										acc),
+									nextSeed);
+							}),
+						_Utils_Tuple2(_List_Nil, independentSeed),
+						list).a));
+		},
+		$elm$random$Random$independentSeed);
+};
+var $author$project$MainComponents$Structs$randomListGenerator = $elm_community$random_extra$Random$List$shuffle(
+	A2($elm$core$List$range, 1, 10));
 var $author$project$MainComponents$Structs$randomTargetGenerator = A2($elm$random$Random$int, 1, 10);
+var $author$project$Trees$TreeTraversal$GotRandomTree = function (a) {
+	return {$: 1, a: a};
+};
+var $elm$random$Random$andThen = F2(
+	function (callback, _v0) {
+		var genA = _v0;
+		return function (seed) {
+			var _v1 = genA(seed);
+			var result = _v1.a;
+			var newSeed = _v1.b;
+			var _v2 = callback(result);
+			var genB = _v2;
+			return genB(newSeed);
+		};
+	});
+var $author$project$MainComponents$Structs$Node = F3(
+	function (a, b, c) {
+		return {$: 1, a: a, b: b, c: c};
+	});
+var $author$project$Trees$TreeTraversal$buildTree = F3(
+	function (values, index, depth) {
+		if ((_Utils_cmp(
+			index,
+			$elm$core$List$length(values)) > -1) || (depth >= 5)) {
+			return $author$project$MainComponents$Structs$Empty;
+		} else {
+			var val = function () {
+				var _v0 = A2($elm$core$List$drop, index, values);
+				if (!_v0.b) {
+					return 0;
+				} else {
+					var x = _v0.a;
+					return x;
+				}
+			}();
+			var rightSubtree = A3($author$project$Trees$TreeTraversal$buildTree, values, (2 * index) + 2, depth + 1);
+			var leftSubtree = A3($author$project$Trees$TreeTraversal$buildTree, values, (2 * index) + 1, depth + 1);
+			return A3($author$project$MainComponents$Structs$Node, val, leftSubtree, rightSubtree);
+		}
+	});
+var $elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2($elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return $elm$core$List$reverse(
+			A3($elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var $elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _v0 = _Utils_Tuple2(n, list);
+			_v0$1:
+			while (true) {
+				_v0$5:
+				while (true) {
+					if (!_v0.b.b) {
+						return list;
+					} else {
+						if (_v0.b.b.b) {
+							switch (_v0.a) {
+								case 1:
+									break _v0$1;
+								case 2:
+									var _v2 = _v0.b;
+									var x = _v2.a;
+									var _v3 = _v2.b;
+									var y = _v3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_v0.b.b.b.b) {
+										var _v4 = _v0.b;
+										var x = _v4.a;
+										var _v5 = _v4.b;
+										var y = _v5.a;
+										var _v6 = _v5.b;
+										var z = _v6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _v0$5;
+									}
+								default:
+									if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+										var _v7 = _v0.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										var _v10 = _v9.b;
+										var w = _v10.a;
+										var tl = _v10.b;
+										return (ctr > 1000) ? A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _v0$5;
+									}
+							}
+						} else {
+							if (_v0.a === 1) {
+								break _v0$1;
+							} else {
+								break _v0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _v1 = _v0.b;
+			var x = _v1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var $elm$core$List$take = F2(
+	function (n, list) {
+		return A3($elm$core$List$takeFast, 0, n, list);
+	});
+var $author$project$Trees$TreeTraversal$randomTreeGenerator = function () {
+	var sizeGenerator = A2($elm$random$Random$int, 10, 31);
+	return A2(
+		$elm$random$Random$andThen,
+		function (n) {
+			return A2(
+				$elm$random$Random$map,
+				function (shuffledList) {
+					var values = A2($elm$core$List$take, n, shuffledList);
+					return A3($author$project$Trees$TreeTraversal$buildTree, values, 0, 0);
+				},
+				$elm_community$random_extra$Random$List$shuffle(
+					A2($elm$core$List$range, 1, 50)));
+		},
+		sizeGenerator);
+}();
+var $author$project$Trees$TreeTraversal$randomTreeCmd = A2($elm$random$Random$generate, $author$project$Trees$TreeTraversal$GotRandomTree, $author$project$Trees$TreeTraversal$randomTreeGenerator);
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function (track) {
-	var outer = track.aT;
-	var minimum = track.aO;
-	var current = track.aG;
-	var arr = track.V;
+	var outer = track.aY;
+	var minimum = track.aT;
+	var current = track.aL;
+	var arr = track._;
 	var length = $elm$core$Array$length(arr);
-	if (track.aX || (_Utils_cmp(outer, length) > -1)) {
+	if (track.a0 || (_Utils_cmp(outer, length) > -1)) {
 		return _Utils_update(
 			track,
-			{aX: true});
+			{a0: true});
 	} else {
 		if (_Utils_cmp(current, length) < 0) {
 			var _v0 = _Utils_Tuple2(
@@ -7459,9 +7657,9 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 				var minimumValue = _v0.b.a;
 				return (_Utils_cmp(currentValue, minimumValue) < 0) ? _Utils_update(
 					track,
-					{aG: current + 1, aO: current}) : _Utils_update(
+					{aL: current + 1, aT: current}) : _Utils_update(
 					track,
-					{aG: current + 1});
+					{aL: current + 1});
 			} else {
 				return track;
 			}
@@ -7479,7 +7677,7 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 					A3($elm$core$Array$set, minimum, outerValue, arr)) : arr;
 				return _Utils_update(
 					track,
-					{V: updatedArray, aG: outer + 2, aO: outer + 1, aT: outer + 1});
+					{_: updatedArray, aL: outer + 2, aT: outer + 1, aY: outer + 1});
 			} else {
 				return track;
 			}
@@ -7487,26 +7685,26 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 	}
 };
 var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track) {
-	var outer = track.aT;
-	var gap = track.ad;
-	var current = track.X;
-	var arr = track.V;
+	var outer = track.aY;
+	var gap = track.ai;
+	var current = track.ab;
+	var arr = track._;
 	var length = $elm$core$Array$length(arr);
-	if (track.aX || (gap <= 0)) {
+	if (track.a0 || (gap <= 0)) {
 		return _Utils_update(
 			track,
-			{aX: true});
+			{a0: true});
 	} else {
 		if (_Utils_cmp(outer, length) > -1) {
 			var newGap = (gap === 1) ? 0 : ((gap / 2) | 0);
 			return _Utils_update(
 				track,
-				{X: newGap, ad: newGap, aT: newGap});
+				{ab: newGap, ai: newGap, aY: newGap});
 		} else {
 			if (_Utils_cmp(current, gap) < 0) {
 				return _Utils_update(
 					track,
-					{X: outer + 1, aT: outer + 1});
+					{ab: outer + 1, aY: outer + 1});
 			} else {
 				var _v0 = _Utils_Tuple2(
 					A2($elm$core$Array$get, current, arr),
@@ -7522,11 +7720,11 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 							A3($elm$core$Array$set, current - gap, currentValue, arr));
 						return _Utils_update(
 							track,
-							{V: updatedArray, aG: current - gap, X: current - gap});
+							{_: updatedArray, aL: current - gap, ab: current - gap});
 					} else {
 						return _Utils_update(
 							track,
-							{X: outer + 1, aT: outer + 1});
+							{ab: outer + 1, aY: outer + 1});
 					}
 				} else {
 					return track;
@@ -7588,7 +7786,7 @@ var $author$project$MainComponents$Home$update = F2(
 		switch (msg.$) {
 			case 0:
 				var switched = function () {
-					var _v1 = model.aw;
+					var _v1 = model.aB;
 					if (_v1 === 1) {
 						return 0;
 					} else {
@@ -7598,26 +7796,26 @@ var $author$project$MainComponents$Home$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aw: switched}),
+						{aB: switched}),
 					$elm$core$Platform$Cmd$none);
 			case 1:
 				return ((_Utils_cmp(
-					model.p,
-					$elm$core$String$length(model.N) + 5) < 0) && (!model.D)) ? _Utils_Tuple2(
+					model.q,
+					$elm$core$String$length(model.S) + 5) < 0) && (!model.G)) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{p: model.p + 1}),
-					$elm$core$Platform$Cmd$none) : (((model.p > 1) && model.D) ? _Utils_Tuple2(
+						{q: model.q + 1}),
+					$elm$core$Platform$Cmd$none) : (((model.q > 1) && model.G) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{p: model.p - 1}),
+						{q: model.q - 1}),
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{D: !model.D}),
+						{G: !model.G}),
 					$elm$core$Platform$Cmd$none));
 			case 2:
-				var arrLength = $elm$core$Array$length(model.A);
+				var arrLength = $elm$core$Array$length(model.C);
 				var randomCmd = A2(
 					$elm$random$Random$generate,
 					$author$project$MainComponents$Home$IndexSwap,
@@ -7634,11 +7832,123 @@ var $author$project$MainComponents$Home$update = F2(
 					_Utils_update(
 						model,
 						{
-							A: A3($author$project$MainComponents$Home$swap, indexOne, indexTwo, model.A),
-							L: indexOne,
-							M: indexTwo
+							C: A3($author$project$MainComponents$Home$swap, indexOne, indexTwo, model.C),
+							Q: indexOne,
+							R: indexTwo
 						}),
 					$elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$Trees$TreeTraversal$inorder = function (t) {
+	if (!t.$) {
+		return _List_Nil;
+	} else {
+		var val = t.a;
+		var left = t.b;
+		var right = t.c;
+		return _Utils_ap(
+			$author$project$Trees$TreeTraversal$inorder(left),
+			_Utils_ap(
+				_List_fromArray(
+					[val]),
+				$author$project$Trees$TreeTraversal$inorder(right)));
+	}
+};
+var $author$project$Trees$TreeTraversal$postorder = function (t) {
+	if (!t.$) {
+		return _List_Nil;
+	} else {
+		var val = t.a;
+		var left = t.b;
+		var right = t.c;
+		return _Utils_ap(
+			$author$project$Trees$TreeTraversal$postorder(left),
+			_Utils_ap(
+				$author$project$Trees$TreeTraversal$postorder(right),
+				_List_fromArray(
+					[val])));
+	}
+};
+var $author$project$Trees$TreeTraversal$preorder = function (t) {
+	if (!t.$) {
+		return _List_Nil;
+	} else {
+		var val = t.a;
+		var left = t.b;
+		var right = t.c;
+		return A2(
+			$elm$core$List$cons,
+			val,
+			_Utils_ap(
+				$author$project$Trees$TreeTraversal$preorder(left),
+				$author$project$Trees$TreeTraversal$preorder(right)));
+	}
+};
+var $author$project$Trees$TreeTraversal$getTraversal = F2(
+	function (traversalType, tree) {
+		switch (traversalType) {
+			case 0:
+				return $author$project$Trees$TreeTraversal$preorder(tree);
+			case 1:
+				return $author$project$Trees$TreeTraversal$inorder(tree);
+			default:
+				return $author$project$Trees$TreeTraversal$postorder(tree);
+		}
+	});
+var $author$project$Trees$TreeTraversal$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 0:
+				return _Utils_Tuple2(model, $author$project$Trees$TreeTraversal$randomTreeCmd);
+			case 1:
+				var newTree = msg.a;
+				var newTraversal = A2($author$project$Trees$TreeTraversal$getTraversal, model.P, newTree);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{m: 0, A: newTraversal, F: newTree}),
+					$elm$core$Platform$Cmd$none);
+			case 2:
+				var tType = msg.a;
+				var newTraversal = A2($author$project$Trees$TreeTraversal$getTraversal, tType, model.F);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{P: tType, m: 0, A: newTraversal}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				switch (msg.a) {
+					case 0:
+						var _v1 = msg.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{b: true}),
+							$elm$core$Platform$Cmd$none);
+					case 1:
+						var _v2 = msg.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{b: false}),
+							$elm$core$Platform$Cmd$none);
+					case 3:
+						var _v3 = msg.a;
+						return (_Utils_cmp(
+							model.m,
+							$elm$core$List$length(model.A)) < 0) ? _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{m: model.m + 1}),
+							$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					default:
+						var _v4 = msg.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{m: 0, b: false, A: _List_Nil, F: $author$project$MainComponents$Structs$Empty}),
+							$author$project$Trees$TreeTraversal$randomTreeCmd);
+				}
 		}
 	});
 var $author$project$Main$update = F2(
@@ -7650,21 +7960,31 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							g: page,
+							f: page,
 							b: false,
 							a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 1:
 				var homeMsg = msg.a;
-				var _v1 = A2($author$project$MainComponents$Home$update, homeMsg, model.s);
+				var _v1 = A2($author$project$MainComponents$Home$update, homeMsg, model.t);
 				var newHome = _v1.a;
 				var homeCmd = _v1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{s: newHome}),
+						{t: newHome}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$HomeMsg, homeCmd));
+			case 7:
+				var subMsg = msg.a;
+				var _v2 = A2($author$project$Trees$TreeTraversal$update, subMsg, model.M);
+				var newTreeTraversalModel = _v2.a;
+				var subCmd = _v2.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{M: newTreeTraversalModel}),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, subCmd));
 			case 2:
 				var algName = msg.a;
 				switch (algName) {
@@ -7673,7 +7993,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 1,
+									f: 1,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7683,7 +8003,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 2,
+									f: 2,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7693,7 +8013,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 3,
+									f: 3,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7703,7 +8023,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 4,
+									f: 4,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7713,7 +8033,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 5,
+									f: 5,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7723,7 +8043,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 6,
+									f: 6,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7733,7 +8053,7 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									g: 7,
+									f: 7,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7743,12 +8063,22 @@ var $author$project$Main$update = F2(
 										A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
 										A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator)
 									])));
+					case 'Tree Traversal':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									f: 8,
+									b: false,
+									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, $author$project$Trees$TreeTraversal$randomTreeCmd));
 					default:
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
 								{
-									g: 0,
+									f: 0,
 									b: false,
 									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -7771,8 +8101,8 @@ var $author$project$Main$update = F2(
 							$elm$core$Platform$Cmd$none);
 					case 2:
 						var resetCmds = function () {
-							var _v4 = model.g;
-							if (_v4 === 7) {
+							var _v5 = model.f;
+							if (_v5 === 7) {
 								return _List_fromArray(
 									[
 										A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
@@ -7794,32 +8124,60 @@ var $author$project$Main$update = F2(
 								}),
 							$elm$core$Platform$Cmd$batch(resetCmds));
 					default:
-						var updatedTrack = function () {
-							var _v5 = model.g;
-							switch (_v5) {
-								case 1:
-									return $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.a);
-								case 2:
-									return $author$project$SortingAlgorithms$SelectionSort$selectionSortStep(model.a);
-								case 3:
-									return $author$project$SortingAlgorithms$InsertionSort$insertionSortStep(model.a);
-								case 4:
-									return $author$project$SortingAlgorithms$ShellSort$shellSortStep(model.a);
-								case 5:
-									return $author$project$SortingAlgorithms$MergeSort$mergeSortStep(model.a);
-								case 6:
-									return $author$project$SortingAlgorithms$QuickSort$quickSortStep(model.a);
-								case 7:
-									return $author$project$SearchAlgorithms$LinearSearch$linearSearchStep(model.a);
-								default:
-									return model.a;
-							}
-						}();
-						return _Utils_Tuple2(
-							_Utils_update(
-								model,
-								{a: updatedTrack}),
-							$elm$core$Platform$Cmd$none);
+						var _v6 = model.f;
+						switch (_v6) {
+							case 1:
+								var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							case 2:
+								var updatedTrack = $author$project$SortingAlgorithms$SelectionSort$selectionSortStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							case 3:
+								var updatedTrack = $author$project$SortingAlgorithms$InsertionSort$insertionSortStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							case 4:
+								var updatedTrack = $author$project$SortingAlgorithms$ShellSort$shellSortStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							case 5:
+								var updatedTrack = $author$project$SortingAlgorithms$MergeSort$mergeSortStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							case 6:
+								var updatedTrack = $author$project$SortingAlgorithms$QuickSort$quickSortStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							case 7:
+								var updatedTrack = $author$project$SearchAlgorithms$LinearSearch$linearSearchStep(model.a);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{a: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
+							default:
+								return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+						}
 				}
 			case 5:
 				var list = msg.a;
@@ -7835,11 +8193,11 @@ var $author$project$Main$update = F2(
 				var newTarget = msg.a;
 				var currentSortingAlgorithm = model.a;
 				var updatedSortingAlgorithm = function () {
-					var array = currentSortingAlgorithm.V;
+					var array = currentSortingAlgorithm._;
 					var targetValue = function () {
-						var _v6 = A2($elm$core$Array$get, newTarget, array);
-						if (!_v6.$) {
-							var value = _v6.a;
+						var _v7 = A2($elm$core$Array$get, newTarget, array);
+						if (!_v7.$) {
+							var value = _v7.a;
 							return value;
 						} else {
 							return 0;
@@ -7847,7 +8205,7 @@ var $author$project$Main$update = F2(
 					}();
 					return _Utils_update(
 						currentSortingAlgorithm,
-						{V: array, aG: newTarget, aO: targetValue, aT: 0, aX: false});
+						{_: array, aL: newTarget, aT: targetValue, aY: 0, a0: false});
 				}();
 				var updatedModel = _Utils_update(
 					model,
@@ -7856,8 +8214,8 @@ var $author$project$Main$update = F2(
 			default:
 				if (model.b) {
 					var updatedTrack = function () {
-						var _v7 = model.g;
-						switch (_v7) {
+						var _v8 = model.f;
+						switch (_v8) {
 							case 1:
 								return $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.a);
 							case 2:
@@ -7891,7 +8249,7 @@ var $author$project$Main$ControlMsg = function (a) {
 };
 var $elm$browser$Browser$Document = F2(
 	function (title, body) {
-		return {aD: body, a_: title};
+		return {aI: body, a3: title};
 	});
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -7961,7 +8319,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 			]),
 		_List_fromArray(
 			[
-				A3($author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars, model.A, model.L, model.M),
+				A3($author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars, model.C, model.Q, model.R),
 				A2(
 				$elm$html$Html$h1,
 				_List_fromArray(
@@ -7971,7 +8329,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						A2($elm$core$String$left, model.p, model.N))
+						A2($elm$core$String$left, model.q, model.S))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -8234,7 +8592,7 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 						[
 							$elm$html$Html$text('Linear Search is the easiest searching algorithm.\r\n              It starts at the first element in the list and searches the list until it finds the target element or hits the end of the list.\r\n              If the target element in found, the searching stops and sees that the element is in the list.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8245,11 +8603,11 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Current Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Target: ' + $elm$core$String$fromInt(track.aO)),
+							' | Target: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Element Found: ' + (track.aX ? 'Yes' : 'No'))
+							' | Element Found: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8407,7 +8765,7 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 						[
 							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8418,13 +8776,13 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Current Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Next Index: ' + $elm$core$String$fromInt(track.aG)),
+							' | Next Index: ' + $elm$core$String$fromInt(track.aL)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track._ ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.ae ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8612,7 +8970,7 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 						[
 							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8623,11 +8981,11 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Outer Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aG)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.aL)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8795,7 +9153,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						[
 							$elm$html$Html$text('Merge Sort is a divide and conquer sorting algorithm.\r\n              First, it divides the array into subarrays until it can no longer be divided.\r\n              Then, it conquers by sorting each subarray individually.\r\n              Finally, it merges the subarray together until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8806,11 +9164,11 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Middle Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Middle Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Outer Index: ' + $elm$core$String$fromInt(track.aG)),
+							' | Outer Index: ' + $elm$core$String$fromInt(track.aL)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8978,7 +9336,7 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 						[
 							$elm$html$Html$text('Quick Sort follows a divide and conquer approach.\r\n              It selects an element of the array to be a pivot. In this example, it\'s the rightmost element.\r\n              Then, the algorithm partitions the array and rearranges around the pivot.\r\n              At the end of this step, all elements smaller than the pivot are to the left of it and larger are to the right.\r\n              Finally, the sort is recursively called while reducing the size of the subarrays until there is only one element in the left subarray.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.V, 'Walk through the steps below', track.aX, track.aT, track.aG, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8989,13 +9347,13 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Pivot Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Pivot Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aG)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.aL)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track._ ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.ae ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9165,12 +9523,12 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
-					track.V,
+					track._,
 					'Walk through the steps below',
-					track.aX,
-					track.aT,
-					track.aG,
-					$elm$core$Maybe$Just(track.aO)),
+					track.a0,
+					track.aY,
+					track.aL,
+					$elm$core$Maybe$Just(track.aT)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9181,15 +9539,15 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Current Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Compare Index: ' + $elm$core$String$fromInt(track.aG)),
+							' | Compare Index: ' + $elm$core$String$fromInt(track.aL)),
 							$elm$html$Html$text(
-							' | Minimum Index: ' + $elm$core$String$fromInt(track.aO)),
+							' | Minimum Index: ' + $elm$core$String$fromInt(track.aT)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track._ ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.ae ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9366,12 +9724,12 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
-					track.V,
+					track._,
 					'Walk through the steps below',
-					track.aX,
-					track.aT,
-					track.aG,
-					$elm$core$Maybe$Just(track.ad)),
+					track.a0,
+					track.aY,
+					track.aL,
+					$elm$core$Maybe$Just(track.ai)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9382,13 +9740,13 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.aT)),
+							'Outer Index: ' + $elm$core$String$fromInt(track.aY)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aG)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.aL)),
 							$elm$html$Html$text(
-							' | Gap: ' + $elm$core$String$fromInt(track.ad)),
+							' | Gap: ' + $elm$core$String$fromInt(track.ai)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.aX ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9533,6 +9891,302 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 						]))
 				]));
 	});
+var $author$project$Trees$TreeTraversal$ChangeTraversal = function (a) {
+	return {$: 2, a: a};
+};
+var $author$project$Trees$TreeTraversal$ControlMsg = function (a) {
+	return {$: 3, a: a};
+};
+var $author$project$Trees$TreeTraversal$Postorder = 2;
+var $author$project$Trees$TreeTraversal$Preorder = 0;
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Trees$TreeVisualization$currentIndexNode = F2(
+	function (traversal, idx) {
+		return ((idx > 0) && (_Utils_cmp(
+			idx,
+			$elm$core$List$length(traversal)) < 1)) ? $elm$core$List$head(
+			A2($elm$core$List$drop, idx - 1, traversal)) : $elm$core$Maybe$Nothing;
+	});
+var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
+	function (xs, idx) {
+		var visited = A2($elm$core$List$take, idx, xs);
+		var visitedStr = '[' + (A2(
+			$elm$core$String$join,
+			', ',
+			A2($elm$core$List$map, $elm$core$String$fromInt, visited)) + ']');
+		var remaining = A2($elm$core$List$drop, idx, xs);
+		var remainingStr = '[' + (A2(
+			$elm$core$String$join,
+			', ',
+			A2($elm$core$List$map, $elm$core$String$fromInt, remaining)) + ']');
+		return visitedStr + (' | ' + remainingStr);
+	});
+var $author$project$Trees$TreeVisualization$renderTree = F2(
+	function (tree, maybeActive) {
+		if (!tree.$) {
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('tree-empty')
+					]),
+				_List_Nil);
+		} else {
+			var val = tree.a;
+			var left = tree.b;
+			var right = tree.c;
+			var isActive = function () {
+				if (!maybeActive.$) {
+					var x = maybeActive.a;
+					return _Utils_eq(x, val);
+				} else {
+					return false;
+				}
+			}();
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('tree-node-wrapper')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_Utils_ap(
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('tree-node')
+								]),
+							isActive ? _List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('active-node')
+								]) : _List_Nil),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(val))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('tree-children')
+							]),
+						_List_fromArray(
+							[
+								A2($author$project$Trees$TreeVisualization$renderTree, left, maybeActive),
+								A2($author$project$Trees$TreeVisualization$renderTree, right, maybeActive)
+							]))
+					]));
+		}
+	});
+var $author$project$Trees$TreeVisualization$view = F4(
+	function (tree, currentIndex, traversalResult, running) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('tree-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('tree-info')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$author$project$Trees$TreeVisualization$renderTree,
+							tree,
+							A2($author$project$Trees$TreeVisualization$currentIndexNode, traversalResult, currentIndex))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Traversal so far: ' + A2($author$project$Trees$TreeVisualization$renderHighlighted, traversalResult, currentIndex))
+						]))
+				]));
+	});
+var $author$project$Trees$TreeTraversal$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('sort-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Tree Traversal')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Tree Traversals are the process of visiting each node once in a tree data structure.\r\n                  Walk through three different types of traversals below.')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Trees$TreeTraversal$ChangeTraversal(0))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Preorder')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Trees$TreeTraversal$ChangeTraversal(1))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Inorder')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Trees$TreeTraversal$ChangeTraversal(2))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Postorder')
+							]))
+					])),
+				A4($author$project$Trees$TreeVisualization$view, model.F, model.m, model.A, model.b),
+				A2(
+				$author$project$MainComponents$Controls$view,
+				model.b,
+				A2($elm$core$Basics$composeR, $author$project$Trees$TreeTraversal$ControlMsg, $elm$core$Basics$identity)),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('indices')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Current Step: ' + $elm$core$String$fromInt(model.m))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('variable-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Current Step: number of steps taken in the traversal.')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Big(O) Notation')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Traversal Time Complexity')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O(n)')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('space-complexity')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Space Complexity: O(h) | h = height of tree')
+					]))
+			]));
+};
 var $author$project$Main$viewFooter = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
@@ -9732,13 +10386,33 @@ var $author$project$Main$viewHeader = A2(
 								[
 									$elm$html$Html$text('Linear Search')
 								]))
+						])),
+					A3(
+					$elm$html$Html$node,
+					'optgroup',
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$attribute, 'label', 'Trees')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Tree Traversal')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Tree Traversals')
+								]))
 						]))
 				]))
 		]));
 var $author$project$MainComponents$Home$ToggleTheme = {$: 0};
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Main$viewThemeToggle = function (model) {
-	var _v0 = (model.s.aw === 1) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
+	var _v0 = (model.t.aB === 1) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
 	var icon = _v0.a;
 	var tooltip = _v0.b;
 	return A2(
@@ -9766,7 +10440,7 @@ var $author$project$Main$viewThemeToggle = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	var themeClass = function () {
-		var _v1 = model.s.aw;
+		var _v1 = model.t.aB;
 		if (_v1 === 1) {
 			return 'light-theme';
 		} else {
@@ -9796,13 +10470,13 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								function () {
-								var _v0 = model.g;
+								var _v0 = model.f;
 								switch (_v0) {
 									case 0:
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$HomeMsg,
-											$author$project$MainComponents$Home$view(model.s));
+											$author$project$MainComponents$Home$view(model.t));
 									case 1:
 										return A3($author$project$SortingAlgorithms$BubbleSort$view, model.a, model.b, $author$project$Main$ControlMsg);
 									case 2:
@@ -9815,8 +10489,13 @@ var $author$project$Main$view = function (model) {
 										return A3($author$project$SortingAlgorithms$MergeSort$view, model.a, model.b, $author$project$Main$ControlMsg);
 									case 6:
 										return A3($author$project$SortingAlgorithms$QuickSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									default:
+									case 7:
 										return A3($author$project$SearchAlgorithms$LinearSearch$view, model.a, model.b, $author$project$Main$ControlMsg);
+									default:
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$TreeTraversalMsg,
+											$author$project$Trees$TreeTraversal$view(model.M));
 								}
 							}()
 							])),
@@ -9827,17 +10506,17 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{
-		aN: $author$project$Main$init,
-		aQ: function (url) {
+		aS: $author$project$Main$init,
+		aV: function (url) {
 			return $author$project$Main$NavigateTo(
 				$author$project$Main$parseUrl(url));
 		},
-		aR: function (_v0) {
+		aW: function (_v0) {
 			return $author$project$Main$NavigateTo(0);
 		},
-		aY: $author$project$Main$subscriptions,
-		a$: $author$project$Main$update,
-		a0: $author$project$Main$view
+		a1: $author$project$Main$subscriptions,
+		a4: $author$project$Main$update,
+		a5: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

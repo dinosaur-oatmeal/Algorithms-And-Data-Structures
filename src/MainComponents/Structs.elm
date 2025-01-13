@@ -41,6 +41,13 @@ defaultSortingTrack list =
     , currentStep = 0
     }
 
+-- Binary Tree Type
+type Tree
+    = Empty
+    | Node Int Tree Tree
+
+-- GENERATORS FOR SORTING AND SEARCHING
+
 -- Shuffle list for arrays
 randomListGenerator : Generator (List Int)
 randomListGenerator =
