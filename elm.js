@@ -77,7 +77,7 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
   return fun.a === 9 ? fun.f(a, b, c, d, e, f, g, h, i) : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
 }
 
-
+console.warn('Compiled in DEV mode. Follow the advice at https://elm-lang.org/0.19.1/optimize for better performance and smaller assets.');
 
 
 // EQUALITY
@@ -113,7 +113,7 @@ function _Utils_eqHelp(x, y, depth, stack)
 		return true;
 	}
 
-	/**_UNUSED/
+	/**/
 	if (x.$ === 'Set_elm_builtin')
 	{
 		x = $elm$core$Set$toList(x);
@@ -126,7 +126,7 @@ function _Utils_eqHelp(x, y, depth, stack)
 	}
 	//*/
 
-	/**/
+	/**_UNUSED/
 	if (x.$ < 0)
 	{
 		x = $elm$core$Dict$toList(x);
@@ -161,7 +161,7 @@ function _Utils_cmp(x, y, ord)
 		return x === y ? /*EQ*/ 0 : x < y ? /*LT*/ -1 : /*GT*/ 1;
 	}
 
-	/**_UNUSED/
+	/**/
 	if (x instanceof String)
 	{
 		var a = x.valueOf();
@@ -170,10 +170,10 @@ function _Utils_cmp(x, y, ord)
 	}
 	//*/
 
-	/**/
+	/**_UNUSED/
 	if (typeof x.$ === 'undefined')
 	//*/
-	/**_UNUSED/
+	/**/
 	if (x.$[0] === '#')
 	//*/
 	{
@@ -203,17 +203,17 @@ var _Utils_compare = F2(function(x, y)
 
 // COMMON VALUES
 
-var _Utils_Tuple0 = 0;
-var _Utils_Tuple0_UNUSED = { $: '#0' };
+var _Utils_Tuple0_UNUSED = 0;
+var _Utils_Tuple0 = { $: '#0' };
 
-function _Utils_Tuple2(a, b) { return { a: a, b: b }; }
-function _Utils_Tuple2_UNUSED(a, b) { return { $: '#2', a: a, b: b }; }
+function _Utils_Tuple2_UNUSED(a, b) { return { a: a, b: b }; }
+function _Utils_Tuple2(a, b) { return { $: '#2', a: a, b: b }; }
 
-function _Utils_Tuple3(a, b, c) { return { a: a, b: b, c: c }; }
-function _Utils_Tuple3_UNUSED(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
+function _Utils_Tuple3_UNUSED(a, b, c) { return { a: a, b: b, c: c }; }
+function _Utils_Tuple3(a, b, c) { return { $: '#3', a: a, b: b, c: c }; }
 
-function _Utils_chr(c) { return c; }
-function _Utils_chr_UNUSED(c) { return new String(c); }
+function _Utils_chr_UNUSED(c) { return c; }
+function _Utils_chr(c) { return new String(c); }
 
 
 // RECORDS
@@ -264,11 +264,11 @@ function _Utils_ap(xs, ys)
 
 
 
-var _List_Nil = { $: 0 };
-var _List_Nil_UNUSED = { $: '[]' };
+var _List_Nil_UNUSED = { $: 0 };
+var _List_Nil = { $: '[]' };
 
-function _List_Cons(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons_UNUSED(hd, tl) { return { $: '::', a: hd, b: tl }; }
+function _List_Cons_UNUSED(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons(hd, tl) { return { $: '::', a: hd, b: tl }; }
 
 
 var _List_cons = F2(_List_Cons);
@@ -499,12 +499,12 @@ var _JsArray_appendN = F3(function(n, dest, source)
 
 // LOG
 
-var _Debug_log = F2(function(tag, value)
+var _Debug_log_UNUSED = F2(function(tag, value)
 {
 	return value;
 });
 
-var _Debug_log_UNUSED = F2(function(tag, value)
+var _Debug_log = F2(function(tag, value)
 {
 	console.log(tag + ': ' + _Debug_toString(value));
 	return value;
@@ -530,12 +530,12 @@ function _Debug_todoCase(moduleName, region, value)
 
 // TO STRING
 
-function _Debug_toString(value)
+function _Debug_toString_UNUSED(value)
 {
 	return '<internals>';
 }
 
-function _Debug_toString_UNUSED(value)
+function _Debug_toString(value)
 {
 	return _Debug_toAnsiString(false, value);
 }
@@ -720,13 +720,13 @@ function _Debug_toHexDigit(n)
 // CRASH
 
 
-function _Debug_crash(identifier)
+function _Debug_crash_UNUSED(identifier)
 {
 	throw new Error('https://github.com/elm/core/blob/1.0.0/hints/' + identifier + '.md');
 }
 
 
-function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
+function _Debug_crash(identifier, fact1, fact2, fact3, fact4)
 {
 	switch(identifier)
 	{
@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.X.J === region.af.J)
+	if (region.start.line === region.end.line)
 	{
-		return 'on line ' + region.X.J;
+		return 'on line ' + region.start.line;
 	}
-	return 'on lines ' + region.X.J + ' through ' + region.af.J;
+	return 'on lines ' + region.start.line + ' through ' + region.end.line;
 }
 
 
@@ -1212,7 +1212,7 @@ function _Char_toLocaleLower(char)
 
 
 
-/**_UNUSED/
+/**/
 function _Json_errorToString(error)
 {
 	return $elm$json$Json$Decode$errorToString(error);
@@ -1616,11 +1616,11 @@ var _Json_encode = F2(function(indentLevel, value)
 	return JSON.stringify(_Json_unwrap(value), null, indentLevel) + '';
 });
 
-function _Json_wrap_UNUSED(value) { return { $: 0, a: value }; }
-function _Json_unwrap_UNUSED(value) { return value.a; }
+function _Json_wrap(value) { return { $: 0, a: value }; }
+function _Json_unwrap(value) { return value.a; }
 
-function _Json_wrap(value) { return value; }
-function _Json_unwrap(value) { return value; }
+function _Json_wrap_UNUSED(value) { return value; }
+function _Json_unwrap_UNUSED(value) { return value; }
 
 function _Json_emptyArray() { return []; }
 function _Json_emptyObject() { return {}; }
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aS,
-		impl.a4,
-		impl.a1,
+		impl.init,
+		impl.update,
+		impl.subscriptions,
 		function() { return function() {} }
 	);
 });
@@ -1872,7 +1872,7 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 function _Platform_initialize(flagDecoder, args, init, update, subscriptions, stepperBuilder)
 {
 	var result = A2(_Json_run, flagDecoder, _Json_wrap(args ? args['flags'] : undefined));
-	$elm$core$Result$isOk(result) || _Debug_crash(2 /**_UNUSED/, _Json_errorToString(result.a) /**/);
+	$elm$core$Result$isOk(result) || _Debug_crash(2 /**/, _Json_errorToString(result.a) /**/);
 	var managers = {};
 	var initPair = init(result.a);
 	var model = initPair.a;
@@ -2316,7 +2316,7 @@ function _Platform_setupIncomingPort(name, sendToApp)
 //
 
 
-function _Platform_export(exports)
+function _Platform_export_UNUSED(exports)
 {
 	scope['Elm']
 		? _Platform_mergeExportsProd(scope['Elm'], exports)
@@ -2337,7 +2337,7 @@ function _Platform_mergeExportsProd(obj, exports)
 }
 
 
-function _Platform_export_UNUSED(exports)
+function _Platform_export(exports)
 {
 	scope['Elm']
 		? _Platform_mergeExportsDebug('Elm', scope['Elm'], exports)
@@ -2377,10 +2377,10 @@ var _VirtualDom_init = F4(function(virtualNode, flagDecoder, debugMetadata, args
 {
 	// NOTE: this function needs _Platform_export available to work
 
-	/**/
+	/**_UNUSED/
 	var node = args['node'];
 	//*/
-	/**_UNUSED/
+	/**/
 	var node = args && args['node'] ? args['node'] : _Debug_crash(0);
 	//*/
 
@@ -2655,14 +2655,14 @@ function _VirtualDom_noInnerHtmlOrFormAction(key)
 function _VirtualDom_noJavaScriptUri(value)
 {
 	return _VirtualDom_RE_js.test(value)
-		? /**/''//*//**_UNUSED/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
+		? /**_UNUSED/''//*//**/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
 		: value;
 }
 
 function _VirtualDom_noJavaScriptOrHtmlUri(value)
 {
 	return _VirtualDom_RE_js_html.test(value)
-		? /**/''//*//**_UNUSED/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
+		? /**_UNUSED/''//*//**/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
 		: value;
 }
 
@@ -2670,7 +2670,7 @@ function _VirtualDom_noJavaScriptOrHtmlJson(value)
 {
 	return (typeof _Json_unwrap(value) === 'string' && _VirtualDom_RE_js_html.test(_Json_unwrap(value)))
 		? _Json_wrap(
-			/**/''//*//**_UNUSED/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
+			/**_UNUSED/''//*//**/'javascript:alert("This is an XSS vector. Please use ports or web components instead.")'//*/
 		) : value;
 }
 
@@ -2719,9 +2719,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		u: func(record.u),
-		Y: record.Y,
-		V: record.V
+		message: func(record.message),
+		stopPropagation: record.stopPropagation,
+		preventDefault: record.preventDefault
 	}
 });
 
@@ -2989,11 +2989,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.u;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.Y;
+		var message = !tag ? value : tag < 3 ? value.a : value.message;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.stopPropagation;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.V) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.preventDefault) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3943,15 +3943,15 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aS,
-		impl.a4,
-		impl.a1,
+		impl.init,
+		impl.update,
+		impl.subscriptions,
 		function(sendToApp, initialModel) {
-			var view = impl.a5;
-			/**/
+			var view = impl.view;
+			/**_UNUSED/
 			var domNode = args['node'];
 			//*/
-			/**_UNUSED/
+			/**/
 			var domNode = args && args['node'] ? args['node'] : _Debug_crash(0);
 			//*/
 			var currNode = _VirtualDom_virtualize(domNode);
@@ -3979,12 +3979,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aS,
-		impl.a4,
-		impl.a1,
+		impl.init,
+		impl.update,
+		impl.subscriptions,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.W && impl.W(sendToApp)
-			var view = impl.a5;
+			var divertHrefToApp = impl.setup && impl.setup(sendToApp)
+			var view = impl.view;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3992,12 +3992,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aI);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.body);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.a3) && (_VirtualDom_doc.title = title = doc.a3);
+				(title !== doc.title) && (_VirtualDom_doc.title = title = doc.title);
 			});
 		}
 	);
@@ -4053,12 +4053,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.aV;
-	var onUrlRequest = impl.aW;
+	var onUrlChange = impl.onUrlChange;
+	var onUrlRequest = impl.onUrlRequest;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		W: function(sendToApp)
+		setup: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4074,9 +4074,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.at === next.at
-							&& curr.ak === next.ak
-							&& curr.aq.a === next.aq.a
+							&& curr.protocol === next.protocol
+							&& curr.host === next.host
+							&& curr.port_.a === next.port_.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4084,13 +4084,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		aS: function(flags)
+		init: function(flags)
 		{
-			return A3(impl.aS, flags, _Browser_getUrl(), key);
+			return A3(impl.init, flags, _Browser_getUrl(), key);
 		},
-		a5: impl.a5,
-		a4: impl.a4,
-		a1: impl.a1
+		view: impl.view,
+		update: impl.update,
+		subscriptions: impl.subscriptions
 	});
 }
 
@@ -4156,17 +4156,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { aQ: 'hidden', aK: 'visibilitychange' }
+		? { hidden: 'hidden', change: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { aQ: 'mozHidden', aK: 'mozvisibilitychange' }
+		? { hidden: 'mozHidden', change: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { aQ: 'msHidden', aK: 'msvisibilitychange' }
+		? { hidden: 'msHidden', change: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { aQ: 'webkitHidden', aK: 'webkitvisibilitychange' }
-		: { aQ: 'hidden', aK: 'visibilitychange' };
+		? { hidden: 'webkitHidden', change: 'webkitvisibilitychange' }
+		: { hidden: 'hidden', change: 'visibilitychange' };
 }
 
 
@@ -4247,12 +4247,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		ax: _Browser_getScene(),
-		aC: {
-			aE: _Browser_window.pageXOffset,
-			aF: _Browser_window.pageYOffset,
-			aD: _Browser_doc.documentElement.clientWidth,
-			aj: _Browser_doc.documentElement.clientHeight
+		scene: _Browser_getScene(),
+		viewport: {
+			x: _Browser_window.pageXOffset,
+			y: _Browser_window.pageYOffset,
+			width: _Browser_doc.documentElement.clientWidth,
+			height: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4262,8 +4262,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		aD: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		aj: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		width: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		height: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4286,15 +4286,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			ax: {
-				aD: node.scrollWidth,
-				aj: node.scrollHeight
+			scene: {
+				width: node.scrollWidth,
+				height: node.scrollHeight
 			},
-			aC: {
-				aE: node.scrollLeft,
-				aF: node.scrollTop,
-				aD: node.clientWidth,
-				aj: node.clientHeight
+			viewport: {
+				x: node.scrollLeft,
+				y: node.scrollTop,
+				width: node.clientWidth,
+				height: node.clientHeight
 			}
 		};
 	});
@@ -4324,18 +4324,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			ax: _Browser_getScene(),
-			aC: {
-				aE: x,
-				aF: y,
-				aD: _Browser_doc.documentElement.clientWidth,
-				aj: _Browser_doc.documentElement.clientHeight
+			scene: _Browser_getScene(),
+			viewport: {
+				x: x,
+				y: y,
+				width: _Browser_doc.documentElement.clientWidth,
+				height: _Browser_doc.documentElement.clientHeight
 			},
-			aN: {
-				aE: x + rect.left,
-				aF: y + rect.top,
-				aD: rect.width,
-				aj: rect.height
+			element: {
+				x: x + rect.left,
+				y: y + rect.top,
+				width: rect.width,
+				height: rect.height
 			}
 		};
 	});
@@ -4470,19 +4470,19 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 {
 	return a >>> offset;
 });
-var $author$project$Main$Home = 0;
+var $author$project$Main$Home = {$: 'Home'};
 var $author$project$Main$NavigateTo = function (a) {
-	return {$: 0, a: a};
+	return {$: 'NavigateTo', a: a};
 };
-var $elm$core$Basics$EQ = 1;
-var $elm$core$Basics$GT = 2;
-var $elm$core$Basics$LT = 0;
+var $elm$core$Basics$EQ = {$: 'EQ'};
+var $elm$core$Basics$GT = {$: 'GT'};
+var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Dict$foldr = F3(
 	function (func, acc, t) {
 		foldr:
 		while (true) {
-			if (t.$ === -2) {
+			if (t.$ === 'RBEmpty_elm_builtin') {
 				return acc;
 			} else {
 				var key = t.b;
@@ -4527,7 +4527,7 @@ var $elm$core$Dict$keys = function (dict) {
 		dict);
 };
 var $elm$core$Set$toList = function (_v0) {
-	var dict = _v0;
+	var dict = _v0.a;
 	return $elm$core$Dict$keys(dict);
 };
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -4537,7 +4537,7 @@ var $elm$core$Array$foldr = F3(
 		var tail = _v0.d;
 		var helper = F2(
 			function (node, acc) {
-				if (!node.$) {
+				if (node.$ === 'SubTree') {
 					var subTree = node.a;
 					return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
 				} else {
@@ -4555,32 +4555,32 @@ var $elm$core$Array$toList = function (array) {
 	return A3($elm$core$Array$foldr, $elm$core$List$cons, _List_Nil, array);
 };
 var $elm$core$Result$Err = function (a) {
-	return {$: 1, a: a};
+	return {$: 'Err', a: a};
 };
 var $elm$json$Json$Decode$Failure = F2(
 	function (a, b) {
-		return {$: 3, a: a, b: b};
+		return {$: 'Failure', a: a, b: b};
 	});
 var $elm$json$Json$Decode$Field = F2(
 	function (a, b) {
-		return {$: 0, a: a, b: b};
+		return {$: 'Field', a: a, b: b};
 	});
 var $elm$json$Json$Decode$Index = F2(
 	function (a, b) {
-		return {$: 1, a: a, b: b};
+		return {$: 'Index', a: a, b: b};
 	});
 var $elm$core$Result$Ok = function (a) {
-	return {$: 0, a: a};
+	return {$: 'Ok', a: a};
 };
 var $elm$json$Json$Decode$OneOf = function (a) {
-	return {$: 2, a: a};
+	return {$: 'OneOf', a: a};
 };
-var $elm$core$Basics$False = 1;
+var $elm$core$Basics$False = {$: 'False'};
 var $elm$core$Basics$add = _Basics_add;
 var $elm$core$Maybe$Just = function (a) {
-	return {$: 0, a: a};
+	return {$: 'Just', a: a};
 };
-var $elm$core$Maybe$Nothing = {$: 1};
+var $elm$core$Maybe$Nothing = {$: 'Nothing'};
 var $elm$core$String$all = _String_all;
 var $elm$core$Basics$and = _Basics_and;
 var $elm$core$Basics$append = _Utils_append;
@@ -4705,12 +4705,12 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 		errorToStringHelp:
 		while (true) {
 			switch (error.$) {
-				case 0:
+				case 'Field':
 					var f = error.a;
 					var err = error.b;
 					var isSimple = function () {
 						var _v1 = $elm$core$String$uncons(f);
-						if (_v1.$ === 1) {
+						if (_v1.$ === 'Nothing') {
 							return false;
 						} else {
 							var _v2 = _v1.a;
@@ -4725,7 +4725,7 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 					error = $temp$error;
 					context = $temp$context;
 					continue errorToStringHelp;
-				case 1:
+				case 'Index':
 					var i = error.a;
 					var err = error.b;
 					var indexName = '[' + ($elm$core$String$fromInt(i) + ']');
@@ -4734,7 +4734,7 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 					error = $temp$error;
 					context = $temp$context;
 					continue errorToStringHelp;
-				case 2:
+				case 'OneOf':
 					var errors = error.a;
 					if (!errors.b) {
 						return 'Ran into a Json.Decode.oneOf with no possibilities' + function () {
@@ -4798,7 +4798,7 @@ var $elm$json$Json$Decode$errorToStringHelp = F2(
 var $elm$core$Array$branchFactor = 32;
 var $elm$core$Array$Array_elm_builtin = F4(
 	function (a, b, c, d) {
-		return {$: 0, a: a, b: b, c: c, d: d};
+		return {$: 'Array_elm_builtin', a: a, b: b, c: c, d: d};
 	});
 var $elm$core$Elm$JsArray$empty = _JsArray_empty;
 var $elm$core$Basics$ceiling = _Basics_ceiling;
@@ -4813,7 +4813,7 @@ var $elm$core$Array$shiftStep = $elm$core$Basics$ceiling(
 var $elm$core$Array$empty = A4($elm$core$Array$Array_elm_builtin, 0, $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, $elm$core$Elm$JsArray$empty);
 var $elm$core$Elm$JsArray$initialize = _JsArray_initialize;
 var $elm$core$Array$Leaf = function (a) {
-	return {$: 1, a: a};
+	return {$: 'Leaf', a: a};
 };
 var $elm$core$Basics$apL = F2(
 	function (f, x) {
@@ -4833,7 +4833,7 @@ var $elm$core$Basics$max = F2(
 	});
 var $elm$core$Basics$mul = _Basics_mul;
 var $elm$core$Array$SubTree = function (a) {
-	return {$: 0, a: a};
+	return {$: 'SubTree', a: a};
 };
 var $elm$core$Elm$JsArray$initializeFromList = _JsArray_initializeFromList;
 var $elm$core$Array$compressNodes = F2(
@@ -4880,25 +4880,25 @@ var $elm$core$Array$treeFromBuilder = F2(
 	});
 var $elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
-		if (!builder.c) {
+		if (!builder.nodeListSize) {
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.e),
+				$elm$core$Elm$JsArray$length(builder.tail),
 				$elm$core$Array$shiftStep,
 				$elm$core$Elm$JsArray$empty,
-				builder.e);
+				builder.tail);
 		} else {
-			var treeLen = builder.c * $elm$core$Array$branchFactor;
+			var treeLen = builder.nodeListSize * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.g) : builder.g;
-			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.c);
+			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.nodeList) : builder.nodeList;
+			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.nodeListSize);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.e) + treeLen,
+				$elm$core$Elm$JsArray$length(builder.tail) + treeLen,
 				A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep),
 				tree,
-				builder.e);
+				builder.tail);
 		}
 	});
 var $elm$core$Basics$idiv = _Basics_idiv;
@@ -4911,7 +4911,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{g: nodeList, c: (len / $elm$core$Array$branchFactor) | 0, e: tail});
+					{nodeList: nodeList, nodeListSize: (len / $elm$core$Array$branchFactor) | 0, tail: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -4941,9 +4941,9 @@ var $elm$core$Array$initialize = F2(
 			return A5($elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
 		}
 	});
-var $elm$core$Basics$True = 0;
+var $elm$core$Basics$True = {$: 'True'};
 var $elm$core$Result$isOk = function (result) {
-	if (!result.$) {
+	if (result.$ === 'Ok') {
 		return true;
 	} else {
 		return false;
@@ -4954,31 +4954,33 @@ var $elm$json$Json$Decode$map2 = _Json_map2;
 var $elm$json$Json$Decode$succeed = _Json_succeed;
 var $elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
-		case 0:
+		case 'Normal':
 			return 0;
-		case 1:
+		case 'MayStopPropagation':
 			return 1;
-		case 2:
+		case 'MayPreventDefault':
 			return 2;
 		default:
 			return 3;
 	}
 };
 var $elm$browser$Browser$External = function (a) {
-	return {$: 1, a: a};
+	return {$: 'External', a: a};
 };
 var $elm$browser$Browser$Internal = function (a) {
-	return {$: 0, a: a};
+	return {$: 'Internal', a: a};
 };
 var $elm$core$Basics$identity = function (x) {
 	return x;
 };
-var $elm$browser$Browser$Dom$NotFound = $elm$core$Basics$identity;
-var $elm$url$Url$Http = 0;
-var $elm$url$Url$Https = 1;
+var $elm$browser$Browser$Dom$NotFound = function (a) {
+	return {$: 'NotFound', a: a};
+};
+var $elm$url$Url$Http = {$: 'Http'};
+var $elm$url$Url$Https = {$: 'Https'};
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {ah: fragment, ak: host, ao: path, aq: port_, at: protocol, au: query};
+		return {fragment: fragment, host: host, path: path, port_: port_, protocol: protocol, query: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5014,7 +5016,7 @@ var $elm$url$Url$chompBeforePath = F5(
 					var i = _v0.a;
 					var _v1 = $elm$core$String$toInt(
 						A2($elm$core$String$dropLeft, i + 1, str));
-					if (_v1.$ === 1) {
+					if (_v1.$ === 'Nothing') {
 						return $elm$core$Maybe$Nothing;
 					} else {
 						var port_ = _v1;
@@ -5097,24 +5099,26 @@ var $elm$core$String$startsWith = _String_startsWith;
 var $elm$url$Url$fromString = function (str) {
 	return A2($elm$core$String$startsWith, 'http://', str) ? A2(
 		$elm$url$Url$chompAfterProtocol,
-		0,
+		$elm$url$Url$Http,
 		A2($elm$core$String$dropLeft, 7, str)) : (A2($elm$core$String$startsWith, 'https://', str) ? A2(
 		$elm$url$Url$chompAfterProtocol,
-		1,
+		$elm$url$Url$Https,
 		A2($elm$core$String$dropLeft, 8, str)) : $elm$core$Maybe$Nothing);
 };
 var $elm$core$Basics$never = function (_v0) {
 	never:
 	while (true) {
-		var nvr = _v0;
+		var nvr = _v0.a;
 		var $temp$_v0 = nvr;
 		_v0 = $temp$_v0;
 		continue never;
 	}
 };
-var $elm$core$Task$Perform = $elm$core$Basics$identity;
+var $elm$core$Task$Perform = function (a) {
+	return {$: 'Perform', a: a};
+};
 var $elm$core$Task$succeed = _Scheduler_succeed;
-var $elm$core$Task$init = $elm$core$Task$succeed(0);
+var $elm$core$Task$init = $elm$core$Task$succeed(_Utils_Tuple0);
 var $elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -5220,7 +5224,7 @@ var $elm$core$Task$sequence = function (tasks) {
 var $elm$core$Platform$sendToApp = _Platform_sendToApp;
 var $elm$core$Task$spawnCmd = F2(
 	function (router, _v0) {
-		var task = _v0;
+		var task = _v0.a;
 		return _Scheduler_spawn(
 			A2(
 				$elm$core$Task$andThen,
@@ -5232,7 +5236,7 @@ var $elm$core$Task$onEffects = F3(
 		return A2(
 			$elm$core$Task$map,
 			function (_v0) {
-				return 0;
+				return _Utils_Tuple0;
 			},
 			$elm$core$Task$sequence(
 				A2(
@@ -5242,19 +5246,21 @@ var $elm$core$Task$onEffects = F3(
 	});
 var $elm$core$Task$onSelfMsg = F3(
 	function (_v0, _v1, _v2) {
-		return $elm$core$Task$succeed(0);
+		return $elm$core$Task$succeed(_Utils_Tuple0);
 	});
 var $elm$core$Task$cmdMap = F2(
 	function (tagger, _v0) {
-		var task = _v0;
-		return A2($elm$core$Task$map, tagger, task);
+		var task = _v0.a;
+		return $elm$core$Task$Perform(
+			A2($elm$core$Task$map, tagger, task));
 	});
 _Platform_effectManagers['Task'] = _Platform_createManager($elm$core$Task$init, $elm$core$Task$onEffects, $elm$core$Task$onSelfMsg, $elm$core$Task$cmdMap);
 var $elm$core$Task$command = _Platform_leaf('Task');
 var $elm$core$Task$perform = F2(
 	function (toMessage, task) {
 		return $elm$core$Task$command(
-			A2($elm$core$Task$map, toMessage, task));
+			$elm$core$Task$Perform(
+				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
 var $elm$core$Array$fromListHelp = F3(
@@ -5270,7 +5276,7 @@ var $elm$core$Array$fromListHelp = F3(
 				return A2(
 					$elm$core$Array$builderToArray,
 					true,
-					{g: nodeList, c: nodeListSize, e: jsArray});
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
 			} else {
 				var $temp$list = remainingItems,
 					$temp$nodeList = A2(
@@ -5294,15 +5300,15 @@ var $elm$core$Array$fromList = function (list) {
 };
 var $author$project$MainComponents$Structs$defaultSortingTrack = function (list) {
 	return {
-		_: $elm$core$Array$fromList(list),
-		aL: 1,
-		ab: 0,
-		ae: false,
-		ai: (10 / 2) | 0,
-		aT: 0,
-		aY: 0,
-		a0: false,
-		ay: _List_fromArray(
+		array: $elm$core$Array$fromList(list),
+		currentIndex: 1,
+		currentStep: 0,
+		didSwap: false,
+		gap: (10 / 2) | 0,
+		minIndex: 0,
+		outerIndex: 0,
+		sorted: false,
+		stack: _List_fromArray(
 			[
 				_Utils_Tuple2(
 				0,
@@ -5310,34 +5316,34 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 			])
 	};
 };
-var $author$project$MainComponents$Home$Dark = 0;
+var $author$project$MainComponents$Home$Dark = {$: 'Dark'};
 var $author$project$MainComponents$Home$initModel = {
-	C: $elm$core$Array$fromList(
+	backgroundArray: $elm$core$Array$fromList(
 		_List_fromArray(
 			[5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10])),
-	Q: 0,
-	R: 0,
-	S: 'Algorithms and Data Structures',
-	aB: 0,
-	G: false,
-	q: 0
+	indexOne: 0,
+	indexTwo: 0,
+	targetString: 'Algorithms and Data Structures',
+	theme: $author$project$MainComponents$Home$Dark,
+	typingFlag: false,
+	typingIndex: 0
 };
-var $author$project$MainComponents$Structs$Empty = {$: 0};
-var $author$project$Trees$TreeTraversal$Inorder = 1;
-var $author$project$Trees$TreeTraversal$initModel = {P: 1, m: 0, b: false, A: _List_Nil, F: $author$project$MainComponents$Structs$Empty};
+var $author$project$MainComponents$Structs$Empty = {$: 'Empty'};
+var $author$project$Trees$TreeTraversal$Inorder = {$: 'Inorder'};
+var $author$project$Trees$TreeTraversal$initModel = {currentTraversal: $author$project$Trees$TreeTraversal$Inorder, index: 0, running: false, traversalResult: _List_Nil, tree: $author$project$MainComponents$Structs$Empty};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Main$BubbleSort = 1;
-var $author$project$Main$InsertionSort = 3;
-var $author$project$Main$LinearSearch = 7;
-var $author$project$Main$MergeSort = 5;
-var $author$project$Main$QuickSort = 6;
-var $author$project$Main$SelectionSort = 2;
-var $author$project$Main$ShellSort = 4;
-var $author$project$Main$TreeTraversal = 8;
+var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
+var $author$project$Main$InsertionSort = {$: 'InsertionSort'};
+var $author$project$Main$LinearSearch = {$: 'LinearSearch'};
+var $author$project$Main$MergeSort = {$: 'MergeSort'};
+var $author$project$Main$QuickSort = {$: 'QuickSort'};
+var $author$project$Main$SelectionSort = {$: 'SelectionSort'};
+var $author$project$Main$ShellSort = {$: 'ShellSort'};
+var $author$project$Main$TreeTraversal = {$: 'TreeTraversal'};
 var $elm$url$Url$Parser$State = F5(
 	function (visited, unvisited, params, frag, value) {
-		return {x: frag, y: params, w: unvisited, r: value, B: visited};
+		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
 	});
 var $elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:
@@ -5347,12 +5353,12 @@ var $elm$url$Url$Parser$getFirstMatch = function (states) {
 		} else {
 			var state = states.a;
 			var rest = states.b;
-			var _v1 = state.w;
+			var _v1 = state.unvisited;
 			if (!_v1.b) {
-				return $elm$core$Maybe$Just(state.r);
+				return $elm$core$Maybe$Just(state.value);
 			} else {
 				if ((_v1.a === '') && (!_v1.b.b)) {
-					return $elm$core$Maybe$Just(state.r);
+					return $elm$core$Maybe$Just(state.value);
 				} else {
 					var $temp$states = rest;
 					states = $temp$states;
@@ -5390,7 +5396,7 @@ var $elm$url$Url$Parser$preparePath = function (path) {
 };
 var $elm$url$Url$Parser$addToParametersHelp = F2(
 	function (value, maybeList) {
-		if (maybeList.$ === 1) {
+		if (maybeList.$ === 'Nothing') {
 			return $elm$core$Maybe$Just(
 				_List_fromArray(
 					[value]));
@@ -5406,7 +5412,7 @@ var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
 		get:
 		while (true) {
-			if (dict.$ === -2) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
 				return $elm$core$Maybe$Nothing;
 			} else {
 				var key = dict.b;
@@ -5414,14 +5420,14 @@ var $elm$core$Dict$get = F2(
 				var left = dict.d;
 				var right = dict.e;
 				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1) {
-					case 0:
+				switch (_v1.$) {
+					case 'LT':
 						var $temp$targetKey = targetKey,
 							$temp$dict = left;
 						targetKey = $temp$targetKey;
 						dict = $temp$dict;
 						continue get;
-					case 1:
+					case 'EQ':
 						return $elm$core$Maybe$Just(value);
 					default:
 						var $temp$targetKey = targetKey,
@@ -5433,22 +5439,22 @@ var $elm$core$Dict$get = F2(
 			}
 		}
 	});
-var $elm$core$Dict$Black = 1;
+var $elm$core$Dict$Black = {$: 'Black'};
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
-		return {$: -1, a: a, b: b, c: c, d: d, e: e};
+		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
 	});
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
-var $elm$core$Dict$Red = 0;
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$Red = {$: 'Red'};
 var $elm$core$Dict$balance = F5(
 	function (color, key, value, left, right) {
-		if ((right.$ === -1) && (!right.a)) {
+		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
 			var _v1 = right.a;
 			var rK = right.b;
 			var rV = right.c;
 			var rLeft = right.d;
 			var rRight = right.e;
-			if ((left.$ === -1) && (!left.a)) {
+			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
 				var _v3 = left.a;
 				var lK = left.b;
 				var lV = left.c;
@@ -5456,22 +5462,22 @@ var $elm$core$Dict$balance = F5(
 				var lRight = left.e;
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					0,
+					$elm$core$Dict$Red,
 					key,
 					value,
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
 			} else {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
 					color,
 					rK,
 					rV,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, left, rLeft),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
 					rRight);
 			}
 		} else {
-			if ((((left.$ === -1) && (!left.a)) && (left.d.$ === -1)) && (!left.d.a)) {
+			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
 				var _v5 = left.a;
 				var lK = left.b;
 				var lV = left.c;
@@ -5484,11 +5490,11 @@ var $elm$core$Dict$balance = F5(
 				var lRight = left.e;
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					0,
+					$elm$core$Dict$Red,
 					lK,
 					lV,
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 1, key, value, lRight, right));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
 			} else {
 				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
 			}
@@ -5496,8 +5502,8 @@ var $elm$core$Dict$balance = F5(
 	});
 var $elm$core$Dict$insertHelp = F3(
 	function (key, value, dict) {
-		if (dict.$ === -2) {
-			return A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
 		} else {
 			var nColor = dict.a;
 			var nKey = dict.b;
@@ -5505,8 +5511,8 @@ var $elm$core$Dict$insertHelp = F3(
 			var nLeft = dict.d;
 			var nRight = dict.e;
 			var _v1 = A2($elm$core$Basics$compare, key, nKey);
-			switch (_v1) {
-				case 0:
+			switch (_v1.$) {
+				case 'LT':
 					return A5(
 						$elm$core$Dict$balance,
 						nColor,
@@ -5514,7 +5520,7 @@ var $elm$core$Dict$insertHelp = F3(
 						nValue,
 						A3($elm$core$Dict$insertHelp, key, value, nLeft),
 						nRight);
-				case 1:
+				case 'EQ':
 					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
 				default:
 					return A5(
@@ -5530,13 +5536,13 @@ var $elm$core$Dict$insertHelp = F3(
 var $elm$core$Dict$insert = F3(
 	function (key, value, dict) {
 		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
-		if ((_v0.$ === -1) && (!_v0.a)) {
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
 			var _v1 = _v0.a;
 			var k = _v0.b;
 			var v = _v0.c;
 			var l = _v0.d;
 			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
 		} else {
 			var x = _v0;
 			return x;
@@ -5545,7 +5551,7 @@ var $elm$core$Dict$insert = F3(
 var $elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
-		if ((dict.$ === -1) && (dict.d.$ === -1)) {
+		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
 			var left = dict.d;
 			var $temp$dict = left;
 			dict = $temp$dict;
@@ -5556,8 +5562,8 @@ var $elm$core$Dict$getMin = function (dict) {
 	}
 };
 var $elm$core$Dict$moveRedLeft = function (dict) {
-	if (((dict.$ === -1) && (dict.d.$ === -1)) && (dict.e.$ === -1)) {
-		if ((dict.e.d.$ === -1) && (!dict.e.d.a)) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
 			var clr = dict.a;
 			var k = dict.b;
 			var v = dict.c;
@@ -5580,17 +5586,17 @@ var $elm$core$Dict$moveRedLeft = function (dict) {
 			var rRight = _v2.e;
 			return A5(
 				$elm$core$Dict$RBNode_elm_builtin,
-				0,
+				$elm$core$Dict$Red,
 				rlK,
 				rlV,
 				A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					1,
+					$elm$core$Dict$Black,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
 					rlL),
-				A5($elm$core$Dict$RBNode_elm_builtin, 1, rK, rV, rlR, rRight));
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
 		} else {
 			var clr = dict.a;
 			var k = dict.b;
@@ -5607,22 +5613,22 @@ var $elm$core$Dict$moveRedLeft = function (dict) {
 			var rV = _v5.c;
 			var rLeft = _v5.d;
 			var rRight = _v5.e;
-			if (clr === 1) {
+			if (clr.$ === 'Black') {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					1,
+					$elm$core$Dict$Black,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
 			} else {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					1,
+					$elm$core$Dict$Black,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
 			}
 		}
 	} else {
@@ -5630,8 +5636,8 @@ var $elm$core$Dict$moveRedLeft = function (dict) {
 	}
 };
 var $elm$core$Dict$moveRedRight = function (dict) {
-	if (((dict.$ === -1) && (dict.d.$ === -1)) && (dict.e.$ === -1)) {
-		if ((dict.d.d.$ === -1) && (!dict.d.d.a)) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
 			var clr = dict.a;
 			var k = dict.b;
 			var v = dict.c;
@@ -5654,17 +5660,17 @@ var $elm$core$Dict$moveRedRight = function (dict) {
 			var rRight = _v4.e;
 			return A5(
 				$elm$core$Dict$RBNode_elm_builtin,
-				0,
+				$elm$core$Dict$Red,
 				lK,
 				lV,
-				A5($elm$core$Dict$RBNode_elm_builtin, 1, llK, llV, llLeft, llRight),
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
 				A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					1,
+					$elm$core$Dict$Black,
 					k,
 					v,
 					lRight,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight)));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
 		} else {
 			var clr = dict.a;
 			var k = dict.b;
@@ -5681,22 +5687,22 @@ var $elm$core$Dict$moveRedRight = function (dict) {
 			var rV = _v6.c;
 			var rLeft = _v6.d;
 			var rRight = _v6.e;
-			if (clr === 1) {
+			if (clr.$ === 'Black') {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					1,
+					$elm$core$Dict$Black,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
 			} else {
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
-					1,
+					$elm$core$Dict$Black,
 					k,
 					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, 0, rK, rV, rLeft, rRight));
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
 			}
 		}
 	} else {
@@ -5705,7 +5711,7 @@ var $elm$core$Dict$moveRedRight = function (dict) {
 };
 var $elm$core$Dict$removeHelpPrepEQGT = F7(
 	function (targetKey, dict, color, key, value, left, right) {
-		if ((left.$ === -1) && (!left.a)) {
+		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
 			var _v1 = left.a;
 			var lK = left.b;
 			var lV = left.c;
@@ -5717,13 +5723,13 @@ var $elm$core$Dict$removeHelpPrepEQGT = F7(
 				lK,
 				lV,
 				lLeft,
-				A5($elm$core$Dict$RBNode_elm_builtin, 0, key, value, lRight, right));
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
 		} else {
 			_v2$2:
 			while (true) {
-				if ((right.$ === -1) && (right.a === 1)) {
-					if (right.d.$ === -1) {
-						if (right.d.a === 1) {
+				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
+					if (right.d.$ === 'RBNode_elm_builtin') {
+						if (right.d.a.$ === 'Black') {
 							var _v3 = right.a;
 							var _v4 = right.d;
 							var _v5 = _v4.a;
@@ -5744,7 +5750,7 @@ var $elm$core$Dict$removeHelpPrepEQGT = F7(
 		}
 	});
 var $elm$core$Dict$removeMin = function (dict) {
-	if ((dict.$ === -1) && (dict.d.$ === -1)) {
+	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
 		var color = dict.a;
 		var key = dict.b;
 		var value = dict.c;
@@ -5752,8 +5758,8 @@ var $elm$core$Dict$removeMin = function (dict) {
 		var lColor = left.a;
 		var lLeft = left.d;
 		var right = dict.e;
-		if (lColor === 1) {
-			if ((lLeft.$ === -1) && (!lLeft.a)) {
+		if (lColor.$ === 'Black') {
+			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
 				var _v3 = lLeft.a;
 				return A5(
 					$elm$core$Dict$RBNode_elm_builtin,
@@ -5764,7 +5770,7 @@ var $elm$core$Dict$removeMin = function (dict) {
 					right);
 			} else {
 				var _v4 = $elm$core$Dict$moveRedLeft(dict);
-				if (_v4.$ === -1) {
+				if (_v4.$ === 'RBNode_elm_builtin') {
 					var nColor = _v4.a;
 					var nKey = _v4.b;
 					var nValue = _v4.c;
@@ -5796,7 +5802,7 @@ var $elm$core$Dict$removeMin = function (dict) {
 };
 var $elm$core$Dict$removeHelp = F2(
 	function (targetKey, dict) {
-		if (dict.$ === -2) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
 			return $elm$core$Dict$RBEmpty_elm_builtin;
 		} else {
 			var color = dict.a;
@@ -5805,10 +5811,10 @@ var $elm$core$Dict$removeHelp = F2(
 			var left = dict.d;
 			var right = dict.e;
 			if (_Utils_cmp(targetKey, key) < 0) {
-				if ((left.$ === -1) && (left.a === 1)) {
+				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
 					var _v4 = left.a;
 					var lLeft = left.d;
-					if ((lLeft.$ === -1) && (!lLeft.a)) {
+					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
 						var _v6 = lLeft.a;
 						return A5(
 							$elm$core$Dict$RBNode_elm_builtin,
@@ -5819,7 +5825,7 @@ var $elm$core$Dict$removeHelp = F2(
 							right);
 					} else {
 						var _v7 = $elm$core$Dict$moveRedLeft(dict);
-						if (_v7.$ === -1) {
+						if (_v7.$ === 'RBNode_elm_builtin') {
 							var nColor = _v7.a;
 							var nKey = _v7.b;
 							var nValue = _v7.c;
@@ -5855,7 +5861,7 @@ var $elm$core$Dict$removeHelp = F2(
 	});
 var $elm$core$Dict$removeHelpEQGT = F2(
 	function (targetKey, dict) {
-		if (dict.$ === -1) {
+		if (dict.$ === 'RBNode_elm_builtin') {
 			var color = dict.a;
 			var key = dict.b;
 			var value = dict.c;
@@ -5863,7 +5869,7 @@ var $elm$core$Dict$removeHelpEQGT = F2(
 			var right = dict.e;
 			if (_Utils_eq(targetKey, key)) {
 				var _v1 = $elm$core$Dict$getMin(right);
-				if (_v1.$ === -1) {
+				if (_v1.$ === 'RBNode_elm_builtin') {
 					var minKey = _v1.b;
 					var minValue = _v1.c;
 					return A5(
@@ -5892,13 +5898,13 @@ var $elm$core$Dict$removeHelpEQGT = F2(
 var $elm$core$Dict$remove = F2(
 	function (key, dict) {
 		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
-		if ((_v0.$ === -1) && (!_v0.a)) {
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
 			var _v1 = _v0.a;
 			var k = _v0.b;
 			var v = _v0.c;
 			var l = _v0.d;
 			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, 1, k, v, l, r);
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
 		} else {
 			var x = _v0;
 			return x;
@@ -5908,7 +5914,7 @@ var $elm$core$Dict$update = F3(
 	function (targetKey, alter, dictionary) {
 		var _v0 = alter(
 			A2($elm$core$Dict$get, targetKey, dictionary));
-		if (!_v0.$) {
+		if (_v0.$ === 'Just') {
 			var value = _v0.a;
 			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
 		} else {
@@ -5923,12 +5929,12 @@ var $elm$url$Url$Parser$addParam = F2(
 			var _v1 = _v0.b;
 			var rawValue = _v1.a;
 			var _v2 = $elm$url$Url$percentDecode(rawKey);
-			if (_v2.$ === 1) {
+			if (_v2.$ === 'Nothing') {
 				return dict;
 			} else {
 				var key = _v2.a;
 				var _v3 = $elm$url$Url$percentDecode(rawValue);
-				if (_v3.$ === 1) {
+				if (_v3.$ === 'Nothing') {
 					return dict;
 				} else {
 					var value = _v3.a;
@@ -5945,7 +5951,7 @@ var $elm$url$Url$Parser$addParam = F2(
 	});
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
-	if (maybeQuery.$ === 1) {
+	if (maybeQuery.$ === 'Nothing') {
 		return $elm$core$Dict$empty;
 	} else {
 		var qry = maybeQuery.a;
@@ -5958,34 +5964,36 @@ var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
 };
 var $elm$url$Url$Parser$parse = F2(
 	function (_v0, url) {
-		var parser = _v0;
+		var parser = _v0.a;
 		return $elm$url$Url$Parser$getFirstMatch(
 			parser(
 				A5(
 					$elm$url$Url$Parser$State,
 					_List_Nil,
-					$elm$url$Url$Parser$preparePath(url.ao),
-					$elm$url$Url$Parser$prepareQuery(url.au),
-					url.ah,
+					$elm$url$Url$Parser$preparePath(url.path),
+					$elm$url$Url$Parser$prepareQuery(url.query),
+					url.fragment,
 					$elm$core$Basics$identity)));
 	});
-var $author$project$Main$BubbleSortRoute = 1;
-var $author$project$Main$HomeRoute = 0;
-var $author$project$Main$InsertionSortRoute = 3;
-var $author$project$Main$LinearSearchRoute = 7;
-var $author$project$Main$MergeSortRoute = 5;
-var $author$project$Main$QuickSortRoute = 6;
-var $author$project$Main$SelectionSortRoute = 2;
-var $author$project$Main$ShellSortRoute = 4;
-var $author$project$Main$TreeRoute = 8;
-var $elm$url$Url$Parser$Parser = $elm$core$Basics$identity;
+var $author$project$Main$BubbleSortRoute = {$: 'BubbleSortRoute'};
+var $author$project$Main$HomeRoute = {$: 'HomeRoute'};
+var $author$project$Main$InsertionSortRoute = {$: 'InsertionSortRoute'};
+var $author$project$Main$LinearSearchRoute = {$: 'LinearSearchRoute'};
+var $author$project$Main$MergeSortRoute = {$: 'MergeSortRoute'};
+var $author$project$Main$QuickSortRoute = {$: 'QuickSortRoute'};
+var $author$project$Main$SelectionSortRoute = {$: 'SelectionSortRoute'};
+var $author$project$Main$ShellSortRoute = {$: 'ShellSortRoute'};
+var $author$project$Main$TreeRoute = {$: 'TreeRoute'};
+var $elm$url$Url$Parser$Parser = function (a) {
+	return {$: 'Parser', a: a};
+};
 var $elm$url$Url$Parser$mapState = F2(
 	function (func, _v0) {
-		var visited = _v0.B;
-		var unvisited = _v0.w;
-		var params = _v0.y;
-		var frag = _v0.x;
-		var value = _v0.r;
+		var visited = _v0.visited;
+		var unvisited = _v0.unvisited;
+		var params = _v0.params;
+		var frag = _v0.frag;
+		var value = _v0.value;
 		return A5(
 			$elm$url$Url$Parser$State,
 			visited,
@@ -5996,19 +6004,20 @@ var $elm$url$Url$Parser$mapState = F2(
 	});
 var $elm$url$Url$Parser$map = F2(
 	function (subValue, _v0) {
-		var parseArg = _v0;
-		return function (_v1) {
-			var visited = _v1.B;
-			var unvisited = _v1.w;
-			var params = _v1.y;
-			var frag = _v1.x;
-			var value = _v1.r;
-			return A2(
-				$elm$core$List$map,
-				$elm$url$Url$Parser$mapState(value),
-				parseArg(
-					A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
-		};
+		var parseArg = _v0.a;
+		return $elm$url$Url$Parser$Parser(
+			function (_v1) {
+				var visited = _v1.visited;
+				var unvisited = _v1.unvisited;
+				var params = _v1.params;
+				var frag = _v1.frag;
+				var value = _v1.value;
+				return A2(
+					$elm$core$List$map,
+					$elm$url$Url$Parser$mapState(value),
+					parseArg(
+						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
+			});
 	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -6027,143 +6036,146 @@ var $elm$core$List$concatMap = F2(
 			A2($elm$core$List$map, f, list));
 	});
 var $elm$url$Url$Parser$oneOf = function (parsers) {
-	return function (state) {
-		return A2(
-			$elm$core$List$concatMap,
-			function (_v0) {
-				var parser = _v0;
-				return parser(state);
-			},
-			parsers);
-	};
+	return $elm$url$Url$Parser$Parser(
+		function (state) {
+			return A2(
+				$elm$core$List$concatMap,
+				function (_v0) {
+					var parser = _v0.a;
+					return parser(state);
+				},
+				parsers);
+		});
 };
 var $elm$url$Url$Parser$s = function (str) {
-	return function (_v0) {
-		var visited = _v0.B;
-		var unvisited = _v0.w;
-		var params = _v0.y;
-		var frag = _v0.x;
-		var value = _v0.r;
-		if (!unvisited.b) {
-			return _List_Nil;
-		} else {
-			var next = unvisited.a;
-			var rest = unvisited.b;
-			return _Utils_eq(next, str) ? _List_fromArray(
-				[
-					A5(
-					$elm$url$Url$Parser$State,
-					A2($elm$core$List$cons, next, visited),
-					rest,
-					params,
-					frag,
-					value)
-				]) : _List_Nil;
-		}
-	};
+	return $elm$url$Url$Parser$Parser(
+		function (_v0) {
+			var visited = _v0.visited;
+			var unvisited = _v0.unvisited;
+			var params = _v0.params;
+			var frag = _v0.frag;
+			var value = _v0.value;
+			if (!unvisited.b) {
+				return _List_Nil;
+			} else {
+				var next = unvisited.a;
+				var rest = unvisited.b;
+				return _Utils_eq(next, str) ? _List_fromArray(
+					[
+						A5(
+						$elm$url$Url$Parser$State,
+						A2($elm$core$List$cons, next, visited),
+						rest,
+						params,
+						frag,
+						value)
+					]) : _List_Nil;
+			}
+		});
 };
-var $elm$url$Url$Parser$top = function (state) {
-	return _List_fromArray(
-		[state]);
-};
+var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
+	function (state) {
+		return _List_fromArray(
+			[state]);
+	});
 var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 	_List_fromArray(
 		[
-			A2($elm$url$Url$Parser$map, 0, $elm$url$Url$Parser$top),
+			A2($elm$url$Url$Parser$map, $author$project$Main$HomeRoute, $elm$url$Url$Parser$top),
 			A2(
 			$elm$url$Url$Parser$map,
-			1,
+			$author$project$Main$BubbleSortRoute,
 			$elm$url$Url$Parser$s('bubble-sort')),
 			A2(
 			$elm$url$Url$Parser$map,
-			2,
+			$author$project$Main$SelectionSortRoute,
 			$elm$url$Url$Parser$s('selection-sort')),
 			A2(
 			$elm$url$Url$Parser$map,
-			3,
+			$author$project$Main$InsertionSortRoute,
 			$elm$url$Url$Parser$s('insertion-sort')),
 			A2(
 			$elm$url$Url$Parser$map,
-			4,
+			$author$project$Main$ShellSortRoute,
 			$elm$url$Url$Parser$s('shell-sort')),
 			A2(
 			$elm$url$Url$Parser$map,
-			5,
+			$author$project$Main$MergeSortRoute,
 			$elm$url$Url$Parser$s('merge-sort')),
 			A2(
 			$elm$url$Url$Parser$map,
-			6,
+			$author$project$Main$QuickSortRoute,
 			$elm$url$Url$Parser$s('quick-sort')),
 			A2(
 			$elm$url$Url$Parser$map,
-			7,
+			$author$project$Main$LinearSearchRoute,
 			$elm$url$Url$Parser$s('linear-search')),
 			A2(
 			$elm$url$Url$Parser$map,
-			8,
+			$author$project$Main$TreeRoute,
 			$elm$url$Url$Parser$s('tree-traversal'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
-	if (!_v0.$) {
-		switch (_v0.a) {
-			case 0:
+	if (_v0.$ === 'Just') {
+		switch (_v0.a.$) {
+			case 'HomeRoute':
 				var _v1 = _v0.a;
-				return 0;
-			case 1:
+				return $author$project$Main$Home;
+			case 'BubbleSortRoute':
 				var _v2 = _v0.a;
-				return 1;
-			case 2:
+				return $author$project$Main$BubbleSort;
+			case 'SelectionSortRoute':
 				var _v3 = _v0.a;
-				return 2;
-			case 3:
+				return $author$project$Main$SelectionSort;
+			case 'InsertionSortRoute':
 				var _v4 = _v0.a;
-				return 3;
-			case 4:
+				return $author$project$Main$InsertionSort;
+			case 'ShellSortRoute':
 				var _v5 = _v0.a;
-				return 4;
-			case 5:
+				return $author$project$Main$ShellSort;
+			case 'MergeSortRoute':
 				var _v6 = _v0.a;
-				return 5;
-			case 6:
+				return $author$project$Main$MergeSort;
+			case 'QuickSortRoute':
 				var _v7 = _v0.a;
-				return 6;
-			case 7:
+				return $author$project$Main$QuickSort;
+			case 'LinearSearchRoute':
 				var _v8 = _v0.a;
-				return 7;
+				return $author$project$Main$LinearSearch;
 			default:
 				var _v9 = _v0.a;
-				return 8;
+				return $author$project$Main$TreeTraversal;
 		}
 	} else {
-		return 0;
+		return $author$project$Main$Home;
 	}
 };
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
 		var model = {
-			f: $author$project$Main$parseUrl(url),
-			t: $author$project$MainComponents$Home$initModel,
-			al: key,
-			b: false,
-			a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil),
-			M: $author$project$Trees$TreeTraversal$initModel
+			currentPage: $author$project$Main$parseUrl(url),
+			homeModel: $author$project$MainComponents$Home$initModel,
+			key: key,
+			running: false,
+			sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil),
+			treeTraversalModel: $author$project$Trees$TreeTraversal$initModel
 		};
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$HomeMsg = function (a) {
-	return {$: 1, a: a};
+	return {$: 'HomeMsg', a: a};
 };
 var $author$project$Main$Tick = function (a) {
-	return {$: 4, a: a};
+	return {$: 'Tick', a: a};
 };
 var $elm$time$Time$Every = F2(
 	function (a, b) {
-		return {$: 0, a: a, b: b};
+		return {$: 'Every', a: a, b: b};
 	});
 var $elm$time$Time$State = F2(
 	function (taggers, processes) {
-		return {as: processes, aA: taggers};
+		return {processes: processes, taggers: taggers};
 	});
 var $elm$time$Time$init = $elm$core$Task$succeed(
 	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
@@ -6172,7 +6184,7 @@ var $elm$time$Time$addMySub = F2(
 		var interval = _v0.a;
 		var tagger = _v0.b;
 		var _v1 = A2($elm$core$Dict$get, interval, state);
-		if (_v1.$ === 1) {
+		if (_v1.$ === 'Nothing') {
 			return A3(
 				$elm$core$Dict$insert,
 				interval,
@@ -6193,7 +6205,7 @@ var $elm$core$Dict$foldl = F3(
 	function (func, acc, dict) {
 		foldl:
 		while (true) {
-			if (dict.$ === -2) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
 				return acc;
 			} else {
 				var key = dict.b;
@@ -6277,14 +6289,14 @@ var $elm$core$Dict$merge = F6(
 	});
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
 var $elm$time$Time$Name = function (a) {
-	return {$: 0, a: a};
+	return {$: 'Name', a: a};
 };
 var $elm$time$Time$Offset = function (a) {
-	return {$: 1, a: a};
+	return {$: 'Offset', a: a};
 };
 var $elm$time$Time$Zone = F2(
 	function (a, b) {
-		return {$: 0, a: a, b: b};
+		return {$: 'Zone', a: a, b: b};
 	});
 var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$setInterval = _Time_setInterval;
@@ -6313,7 +6325,7 @@ var $elm$time$Time$spawnHelp = F3(
 	});
 var $elm$time$Time$onEffects = F3(
 	function (router, subs, _v0) {
-		var processes = _v0.as;
+		var processes = _v0.processes;
 		var rightStep = F3(
 			function (_v6, id, _v7) {
 				var spawns = _v7.a;
@@ -6360,7 +6372,7 @@ var $elm$time$Time$onEffects = F3(
 			_Utils_Tuple3(
 				_List_Nil,
 				$elm$core$Dict$empty,
-				$elm$core$Task$succeed(0)));
+				$elm$core$Task$succeed(_Utils_Tuple0)));
 		var spawnList = _v1.a;
 		var existingDict = _v1.b;
 		var killTask = _v1.c;
@@ -6377,13 +6389,15 @@ var $elm$time$Time$onEffects = F3(
 				},
 				killTask));
 	});
-var $elm$time$Time$Posix = $elm$core$Basics$identity;
-var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
 var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
-		var _v0 = A2($elm$core$Dict$get, interval, state.aA);
-		if (_v0.$ === 1) {
+		var _v0 = A2($elm$core$Dict$get, interval, state.taggers);
+		if (_v0.$ === 'Nothing') {
 			return $elm$core$Task$succeed(state);
 		} else {
 			var taggers = _v0.a;
@@ -6431,8 +6445,8 @@ var $elm$time$Time$every = F2(
 var $elm$core$Platform$Sub$map = _Platform_map;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$MainComponents$Home$SwapNeeded = {$: 2};
-var $author$project$MainComponents$Home$TypingSimulation = {$: 1};
+var $author$project$MainComponents$Home$SwapNeeded = {$: 'SwapNeeded'};
+var $author$project$MainComponents$Home$TypingSimulation = {$: 'TypingSimulation'};
 var $elm$core$Basics$always = F2(
 	function (a, _v0) {
 		return a;
@@ -6452,24 +6466,24 @@ var $author$project$MainComponents$Home$subscriptions = function (model) {
 			]));
 };
 var $author$project$Main$subscriptions = function (model) {
-	var _v0 = model.f;
-	if (!_v0) {
+	var _v0 = model.currentPage;
+	if (_v0.$ === 'Home') {
 		return A2(
 			$elm$core$Platform$Sub$map,
 			$author$project$Main$HomeMsg,
-			$author$project$MainComponents$Home$subscriptions(model.t));
+			$author$project$MainComponents$Home$subscriptions(model.homeModel));
 	} else {
-		return model.b ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
+		return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
 };
 var $author$project$Main$GotRandomArray = function (a) {
-	return {$: 5, a: a};
+	return {$: 'GotRandomArray', a: a};
 };
 var $author$project$Main$GotRandomTarget = function (a) {
-	return {$: 6, a: a};
+	return {$: 'GotRandomTarget', a: a};
 };
 var $author$project$Main$TreeTraversalMsg = function (a) {
-	return {$: 7, a: a};
+	return {$: 'TreeTraversalMsg', a: a};
 };
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
@@ -6482,7 +6496,7 @@ var $elm$core$Array$getHelp = F3(
 		while (true) {
 			var pos = $elm$core$Array$bitMask & (index >>> shift);
 			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-			if (!_v0.$) {
+			if (_v0.$ === 'SubTree') {
 				var subTree = _v0.a;
 				var $temp$shift = shift - $elm$core$Array$shiftStep,
 					$temp$index = index,
@@ -6523,7 +6537,7 @@ var $elm$core$Array$setHelp = F4(
 	function (shift, index, value, tree) {
 		var pos = $elm$core$Array$bitMask & (index >>> shift);
 		var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-		if (!_v0.$) {
+		if (_v0.$ === 'SubTree') {
 			var subTree = _v0.a;
 			var newSub = A4($elm$core$Array$setHelp, shift - $elm$core$Array$shiftStep, index, value, subTree);
 			return A3(
@@ -6562,18 +6576,18 @@ var $elm$core$Array$set = F3(
 			tail));
 	});
 var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (track) {
-	var outerIndex = track.aY;
-	var currentIndex = track.aL;
-	var arr = track._;
+	var outerIndex = track.outerIndex;
+	var currentIndex = track.currentIndex;
+	var arr = track.array;
 	var length = $elm$core$Array$length(arr);
-	if (track.a0) {
+	if (track.sorted) {
 		return track;
 	} else {
 		if (_Utils_cmp(currentIndex, length) < 0) {
 			var _v0 = _Utils_Tuple2(
 				A2($elm$core$Array$get, outerIndex, arr),
 				A2($elm$core$Array$get, currentIndex, arr));
-			if ((!_v0.a.$) && (!_v0.b.$)) {
+			if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
 				var leftVal = _v0.a.a;
 				var rightVal = _v0.b.a;
 				if (_Utils_cmp(leftVal, rightVal) > 0) {
@@ -6584,11 +6598,11 @@ var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (trac
 						A3($elm$core$Array$set, currentIndex, leftVal, arr));
 					return _Utils_update(
 						track,
-						{_: swappedArray, aL: currentIndex + 1, ae: true, aY: outerIndex + 1});
+						{array: swappedArray, currentIndex: currentIndex + 1, didSwap: true, outerIndex: outerIndex + 1});
 				} else {
 					return _Utils_update(
 						track,
-						{aL: currentIndex + 1, aY: outerIndex + 1});
+						{currentIndex: currentIndex + 1, outerIndex: outerIndex + 1});
 				}
 			} else {
 				return track;
@@ -6596,14 +6610,16 @@ var $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep = function (trac
 		} else {
 			return _Utils_update(
 				track,
-				{aL: 1, ae: false, aY: 0, a0: !track.ae});
+				{currentIndex: 1, didSwap: false, outerIndex: 0, sorted: !track.didSwap});
 		}
 	}
 };
-var $elm$random$Random$Generate = $elm$core$Basics$identity;
+var $elm$random$Random$Generate = function (a) {
+	return {$: 'Generate', a: a};
+};
 var $elm$random$Random$Seed = F2(
 	function (a, b) {
-		return {$: 0, a: a, b: b};
+		return {$: 'Seed', a: a, b: b};
 	});
 var $elm$random$Random$next = function (_v0) {
 	var state0 = _v0.a;
@@ -6620,7 +6636,7 @@ var $elm$random$Random$initialSeed = function (x) {
 		A2($elm$random$Random$Seed, state2, incr));
 };
 var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0;
+	var millis = _v0.a;
 	return millis;
 };
 var $elm$random$Random$init = A2(
@@ -6633,7 +6649,7 @@ var $elm$random$Random$init = A2(
 	$elm$time$Time$now);
 var $elm$random$Random$step = F2(
 	function (_v0, seed) {
-		var generator = _v0;
+		var generator = _v0.a;
 		return generator(seed);
 	});
 var $elm$random$Random$onEffects = F3(
@@ -6641,7 +6657,7 @@ var $elm$random$Random$onEffects = F3(
 		if (!commands.b) {
 			return $elm$core$Task$succeed(seed);
 		} else {
-			var generator = commands.a;
+			var generator = commands.a.a;
 			var rest = commands.b;
 			var _v1 = A2($elm$random$Random$step, generator, seed);
 			var value = _v1.a;
@@ -6658,50 +6674,55 @@ var $elm$random$Random$onSelfMsg = F3(
 	function (_v0, _v1, seed) {
 		return $elm$core$Task$succeed(seed);
 	});
-var $elm$random$Random$Generator = $elm$core$Basics$identity;
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
 var $elm$random$Random$map = F2(
 	function (func, _v0) {
-		var genA = _v0;
-		return function (seed0) {
-			var _v1 = genA(seed0);
-			var a = _v1.a;
-			var seed1 = _v1.b;
-			return _Utils_Tuple2(
-				func(a),
-				seed1);
-		};
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
 	});
 var $elm$random$Random$cmdMap = F2(
 	function (func, _v0) {
-		var generator = _v0;
-		return A2($elm$random$Random$map, func, generator);
+		var generator = _v0.a;
+		return $elm$random$Random$Generate(
+			A2($elm$random$Random$map, func, generator));
 	});
 _Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
 var $elm$random$Random$command = _Platform_leaf('Random');
 var $elm$random$Random$generate = F2(
 	function (tagger, generator) {
 		return $elm$random$Random$command(
-			A2($elm$random$Random$map, tagger, generator));
+			$elm$random$Random$Generate(
+				A2($elm$random$Random$map, tagger, generator)));
 	});
 var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function (track) {
-	var outer = track.aY;
-	var current = track.aL;
-	var arr = track._;
+	var outer = track.outerIndex;
+	var current = track.currentIndex;
+	var arr = track.array;
 	var length = $elm$core$Array$length(arr);
-	if (track.a0 || (_Utils_cmp(outer, length) > -1)) {
+	if (track.sorted || (_Utils_cmp(outer, length) > -1)) {
 		return _Utils_update(
 			track,
-			{a0: true});
+			{sorted: true});
 	} else {
 		if (current <= 0) {
 			return _Utils_update(
 				track,
-				{aL: outer + 1, aY: outer + 1});
+				{currentIndex: outer + 1, outerIndex: outer + 1});
 		} else {
 			var _v0 = _Utils_Tuple2(
 				A2($elm$core$Array$get, current, arr),
 				A2($elm$core$Array$get, current - 1, arr));
-			if ((!_v0.a.$) && (!_v0.b.$)) {
+			if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
 				var currentValue = _v0.a.a;
 				var previousValue = _v0.b.a;
 				if (_Utils_cmp(currentValue, previousValue) < 0) {
@@ -6712,11 +6733,11 @@ var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function
 						A3($elm$core$Array$set, current, previousValue, arr));
 					return _Utils_update(
 						track,
-						{_: swappedArray, aL: current - 1});
+						{array: swappedArray, currentIndex: current - 1});
 				} else {
 					return _Utils_update(
 						track,
-						{aL: outer + 1, aY: outer + 1});
+						{currentIndex: outer + 1, outerIndex: outer + 1});
 				}
 			} else {
 				return track;
@@ -6725,17 +6746,17 @@ var $author$project$SortingAlgorithms$InsertionSort$insertionSortStep = function
 	}
 };
 var $author$project$SearchAlgorithms$LinearSearch$linearSearchStep = function (track) {
-	var target = track.aL;
-	var scanningIndex = track.aY;
-	var arr = track._;
+	var target = track.currentIndex;
+	var scanningIndex = track.outerIndex;
+	var arr = track.array;
 	var length = $elm$core$Array$length(arr);
-	return track.a0 ? track : (_Utils_eq(scanningIndex, target) ? _Utils_update(
+	return track.sorted ? track : (_Utils_eq(scanningIndex, target) ? _Utils_update(
 		track,
-		{a0: true}) : ((_Utils_cmp(scanningIndex + 1, length) < 0) ? _Utils_update(
+		{sorted: true}) : ((_Utils_cmp(scanningIndex + 1, length) < 0) ? _Utils_update(
 		track,
-		{ab: track.ab + 1, aY: scanningIndex + 1}) : _Utils_update(
+		{currentStep: track.currentStep + 1, outerIndex: scanningIndex + 1}) : _Utils_update(
 		track,
-		{ab: track.ab, a0: false})));
+		{currentStep: track.currentStep, sorted: false})));
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$Basics$pow = _Basics_pow;
@@ -6744,23 +6765,23 @@ var $elm$core$Elm$JsArray$slice = _JsArray_slice;
 var $elm$core$Array$appendHelpBuilder = F2(
 	function (tail, builder) {
 		var tailLen = $elm$core$Elm$JsArray$length(tail);
-		var notAppended = ($elm$core$Array$branchFactor - $elm$core$Elm$JsArray$length(builder.e)) - tailLen;
-		var appended = A3($elm$core$Elm$JsArray$appendN, $elm$core$Array$branchFactor, builder.e, tail);
+		var notAppended = ($elm$core$Array$branchFactor - $elm$core$Elm$JsArray$length(builder.tail)) - tailLen;
+		var appended = A3($elm$core$Elm$JsArray$appendN, $elm$core$Array$branchFactor, builder.tail, tail);
 		return (notAppended < 0) ? {
-			g: A2(
+			nodeList: A2(
 				$elm$core$List$cons,
 				$elm$core$Array$Leaf(appended),
-				builder.g),
-			c: builder.c + 1,
-			e: A3($elm$core$Elm$JsArray$slice, notAppended, tailLen, tail)
+				builder.nodeList),
+			nodeListSize: builder.nodeListSize + 1,
+			tail: A3($elm$core$Elm$JsArray$slice, notAppended, tailLen, tail)
 		} : ((!notAppended) ? {
-			g: A2(
+			nodeList: A2(
 				$elm$core$List$cons,
 				$elm$core$Array$Leaf(appended),
-				builder.g),
-			c: builder.c + 1,
-			e: $elm$core$Elm$JsArray$empty
-		} : {g: builder.g, c: builder.c, e: appended});
+				builder.nodeList),
+			nodeListSize: builder.nodeListSize + 1,
+			tail: $elm$core$Elm$JsArray$empty
+		} : {nodeList: builder.nodeList, nodeListSize: builder.nodeListSize, tail: appended});
 	});
 var $elm$core$Elm$JsArray$push = _JsArray_push;
 var $elm$core$Elm$JsArray$singleton = _JsArray_singleton;
@@ -6782,7 +6803,7 @@ var $elm$core$Array$insertTailInTree = F4(
 			}
 		} else {
 			var value = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-			if (!value.$) {
+			if (value.$ === 'SubTree') {
 				var subTree = value.a;
 				var newSub = $elm$core$Array$SubTree(
 					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, subTree));
@@ -6855,7 +6876,7 @@ var $elm$core$Array$builderFromArray = function (_v0) {
 	var tail = _v0.d;
 	var helper = F2(
 		function (node, acc) {
-			if (!node.$) {
+			if (node.$ === 'SubTree') {
 				var subTree = node.a;
 				return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
 			} else {
@@ -6863,9 +6884,9 @@ var $elm$core$Array$builderFromArray = function (_v0) {
 			}
 		});
 	return {
-		g: A3($elm$core$Elm$JsArray$foldl, helper, _List_Nil, tree),
-		c: (len / $elm$core$Array$branchFactor) | 0,
-		e: tail
+		nodeList: A3($elm$core$Elm$JsArray$foldl, helper, _List_Nil, tree),
+		nodeListSize: (len / $elm$core$Array$branchFactor) | 0,
+		tail: tail
 	};
 };
 var $elm$core$Array$append = F2(
@@ -6877,7 +6898,7 @@ var $elm$core$Array$append = F2(
 		if (_Utils_cmp(bLen, $elm$core$Array$branchFactor * 4) < 1) {
 			var foldHelper = F2(
 				function (node, array) {
-					if (!node.$) {
+					if (node.$ === 'SubTree') {
 						var tree = node.a;
 						return A3($elm$core$Elm$JsArray$foldl, foldHelper, array, tree);
 					} else {
@@ -6892,7 +6913,7 @@ var $elm$core$Array$append = F2(
 		} else {
 			var foldHelper = F2(
 				function (node, builder) {
-					if (!node.$) {
+					if (node.$ === 'SubTree') {
 						var tree = node.a;
 						return A3($elm$core$Elm$JsArray$foldl, foldHelper, builder, tree);
 					} else {
@@ -6922,8 +6943,8 @@ var $author$project$SortingAlgorithms$MergeSort$mergeArrays = F2(
 					var _v0 = _Utils_Tuple2(
 						A2($elm$core$Array$get, leftIndex, leftArray),
 						A2($elm$core$Array$get, rightIndex, rightArray));
-					if (!_v0.a.$) {
-						if (!_v0.b.$) {
+					if (_v0.a.$ === 'Just') {
+						if (_v0.b.$ === 'Just') {
 							var leftValue = _v0.a.a;
 							var rightValue = _v0.b.a;
 							if (_Utils_cmp(leftValue, rightValue) < 0) {
@@ -6970,7 +6991,7 @@ var $author$project$SortingAlgorithms$MergeSort$mergeArrays = F2(
 							continue mergeHelper;
 						}
 					} else {
-						if (!_v0.b.$) {
+						if (_v0.b.$ === 'Just') {
 							var _v2 = _v0.a;
 							var rightValue = _v0.b.a;
 							var $temp$leftIndex = leftIndex,
@@ -7041,7 +7062,7 @@ var $elm$core$Array$sliceLeft = F2(
 				var skipNodes = (from / $elm$core$Array$branchFactor) | 0;
 				var helper = F2(
 					function (node, acc) {
-						if (!node.$) {
+						if (node.$ === 'SubTree') {
 							var subTree = node.a;
 							return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
 						} else {
@@ -7063,9 +7084,9 @@ var $elm$core$Array$sliceLeft = F2(
 					var rest = nodesToInsert.b;
 					var firstSlice = from - (skipNodes * $elm$core$Array$branchFactor);
 					var initialBuilder = {
-						g: _List_Nil,
-						c: 0,
-						e: A3(
+						nodeList: _List_Nil,
+						nodeListSize: 0,
+						tail: A3(
 							$elm$core$Elm$JsArray$slice,
 							firstSlice,
 							$elm$core$Elm$JsArray$length(head),
@@ -7085,7 +7106,7 @@ var $elm$core$Array$fetchNewTail = F4(
 		while (true) {
 			var pos = $elm$core$Array$bitMask & (treeEnd >>> shift);
 			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-			if (!_v0.$) {
+			if (_v0.$ === 'SubTree') {
 				var sub = _v0.a;
 				var $temp$shift = shift - $elm$core$Array$shiftStep,
 					$temp$end = end,
@@ -7110,7 +7131,7 @@ var $elm$core$Array$hoistTree = F3(
 				return tree;
 			} else {
 				var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, 0, tree);
-				if (!_v0.$) {
+				if (_v0.$ === 'SubTree') {
 					var sub = _v0.a;
 					var $temp$oldShift = oldShift - $elm$core$Array$shiftStep,
 						$temp$newShift = newShift,
@@ -7129,7 +7150,7 @@ var $elm$core$Array$sliceTree = F3(
 	function (shift, endIdx, tree) {
 		var lastPos = $elm$core$Array$bitMask & (endIdx >>> shift);
 		var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, lastPos, tree);
-		if (!_v0.$) {
+		if (_v0.$ === 'SubTree') {
 			var sub = _v0.a;
 			var newSub = A3($elm$core$Array$sliceTree, shift - $elm$core$Array$shiftStep, endIdx, sub);
 			return (!$elm$core$Elm$JsArray$length(newSub)) ? A3($elm$core$Elm$JsArray$slice, 0, lastPos, tree) : A3(
@@ -7220,10 +7241,10 @@ var $author$project$SortingAlgorithms$MergeSort$processMergeStep = F3(
 		return A2(processSegments, 0, $elm$core$Array$empty);
 	});
 var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track) {
-	var outerIndex = track.aY;
-	var currentStep = track.ab;
+	var outerIndex = track.outerIndex;
+	var currentStep = track.currentStep;
 	var halfStep = (A2($elm$core$Basics$pow, 2, currentStep) / 2) | 0;
-	var array = track._;
+	var array = track.array;
 	var arrayLength = $elm$core$Array$length(array);
 	var totalSteps = $elm$core$Basics$ceiling(
 		A2($elm$core$Basics$logBase, 2, arrayLength));
@@ -7232,16 +7253,16 @@ var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track)
 	return _Utils_update(
 		track,
 		{
-			_: updatedArray,
-			aL: currentStep,
-			ab: isSorted ? currentStep : (currentStep + 1),
-			aY: halfStep,
-			a0: isSorted
+			array: updatedArray,
+			currentIndex: currentStep,
+			currentStep: isSorted ? currentStep : (currentStep + 1),
+			outerIndex: halfStep,
+			sorted: isSorted
 		});
 };
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
-		if (!maybe.$) {
+		if (maybe.$ === 'Just') {
 			var value = maybe.a;
 			return value;
 		} else {
@@ -7269,7 +7290,7 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 		var pivot = A2(
 			$elm$core$Maybe$withDefault,
 			0,
-			A2($elm$core$Array$get, high, track._));
+			A2($elm$core$Array$get, high, track.array));
 		var loop = F2(
 			function (_v1, currentIndex) {
 				var currentTrack = _v1.a;
@@ -7277,13 +7298,13 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 				var currentElement = A2(
 					$elm$core$Maybe$withDefault,
 					0,
-					A2($elm$core$Array$get, currentIndex, currentTrack._));
+					A2($elm$core$Array$get, currentIndex, currentTrack.array));
 				if (_Utils_cmp(currentElement, pivot) < 0) {
-					var updatedArray = A3($author$project$SortingAlgorithms$QuickSort$swap, currentIndex, partitionIndex, currentTrack._);
+					var updatedArray = A3($author$project$SortingAlgorithms$QuickSort$swap, currentIndex, partitionIndex, currentTrack.array);
 					return _Utils_Tuple2(
 						_Utils_update(
 							currentTrack,
-							{_: updatedArray}),
+							{array: updatedArray}),
 						partitionIndex + 1);
 				} else {
 					return _Utils_Tuple2(currentTrack, partitionIndex);
@@ -7299,19 +7320,19 @@ var $author$project$SortingAlgorithms$QuickSort$partition = F3(
 			A2($elm$core$List$range, low, high - 1));
 		var newTrack = _v0.a;
 		var pivotIndex = _v0.b;
-		var finalArray = A3($author$project$SortingAlgorithms$QuickSort$swap, pivotIndex, high, newTrack._);
+		var finalArray = A3($author$project$SortingAlgorithms$QuickSort$swap, pivotIndex, high, newTrack.array);
 		return _Utils_Tuple2(
 			pivotIndex,
 			_Utils_update(
 				newTrack,
-				{_: finalArray}));
+				{array: finalArray}));
 	});
 var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track) {
-	var _v0 = track.ay;
+	var _v0 = track.stack;
 	if (!_v0.b) {
 		return _Utils_update(
 			track,
-			{a0: true});
+			{sorted: true});
 	} else {
 		var _v1 = _v0.a;
 		var low = _v1.a;
@@ -7330,11 +7351,11 @@ var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track)
 					rest));
 			return _Utils_update(
 				newTrack,
-				{aL: low, ab: track.ab + 1, aY: pivotIndex, ay: newStack});
+				{currentIndex: low, currentStep: track.currentStep + 1, outerIndex: pivotIndex, stack: newStack});
 		} else {
 			return _Utils_update(
 				track,
-				{ay: rest});
+				{stack: rest});
 		}
 	}
 };
@@ -7349,71 +7370,74 @@ var $elm$random$Random$peel = function (_v0) {
 };
 var $elm$random$Random$int = F2(
 	function (a, b) {
-		return function (seed0) {
-			var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
-			var lo = _v0.a;
-			var hi = _v0.b;
-			var range = (hi - lo) + 1;
-			if (!((range - 1) & range)) {
-				return _Utils_Tuple2(
-					(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
-					$elm$random$Random$next(seed0));
-			} else {
-				var threshhold = (((-range) >>> 0) % range) >>> 0;
-				var accountForBias = function (seed) {
-					accountForBias:
-					while (true) {
-						var x = $elm$random$Random$peel(seed);
-						var seedN = $elm$random$Random$next(seed);
-						if (_Utils_cmp(x, threshhold) < 0) {
-							var $temp$seed = seedN;
-							seed = $temp$seed;
-							continue accountForBias;
-						} else {
-							return _Utils_Tuple2((x % range) + lo, seedN);
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
 						}
-					}
-				};
-				return accountForBias(seed0);
-			}
-		};
+					};
+					return accountForBias(seed0);
+				}
+			});
 	});
 var $elm$random$Random$maxInt = 2147483647;
 var $elm$random$Random$minInt = -2147483648;
 var $elm_community$random_extra$Random$List$anyInt = A2($elm$random$Random$int, $elm$random$Random$minInt, $elm$random$Random$maxInt);
 var $elm$random$Random$map3 = F4(
 	function (func, _v0, _v1, _v2) {
-		var genA = _v0;
-		var genB = _v1;
-		var genC = _v2;
-		return function (seed0) {
-			var _v3 = genA(seed0);
-			var a = _v3.a;
-			var seed1 = _v3.b;
-			var _v4 = genB(seed1);
-			var b = _v4.a;
-			var seed2 = _v4.b;
-			var _v5 = genC(seed2);
-			var c = _v5.a;
-			var seed3 = _v5.b;
-			return _Utils_Tuple2(
-				A3(func, a, b, c),
-				seed3);
-		};
+		var genA = _v0.a;
+		var genB = _v1.a;
+		var genC = _v2.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v3 = genA(seed0);
+				var a = _v3.a;
+				var seed1 = _v3.b;
+				var _v4 = genB(seed1);
+				var b = _v4.a;
+				var seed2 = _v4.b;
+				var _v5 = genC(seed2);
+				var c = _v5.a;
+				var seed3 = _v5.b;
+				return _Utils_Tuple2(
+					A3(func, a, b, c),
+					seed3);
+			});
 	});
 var $elm$core$Bitwise$or = _Bitwise_or;
-var $elm$random$Random$independentSeed = function (seed0) {
-	var makeIndependentSeed = F3(
-		function (state, b, c) {
-			return $elm$random$Random$next(
-				A2($elm$random$Random$Seed, state, (1 | (b ^ c)) >>> 0));
-		});
-	var gen = A2($elm$random$Random$int, 0, 4294967295);
-	return A2(
-		$elm$random$Random$step,
-		A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
-		seed0);
-};
+var $elm$random$Random$independentSeed = $elm$random$Random$Generator(
+	function (seed0) {
+		var makeIndependentSeed = F3(
+			function (state, b, c) {
+				return $elm$random$Random$next(
+					A2($elm$random$Random$Seed, state, (1 | (b ^ c)) >>> 0));
+			});
+		var gen = A2($elm$random$Random$int, 0, 4294967295);
+		return A2(
+			$elm$random$Random$step,
+			A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
+			seed0);
+	});
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
@@ -7454,23 +7478,24 @@ var $author$project$MainComponents$Structs$randomListGenerator = $elm_community$
 	A2($elm$core$List$range, 1, 10));
 var $author$project$MainComponents$Structs$randomTargetGenerator = A2($elm$random$Random$int, 1, 10);
 var $author$project$Trees$TreeTraversal$GotRandomTree = function (a) {
-	return {$: 1, a: a};
+	return {$: 'GotRandomTree', a: a};
 };
 var $elm$random$Random$andThen = F2(
 	function (callback, _v0) {
-		var genA = _v0;
-		return function (seed) {
-			var _v1 = genA(seed);
-			var result = _v1.a;
-			var newSeed = _v1.b;
-			var _v2 = callback(result);
-			var genB = _v2;
-			return genB(newSeed);
-		};
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed) {
+				var _v1 = genA(seed);
+				var result = _v1.a;
+				var newSeed = _v1.b;
+				var _v2 = callback(result);
+				var genB = _v2.a;
+				return genB(newSeed);
+			});
 	});
 var $author$project$MainComponents$Structs$Node = F3(
 	function (a, b, c) {
-		return {$: 1, a: a, b: b, c: c};
+		return {$: 'Node', a: a, b: b, c: c};
 	});
 var $author$project$Trees$TreeTraversal$buildTree = F3(
 	function (values, index, depth) {
@@ -7620,7 +7645,7 @@ var $elm$core$List$take = F2(
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
 var $author$project$Trees$TreeTraversal$randomTreeGenerator = function () {
-	var sizeGenerator = A2($elm$random$Random$int, 10, 31);
+	var sizeGenerator = A2($elm$random$Random$int, 10, 21);
 	return A2(
 		$elm$random$Random$andThen,
 		function (n) {
@@ -7638,28 +7663,28 @@ var $author$project$Trees$TreeTraversal$randomTreeGenerator = function () {
 var $author$project$Trees$TreeTraversal$randomTreeCmd = A2($elm$random$Random$generate, $author$project$Trees$TreeTraversal$GotRandomTree, $author$project$Trees$TreeTraversal$randomTreeGenerator);
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function (track) {
-	var outer = track.aY;
-	var minimum = track.aT;
-	var current = track.aL;
-	var arr = track._;
+	var outer = track.outerIndex;
+	var minimum = track.minIndex;
+	var current = track.currentIndex;
+	var arr = track.array;
 	var length = $elm$core$Array$length(arr);
-	if (track.a0 || (_Utils_cmp(outer, length) > -1)) {
+	if (track.sorted || (_Utils_cmp(outer, length) > -1)) {
 		return _Utils_update(
 			track,
-			{a0: true});
+			{sorted: true});
 	} else {
 		if (_Utils_cmp(current, length) < 0) {
 			var _v0 = _Utils_Tuple2(
 				A2($elm$core$Array$get, current, arr),
 				A2($elm$core$Array$get, minimum, arr));
-			if ((!_v0.a.$) && (!_v0.b.$)) {
+			if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
 				var currentValue = _v0.a.a;
 				var minimumValue = _v0.b.a;
 				return (_Utils_cmp(currentValue, minimumValue) < 0) ? _Utils_update(
 					track,
-					{aL: current + 1, aT: current}) : _Utils_update(
+					{currentIndex: current + 1, minIndex: current}) : _Utils_update(
 					track,
-					{aL: current + 1});
+					{currentIndex: current + 1});
 			} else {
 				return track;
 			}
@@ -7667,7 +7692,7 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 			var _v1 = _Utils_Tuple2(
 				A2($elm$core$Array$get, outer, arr),
 				A2($elm$core$Array$get, minimum, arr));
-			if ((!_v1.a.$) && (!_v1.b.$)) {
+			if ((_v1.a.$ === 'Just') && (_v1.b.$ === 'Just')) {
 				var outerValue = _v1.a.a;
 				var minimumValue = _v1.b.a;
 				var updatedArray = (!_Utils_eq(minimum, outer)) ? A3(
@@ -7677,7 +7702,7 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 					A3($elm$core$Array$set, minimum, outerValue, arr)) : arr;
 				return _Utils_update(
 					track,
-					{_: updatedArray, aL: outer + 2, aT: outer + 1, aY: outer + 1});
+					{array: updatedArray, currentIndex: outer + 2, minIndex: outer + 1, outerIndex: outer + 1});
 			} else {
 				return track;
 			}
@@ -7685,31 +7710,31 @@ var $author$project$SortingAlgorithms$SelectionSort$selectionSortStep = function
 	}
 };
 var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track) {
-	var outer = track.aY;
-	var gap = track.ai;
-	var current = track.ab;
-	var arr = track._;
+	var outer = track.outerIndex;
+	var gap = track.gap;
+	var current = track.currentStep;
+	var arr = track.array;
 	var length = $elm$core$Array$length(arr);
-	if (track.a0 || (gap <= 0)) {
+	if (track.sorted || (gap <= 0)) {
 		return _Utils_update(
 			track,
-			{a0: true});
+			{sorted: true});
 	} else {
 		if (_Utils_cmp(outer, length) > -1) {
 			var newGap = (gap === 1) ? 0 : ((gap / 2) | 0);
 			return _Utils_update(
 				track,
-				{ab: newGap, ai: newGap, aY: newGap});
+				{currentStep: newGap, gap: newGap, outerIndex: newGap});
 		} else {
 			if (_Utils_cmp(current, gap) < 0) {
 				return _Utils_update(
 					track,
-					{ab: outer + 1, aY: outer + 1});
+					{currentStep: outer + 1, outerIndex: outer + 1});
 			} else {
 				var _v0 = _Utils_Tuple2(
 					A2($elm$core$Array$get, current, arr),
 					A2($elm$core$Array$get, current - gap, arr));
-				if ((!_v0.a.$) && (!_v0.b.$)) {
+				if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
 					var currentValue = _v0.a.a;
 					var gapValue = _v0.b.a;
 					if (_Utils_cmp(currentValue, gapValue) < 0) {
@@ -7720,11 +7745,11 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 							A3($elm$core$Array$set, current - gap, currentValue, arr));
 						return _Utils_update(
 							track,
-							{_: updatedArray, aL: current - gap, ab: current - gap});
+							{array: updatedArray, currentIndex: current - gap, currentStep: current - gap});
 					} else {
 						return _Utils_update(
 							track,
-							{ab: outer + 1, aY: outer + 1});
+							{currentStep: outer + 1, outerIndex: outer + 1});
 					}
 				} else {
 					return track;
@@ -7734,24 +7759,25 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 	}
 };
 var $author$project$MainComponents$Home$IndexSwap = function (a) {
-	return {$: 3, a: a};
+	return {$: 'IndexSwap', a: a};
 };
-var $author$project$MainComponents$Home$Light = 1;
+var $author$project$MainComponents$Home$Light = {$: 'Light'};
 var $elm$random$Random$map2 = F3(
 	function (func, _v0, _v1) {
-		var genA = _v0;
-		var genB = _v1;
-		return function (seed0) {
-			var _v2 = genA(seed0);
-			var a = _v2.a;
-			var seed1 = _v2.b;
-			var _v3 = genB(seed1);
-			var b = _v3.a;
-			var seed2 = _v3.b;
-			return _Utils_Tuple2(
-				A2(func, a, b),
-				seed2);
-		};
+		var genA = _v0.a;
+		var genB = _v1.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v2 = genA(seed0);
+				var a = _v2.a;
+				var seed1 = _v2.b;
+				var _v3 = genB(seed1);
+				var b = _v3.a;
+				var seed2 = _v3.b;
+				return _Utils_Tuple2(
+					A2(func, a, b),
+					seed2);
+			});
 	});
 var $elm$random$Random$pair = F2(
 	function (genA, genB) {
@@ -7769,7 +7795,7 @@ var $author$project$MainComponents$Home$swap = F3(
 		var _v0 = _Utils_Tuple2(
 			A2($elm$core$Array$get, indexOne, array),
 			A2($elm$core$Array$get, indexTwo, array));
-		if ((!_v0.a.$) && (!_v0.b.$)) {
+		if ((_v0.a.$ === 'Just') && (_v0.b.$ === 'Just')) {
 			var valueOne = _v0.a.a;
 			var valueTwo = _v0.b.a;
 			return A3(
@@ -7784,38 +7810,38 @@ var $author$project$MainComponents$Home$swap = F3(
 var $author$project$MainComponents$Home$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 0:
+			case 'ToggleTheme':
 				var switched = function () {
-					var _v1 = model.aB;
-					if (_v1 === 1) {
-						return 0;
+					var _v1 = model.theme;
+					if (_v1.$ === 'Light') {
+						return $author$project$MainComponents$Home$Dark;
 					} else {
-						return 1;
+						return $author$project$MainComponents$Home$Light;
 					}
 				}();
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aB: switched}),
+						{theme: switched}),
 					$elm$core$Platform$Cmd$none);
-			case 1:
+			case 'TypingSimulation':
 				return ((_Utils_cmp(
-					model.q,
-					$elm$core$String$length(model.S) + 5) < 0) && (!model.G)) ? _Utils_Tuple2(
+					model.typingIndex,
+					$elm$core$String$length(model.targetString) + 5) < 0) && (!model.typingFlag)) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{q: model.q + 1}),
-					$elm$core$Platform$Cmd$none) : (((model.q > 1) && model.G) ? _Utils_Tuple2(
+						{typingIndex: model.typingIndex + 1}),
+					$elm$core$Platform$Cmd$none) : (((model.typingIndex > 1) && model.typingFlag) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{q: model.q - 1}),
+						{typingIndex: model.typingIndex - 1}),
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{G: !model.G}),
+						{typingFlag: !model.typingFlag}),
 					$elm$core$Platform$Cmd$none));
-			case 2:
-				var arrLength = $elm$core$Array$length(model.C);
+			case 'SwapNeeded':
+				var arrLength = $elm$core$Array$length(model.backgroundArray);
 				var randomCmd = A2(
 					$elm$random$Random$generate,
 					$author$project$MainComponents$Home$IndexSwap,
@@ -7832,15 +7858,15 @@ var $author$project$MainComponents$Home$update = F2(
 					_Utils_update(
 						model,
 						{
-							C: A3($author$project$MainComponents$Home$swap, indexOne, indexTwo, model.C),
-							Q: indexOne,
-							R: indexTwo
+							backgroundArray: A3($author$project$MainComponents$Home$swap, indexOne, indexTwo, model.backgroundArray),
+							indexOne: indexOne,
+							indexTwo: indexTwo
 						}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Trees$TreeTraversal$inorder = function (t) {
-	if (!t.$) {
+	if (t.$ === 'Empty') {
 		return _List_Nil;
 	} else {
 		var val = t.a;
@@ -7855,7 +7881,7 @@ var $author$project$Trees$TreeTraversal$inorder = function (t) {
 	}
 };
 var $author$project$Trees$TreeTraversal$postorder = function (t) {
-	if (!t.$) {
+	if (t.$ === 'Empty') {
 		return _List_Nil;
 	} else {
 		var val = t.a;
@@ -7870,7 +7896,7 @@ var $author$project$Trees$TreeTraversal$postorder = function (t) {
 	}
 };
 var $author$project$Trees$TreeTraversal$preorder = function (t) {
-	if (!t.$) {
+	if (t.$ === 'Empty') {
 		return _List_Nil;
 	} else {
 		var val = t.a;
@@ -7886,10 +7912,10 @@ var $author$project$Trees$TreeTraversal$preorder = function (t) {
 };
 var $author$project$Trees$TreeTraversal$getTraversal = F2(
 	function (traversalType, tree) {
-		switch (traversalType) {
-			case 0:
+		switch (traversalType.$) {
+			case 'Preorder':
 				return $author$project$Trees$TreeTraversal$preorder(tree);
-			case 1:
+			case 'Inorder':
 				return $author$project$Trees$TreeTraversal$inorder(tree);
 			default:
 				return $author$project$Trees$TreeTraversal$postorder(tree);
@@ -7898,55 +7924,55 @@ var $author$project$Trees$TreeTraversal$getTraversal = F2(
 var $author$project$Trees$TreeTraversal$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 0:
+			case 'GenerateRandomTree':
 				return _Utils_Tuple2(model, $author$project$Trees$TreeTraversal$randomTreeCmd);
-			case 1:
+			case 'GotRandomTree':
 				var newTree = msg.a;
-				var newTraversal = A2($author$project$Trees$TreeTraversal$getTraversal, model.P, newTree);
+				var newTraversal = A2($author$project$Trees$TreeTraversal$getTraversal, model.currentTraversal, newTree);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{m: 0, A: newTraversal, F: newTree}),
+						{index: 0, traversalResult: newTraversal, tree: newTree}),
 					$elm$core$Platform$Cmd$none);
-			case 2:
-				var tType = msg.a;
-				var newTraversal = A2($author$project$Trees$TreeTraversal$getTraversal, tType, model.F);
+			case 'ChangeTraversal':
+				var traversalType = msg.a;
+				var newTraversal = A2($author$project$Trees$TreeTraversal$getTraversal, traversalType, model.tree);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{P: tType, m: 0, A: newTraversal}),
+						{currentTraversal: traversalType, index: 0, traversalResult: newTraversal}),
 					$elm$core$Platform$Cmd$none);
 			default:
-				switch (msg.a) {
-					case 0:
+				switch (msg.a.$) {
+					case 'Run':
 						var _v1 = msg.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{b: true}),
+								{running: true}),
 							$elm$core$Platform$Cmd$none);
-					case 1:
+					case 'Pause':
 						var _v2 = msg.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{b: false}),
+								{running: false}),
 							$elm$core$Platform$Cmd$none);
-					case 3:
+					case 'Step':
 						var _v3 = msg.a;
 						return (_Utils_cmp(
-							model.m,
-							$elm$core$List$length(model.A)) < 0) ? _Utils_Tuple2(
+							model.index,
+							$elm$core$List$length(model.traversalResult)) < 0) ? _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{m: model.m + 1}),
+								{index: model.index + 1}),
 							$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					default:
 						var _v4 = msg.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{m: 0, b: false, A: _List_Nil, F: $author$project$MainComponents$Structs$Empty}),
+								{index: 0, running: false, traversalResult: _List_Nil, tree: $author$project$MainComponents$Structs$Empty}),
 							$author$project$Trees$TreeTraversal$randomTreeCmd);
 				}
 		}
@@ -7954,38 +7980,38 @@ var $author$project$Trees$TreeTraversal$update = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 0:
+			case 'NavigateTo':
 				var page = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							f: page,
-							b: false,
-							a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+							currentPage: page,
+							running: false,
+							sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 1:
+			case 'HomeMsg':
 				var homeMsg = msg.a;
-				var _v1 = A2($author$project$MainComponents$Home$update, homeMsg, model.t);
+				var _v1 = A2($author$project$MainComponents$Home$update, homeMsg, model.homeModel);
 				var newHome = _v1.a;
 				var homeCmd = _v1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{t: newHome}),
+						{homeModel: newHome}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$HomeMsg, homeCmd));
-			case 7:
-				var subMsg = msg.a;
-				var _v2 = A2($author$project$Trees$TreeTraversal$update, subMsg, model.M);
+			case 'TreeTraversalMsg':
+				var treeMsg = msg.a;
+				var _v2 = A2($author$project$Trees$TreeTraversal$update, treeMsg, model.treeTraversalModel);
 				var newTreeTraversalModel = _v2.a;
-				var subCmd = _v2.b;
+				var treeCmd = _v2.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{M: newTreeTraversalModel}),
-					A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, subCmd));
-			case 2:
+						{treeTraversalModel: newTreeTraversalModel}),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
+			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
 					case 'Bubble Sort':
@@ -7993,9 +8019,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 1,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$BubbleSort,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
 					case 'Selection Sort':
@@ -8003,9 +8029,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 2,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$SelectionSort,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
 					case 'Insertion Sort':
@@ -8013,9 +8039,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 3,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$InsertionSort,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
 					case 'Shell Sort':
@@ -8023,9 +8049,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 4,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$ShellSort,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
 					case 'Merge Sort':
@@ -8033,9 +8059,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 5,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$MergeSort,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
 					case 'Quick Sort':
@@ -8043,9 +8069,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 6,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$QuickSort,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator));
 					case 'Linear Search':
@@ -8053,9 +8079,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 7,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$LinearSearch,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							$elm$core$Platform$Cmd$batch(
 								_List_fromArray(
@@ -8068,9 +8094,9 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 8,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$TreeTraversal,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, $author$project$Trees$TreeTraversal$randomTreeCmd));
 					default:
@@ -8078,31 +8104,31 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									f: 0,
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									currentPage: $author$project$Main$Home,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							$elm$core$Platform$Cmd$none);
 				}
-			case 3:
+			case 'ControlMsg':
 				var controlMsg = msg.a;
-				switch (controlMsg) {
-					case 0:
+				switch (controlMsg.$) {
+					case 'Run':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{b: true}),
+								{running: true}),
 							$elm$core$Platform$Cmd$none);
-					case 1:
+					case 'Pause':
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{b: false}),
+								{running: false}),
 							$elm$core$Platform$Cmd$none);
-					case 2:
+					case 'Reset':
 						var resetCmds = function () {
-							var _v5 = model.f;
-							if (_v5 === 7) {
+							var _v5 = model.currentPage;
+							if (_v5.$ === 'LinearSearch') {
 								return _List_fromArray(
 									[
 										A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
@@ -8119,84 +8145,84 @@ var $author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{
-									b: false,
-									a: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							$elm$core$Platform$Cmd$batch(resetCmds));
 					default:
-						var _v6 = model.f;
-						switch (_v6) {
-							case 1:
-								var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.a);
+						var _v6 = model.currentPage;
+						switch (_v6.$) {
+							case 'BubbleSort':
+								var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
-							case 2:
-								var updatedTrack = $author$project$SortingAlgorithms$SelectionSort$selectionSortStep(model.a);
+							case 'SelectionSort':
+								var updatedTrack = $author$project$SortingAlgorithms$SelectionSort$selectionSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
-							case 3:
-								var updatedTrack = $author$project$SortingAlgorithms$InsertionSort$insertionSortStep(model.a);
+							case 'InsertionSort':
+								var updatedTrack = $author$project$SortingAlgorithms$InsertionSort$insertionSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
-							case 4:
-								var updatedTrack = $author$project$SortingAlgorithms$ShellSort$shellSortStep(model.a);
+							case 'ShellSort':
+								var updatedTrack = $author$project$SortingAlgorithms$ShellSort$shellSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
-							case 5:
-								var updatedTrack = $author$project$SortingAlgorithms$MergeSort$mergeSortStep(model.a);
+							case 'MergeSort':
+								var updatedTrack = $author$project$SortingAlgorithms$MergeSort$mergeSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
-							case 6:
-								var updatedTrack = $author$project$SortingAlgorithms$QuickSort$quickSortStep(model.a);
+							case 'QuickSort':
+								var updatedTrack = $author$project$SortingAlgorithms$QuickSort$quickSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
-							case 7:
-								var updatedTrack = $author$project$SearchAlgorithms$LinearSearch$linearSearchStep(model.a);
+							case 'LinearSearch':
+								var updatedTrack = $author$project$SearchAlgorithms$LinearSearch$linearSearchStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
-										{a: updatedTrack}),
+										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
 							default:
 								return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 						}
 				}
-			case 5:
+			case 'GotRandomArray':
 				var list = msg.a;
 				var newTrack = $author$project$MainComponents$Structs$defaultSortingTrack(list);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							a: $author$project$MainComponents$Structs$defaultSortingTrack(list)
+							sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(list)
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 6:
+			case 'GotRandomTarget':
 				var newTarget = msg.a;
-				var currentSortingAlgorithm = model.a;
+				var currentSortingAlgorithm = model.sortingAlgorithm;
 				var updatedSortingAlgorithm = function () {
-					var array = currentSortingAlgorithm._;
+					var array = currentSortingAlgorithm.array;
 					var targetValue = function () {
 						var _v7 = A2($elm$core$Array$get, newTarget, array);
-						if (!_v7.$) {
+						if (_v7.$ === 'Just') {
 							var value = _v7.a;
 							return value;
 						} else {
@@ -8205,39 +8231,39 @@ var $author$project$Main$update = F2(
 					}();
 					return _Utils_update(
 						currentSortingAlgorithm,
-						{_: array, aL: newTarget, aT: targetValue, aY: 0, a0: false});
+						{array: array, currentIndex: newTarget, minIndex: targetValue, outerIndex: 0, sorted: false});
 				}();
 				var updatedModel = _Utils_update(
 					model,
-					{a: updatedSortingAlgorithm});
+					{sortingAlgorithm: updatedSortingAlgorithm});
 				return _Utils_Tuple2(updatedModel, $elm$core$Platform$Cmd$none);
 			default:
-				if (model.b) {
+				if (model.running) {
 					var updatedTrack = function () {
-						var _v8 = model.f;
-						switch (_v8) {
-							case 1:
-								return $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.a);
-							case 2:
-								return $author$project$SortingAlgorithms$SelectionSort$selectionSortStep(model.a);
-							case 3:
-								return $author$project$SortingAlgorithms$InsertionSort$insertionSortStep(model.a);
-							case 4:
-								return $author$project$SortingAlgorithms$ShellSort$shellSortStep(model.a);
-							case 5:
-								return $author$project$SortingAlgorithms$MergeSort$mergeSortStep(model.a);
-							case 6:
-								return $author$project$SortingAlgorithms$QuickSort$quickSortStep(model.a);
-							case 7:
-								return $author$project$SearchAlgorithms$LinearSearch$linearSearchStep(model.a);
+						var _v8 = model.currentPage;
+						switch (_v8.$) {
+							case 'BubbleSort':
+								return $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
+							case 'SelectionSort':
+								return $author$project$SortingAlgorithms$SelectionSort$selectionSortStep(model.sortingAlgorithm);
+							case 'InsertionSort':
+								return $author$project$SortingAlgorithms$InsertionSort$insertionSortStep(model.sortingAlgorithm);
+							case 'ShellSort':
+								return $author$project$SortingAlgorithms$ShellSort$shellSortStep(model.sortingAlgorithm);
+							case 'MergeSort':
+								return $author$project$SortingAlgorithms$MergeSort$mergeSortStep(model.sortingAlgorithm);
+							case 'QuickSort':
+								return $author$project$SortingAlgorithms$QuickSort$quickSortStep(model.sortingAlgorithm);
+							case 'LinearSearch':
+								return $author$project$SearchAlgorithms$LinearSearch$linearSearchStep(model.sortingAlgorithm);
 							default:
-								return model.a;
+								return model.sortingAlgorithm;
 						}
 					}();
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{a: updatedTrack}),
+							{sortingAlgorithm: updatedTrack}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8245,11 +8271,11 @@ var $author$project$Main$update = F2(
 		}
 	});
 var $author$project$Main$ControlMsg = function (a) {
-	return {$: 3, a: a};
+	return {$: 'ControlMsg', a: a};
 };
 var $elm$browser$Browser$Document = F2(
 	function (title, body) {
-		return {aI: body, a3: title};
+		return {body: body, title: title};
 	});
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -8319,7 +8345,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 			]),
 		_List_fromArray(
 			[
-				A3($author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars, model.C, model.Q, model.R),
+				A3($author$project$SortingAlgorithms$SortingVisualization$renderBackgroundBars, model.backgroundArray, model.indexOne, model.indexTwo),
 				A2(
 				$elm$html$Html$h1,
 				_List_fromArray(
@@ -8329,7 +8355,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						A2($elm$core$String$left, model.q, model.S))
+						A2($elm$core$String$left, model.typingIndex, model.targetString))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -8348,7 +8374,7 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderBar = F6(
 	function (sorted, outerIndex, currentIndex, maybeMinIndex, position, value) {
 		var isOuter = _Utils_eq(position, outerIndex);
 		var isMin = function () {
-			if (!maybeMinIndex.$) {
+			if (maybeMinIndex.$ === 'Just') {
 				var mi = maybeMinIndex.a;
 				return _Utils_eq(position, mi);
 			} else {
@@ -8444,13 +8470,13 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderComparison = F6
 				]));
 	});
 var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$MainComponents$Controls$Pause = 1;
-var $author$project$MainComponents$Controls$Reset = 2;
-var $author$project$MainComponents$Controls$Run = 0;
-var $author$project$MainComponents$Controls$Step = 3;
+var $author$project$MainComponents$Controls$Pause = {$: 'Pause'};
+var $author$project$MainComponents$Controls$Reset = {$: 'Reset'};
+var $author$project$MainComponents$Controls$Run = {$: 'Run'};
+var $author$project$MainComponents$Controls$Step = {$: 'Step'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 0, a: a};
+	return {$: 'Normal', a: a};
 };
 var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$on = F2(
@@ -8483,7 +8509,7 @@ var $author$project$MainComponents$Controls$view = F2(
 						[
 							$elm$html$Html$Attributes$class('sorting-button'),
 							$elm$html$Html$Events$onClick(
-							toMsg(1))
+							toMsg($author$project$MainComponents$Controls$Pause))
 						]),
 					_List_fromArray(
 						[
@@ -8503,7 +8529,7 @@ var $author$project$MainComponents$Controls$view = F2(
 						[
 							$elm$html$Html$Attributes$class('sorting-button'),
 							$elm$html$Html$Events$onClick(
-							toMsg(0))
+							toMsg($author$project$MainComponents$Controls$Run))
 						]),
 					_List_fromArray(
 						[
@@ -8524,7 +8550,7 @@ var $author$project$MainComponents$Controls$view = F2(
 						[
 							$elm$html$Html$Attributes$class('sorting-button'),
 							$elm$html$Html$Events$onClick(
-							toMsg(3))
+							toMsg($author$project$MainComponents$Controls$Step))
 						]),
 					_List_fromArray(
 						[
@@ -8545,7 +8571,7 @@ var $author$project$MainComponents$Controls$view = F2(
 						[
 							$elm$html$Html$Attributes$class('sorting-button'),
 							$elm$html$Html$Events$onClick(
-							toMsg(2))
+							toMsg($author$project$MainComponents$Controls$Reset))
 						]),
 					_List_fromArray(
 						[
@@ -8592,7 +8618,7 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 						[
 							$elm$html$Html$text('Linear Search is the easiest searching algorithm.\r\n              It starts at the first element in the list and searches the list until it finds the target element or hits the end of the list.\r\n              If the target element in found, the searching stops and sees that the element is in the list.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8603,11 +8629,11 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Current Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Target: ' + $elm$core$String$fromInt(track.aT)),
+							' | Target: ' + $elm$core$String$fromInt(track.minIndex)),
 							$elm$html$Html$text(
-							' | Element Found: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Element Found: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8765,7 +8791,7 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 						[
 							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8776,13 +8802,13 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Current Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Next Index: ' + $elm$core$String$fromInt(track.aL)),
+							' | Next Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.ae ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -8970,7 +8996,7 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 						[
 							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -8981,11 +9007,11 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aL)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9153,7 +9179,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						[
 							$elm$html$Html$text('Merge Sort is a divide and conquer sorting algorithm.\r\n              First, it divides the array into subarrays until it can no longer be divided.\r\n              Then, it conquers by sorting each subarray individually.\r\n              Finally, it merges the subarray together until the array is sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9164,11 +9190,11 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Middle Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Middle Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Outer Index: ' + $elm$core$String$fromInt(track.aL)),
+							' | Outer Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9336,7 +9362,7 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 						[
 							$elm$html$Html$text('Quick Sort follows a divide and conquer approach.\r\n              It selects an element of the array to be a pivot. In this example, it\'s the rightmost element.\r\n              Then, the algorithm partitions the array and rearranges around the pivot.\r\n              At the end of this step, all elements smaller than the pivot are to the left of it and larger are to the right.\r\n              Finally, the sort is recursively called while reducing the size of the subarrays until there is only one element in the left subarray.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track._, 'Walk through the steps below', track.a0, track.aY, track.aL, $elm$core$Maybe$Nothing),
+					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9347,13 +9373,13 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Pivot Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Pivot Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aL)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.ae ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9523,12 +9549,12 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
-					track._,
+					track.array,
 					'Walk through the steps below',
-					track.a0,
-					track.aY,
-					track.aL,
-					$elm$core$Maybe$Just(track.aT)),
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.minIndex)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9539,15 +9565,15 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Current Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Current Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Compare Index: ' + $elm$core$String$fromInt(track.aL)),
+							' | Compare Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Minimum Index: ' + $elm$core$String$fromInt(track.aT)),
+							' | Minimum Index: ' + $elm$core$String$fromInt(track.minIndex)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.ae ? 'Yes' : 'No')),
+							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9724,12 +9750,12 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
-					track._,
+					track.array,
 					'Walk through the steps below',
-					track.a0,
-					track.aY,
-					track.aL,
-					$elm$core$Maybe$Just(track.ai)),
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.gap)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -9740,13 +9766,13 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Outer Index: ' + $elm$core$String$fromInt(track.aY)),
+							'Outer Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Current Index: ' + $elm$core$String$fromInt(track.aL)),
+							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Gap: ' + $elm$core$String$fromInt(track.ai)),
+							' | Gap: ' + $elm$core$String$fromInt(track.gap)),
 							$elm$html$Html$text(
-							' | Sorted: ' + (track.a0 ? 'Yes' : 'No'))
+							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -9892,13 +9918,13 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 				]));
 	});
 var $author$project$Trees$TreeTraversal$ChangeTraversal = function (a) {
-	return {$: 2, a: a};
+	return {$: 'ChangeTraversal', a: a};
 };
 var $author$project$Trees$TreeTraversal$ControlMsg = function (a) {
-	return {$: 3, a: a};
+	return {$: 'ControlMsg', a: a};
 };
-var $author$project$Trees$TreeTraversal$Postorder = 2;
-var $author$project$Trees$TreeTraversal$Preorder = 0;
+var $author$project$Trees$TreeTraversal$Postorder = {$: 'Postorder'};
+var $author$project$Trees$TreeTraversal$Preorder = {$: 'Preorder'};
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
@@ -9936,7 +9962,7 @@ var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
 	});
 var $author$project$Trees$TreeVisualization$renderTree = F2(
 	function (tree, maybeActive) {
-		if (!tree.$) {
+		if (tree.$ === 'Empty') {
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -9949,7 +9975,7 @@ var $author$project$Trees$TreeVisualization$renderTree = F2(
 			var left = tree.b;
 			var right = tree.c;
 			var isActive = function () {
-				if (!maybeActive.$) {
+				if (maybeActive.$ === 'Just') {
 					var x = maybeActive.a;
 					return _Utils_eq(x, val);
 				} else {
@@ -10066,7 +10092,7 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Events$onClick(
-								$author$project$Trees$TreeTraversal$ChangeTraversal(0))
+								$author$project$Trees$TreeTraversal$ChangeTraversal($author$project$Trees$TreeTraversal$Preorder))
 							]),
 						_List_fromArray(
 							[
@@ -10077,7 +10103,7 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Events$onClick(
-								$author$project$Trees$TreeTraversal$ChangeTraversal(1))
+								$author$project$Trees$TreeTraversal$ChangeTraversal($author$project$Trees$TreeTraversal$Inorder))
 							]),
 						_List_fromArray(
 							[
@@ -10088,17 +10114,17 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Events$onClick(
-								$author$project$Trees$TreeTraversal$ChangeTraversal(2))
+								$author$project$Trees$TreeTraversal$ChangeTraversal($author$project$Trees$TreeTraversal$Postorder))
 							]),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Postorder')
 							]))
 					])),
-				A4($author$project$Trees$TreeVisualization$view, model.F, model.m, model.A, model.b),
+				A4($author$project$Trees$TreeVisualization$view, model.tree, model.index, model.traversalResult, model.running),
 				A2(
 				$author$project$MainComponents$Controls$view,
-				model.b,
+				model.running,
 				A2($elm$core$Basics$composeR, $author$project$Trees$TreeTraversal$ControlMsg, $elm$core$Basics$identity)),
 				A2(
 				$elm$html$Html$div,
@@ -10109,7 +10135,7 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						'Current Step: ' + $elm$core$String$fromInt(model.m))
+						'Current Step: ' + $elm$core$String$fromInt(model.index))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -10198,7 +10224,7 @@ var $author$project$Main$viewFooter = A2(
 			$elm$html$Html$text('An educational platform built by Will Maberry')
 		]));
 var $author$project$Main$SelectAlgorithm = function (a) {
-	return {$: 2, a: a};
+	return {$: 'SelectAlgorithm', a: a};
 };
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
@@ -10218,7 +10244,7 @@ var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 1, a: a};
+	return {$: 'MayStopPropagation', a: a};
 };
 var $elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
@@ -10409,10 +10435,10 @@ var $author$project$Main$viewHeader = A2(
 						]))
 				]))
 		]));
-var $author$project$MainComponents$Home$ToggleTheme = {$: 0};
+var $author$project$MainComponents$Home$ToggleTheme = {$: 'ToggleTheme'};
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Main$viewThemeToggle = function (model) {
-	var _v0 = (model.t.aB === 1) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
+	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$MainComponents$Home$Light) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
 	var icon = _v0.a;
 	var tooltip = _v0.b;
 	return A2(
@@ -10440,8 +10466,8 @@ var $author$project$Main$viewThemeToggle = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	var themeClass = function () {
-		var _v1 = model.t.aB;
-		if (_v1 === 1) {
+		var _v1 = model.homeModel.theme;
+		if (_v1.$ === 'Light') {
 			return 'light-theme';
 		} else {
 			return 'dark-theme';
@@ -10470,32 +10496,32 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								function () {
-								var _v0 = model.f;
-								switch (_v0) {
-									case 0:
+								var _v0 = model.currentPage;
+								switch (_v0.$) {
+									case 'Home':
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$HomeMsg,
-											$author$project$MainComponents$Home$view(model.t));
-									case 1:
-										return A3($author$project$SortingAlgorithms$BubbleSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									case 2:
-										return A3($author$project$SortingAlgorithms$SelectionSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									case 3:
-										return A3($author$project$SortingAlgorithms$InsertionSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									case 4:
-										return A3($author$project$SortingAlgorithms$ShellSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									case 5:
-										return A3($author$project$SortingAlgorithms$MergeSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									case 6:
-										return A3($author$project$SortingAlgorithms$QuickSort$view, model.a, model.b, $author$project$Main$ControlMsg);
-									case 7:
-										return A3($author$project$SearchAlgorithms$LinearSearch$view, model.a, model.b, $author$project$Main$ControlMsg);
+											$author$project$MainComponents$Home$view(model.homeModel));
+									case 'BubbleSort':
+										return A3($author$project$SortingAlgorithms$BubbleSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'SelectionSort':
+										return A3($author$project$SortingAlgorithms$SelectionSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'InsertionSort':
+										return A3($author$project$SortingAlgorithms$InsertionSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'ShellSort':
+										return A3($author$project$SortingAlgorithms$ShellSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'MergeSort':
+										return A3($author$project$SortingAlgorithms$MergeSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'QuickSort':
+										return A3($author$project$SortingAlgorithms$QuickSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'LinearSearch':
+										return A3($author$project$SearchAlgorithms$LinearSearch$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
 									default:
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$TreeTraversalMsg,
-											$author$project$Trees$TreeTraversal$view(model.M));
+											$author$project$Trees$TreeTraversal$view(model.treeTraversalModel));
 								}
 							}()
 							])),
@@ -10506,17 +10532,17 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{
-		aS: $author$project$Main$init,
-		aV: function (url) {
+		init: $author$project$Main$init,
+		onUrlChange: function (url) {
 			return $author$project$Main$NavigateTo(
 				$author$project$Main$parseUrl(url));
 		},
-		aW: function (_v0) {
-			return $author$project$Main$NavigateTo(0);
+		onUrlRequest: function (_v0) {
+			return $author$project$Main$NavigateTo($author$project$Main$Home);
 		},
-		a1: $author$project$Main$subscriptions,
-		a4: $author$project$Main$update,
-		a5: $author$project$Main$view
+		subscriptions: $author$project$Main$subscriptions,
+		update: $author$project$Main$update,
+		view: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));

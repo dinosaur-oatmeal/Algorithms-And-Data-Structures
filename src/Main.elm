@@ -50,12 +50,12 @@ type alias Model =
     , currentPage : Page
     -- Call Home.elm model
     , homeModel : Home.Model
+    -- Call TreeTraversal.elm model
+    , treeTraversalModel : TreeTraversal.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
     , running : Bool
-    -- Call TreeTraversal.elm model
-    , treeTraversalModel : TreeTraversal.Model
     }
 
 -- ROUTE (How URLs map to different pages)
@@ -88,6 +88,8 @@ type Msg
     = NavigateTo Page
     -- Update something on homepage (typing/array)
     | HomeMsg Home.Msg
+    -- Update something on tree traversal page (type of algorithm/buttons)
+    | TreeTraversalMsg TreeTraversal.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -98,8 +100,6 @@ type Msg
     | GotRandomArray (List Int)
     -- Initialize random target (searches)
     | GotRandomTarget Int
-    -- Update something on tree traversal page (type of algorithm/buttons)
-    | TreeTraversalMsg TreeTraversal.Msg
 
 -- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
@@ -157,7 +157,7 @@ parseUrl url =
             TreeTraversal
 
         -- Default to Home
-        Nothing ->
+        _ ->
             Home
 
 -- INIT (initial state of program)
@@ -168,9 +168,9 @@ init _ url key =
             { key = key
             , currentPage = parseUrl url
             , homeModel = Home.initModel
+            , treeTraversalModel = TreeTraversal.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
-            , treeTraversalModel = TreeTraversal.initModel
             }
     in
     ( model, Cmd.none )
@@ -202,13 +202,13 @@ update msg model =
             )
 
         -- Tree Traversal updates and buttons point to TreeTraversal.elm
-        TreeTraversalMsg subMsg ->
+        TreeTraversalMsg treeMsg ->
             let
-                ( newTreeTraversalModel, subCmd ) =
-                    TreeTraversal.update subMsg model.treeTraversalModel
+                ( newTreeTraversalModel, treeCmd ) =
+                    TreeTraversal.update treeMsg model.treeTraversalModel
             in
             ( { model | treeTraversalModel = newTreeTraversalModel }
-            , Cmd.map TreeTraversalMsg subCmd
+            , Cmd.map TreeTraversalMsg treeCmd
             )
 
         -- Algorithm selection from dropdown
@@ -281,7 +281,7 @@ update msg model =
                             , sortingAlgorithm = defaultSortingTrack []
                             , running = False
                     }
-                    -- Map tree messages to TreeTraversal.elm
+                    -- Map tree messages to TreeTraversal.elm (Cmd Main.msg)
                         -- Random.generate GotRandomTree randomTreeGenerator
                     , Cmd.map TreeTraversalMsg TreeTraversal.randomTreeCmd
                     )

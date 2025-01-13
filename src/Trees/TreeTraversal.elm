@@ -86,12 +86,12 @@ update msg model =
             )
 
         -- Update traversal selected
-        ChangeTraversal tType ->
+        ChangeTraversal traversalType ->
             let
-                newTraversal = getTraversal tType model.tree
+                newTraversal = getTraversal traversalType model.tree
             in
             ( { model
-                | currentTraversal = tType
+                | currentTraversal = traversalType
                 , traversalResult = newTraversal
                 , index = 0
               }
@@ -134,11 +134,12 @@ randomTreeCmd =
 -- Generates tree
 randomTreeGenerator : Generator Tree
 randomTreeGenerator =
-    -- Between 10 and 30 nodes in tree
+    -- Between 10 and 20 nodes in tree
+        -- Keep size down for smaller screens
     let
         sizeGenerator : Generator Int
         sizeGenerator =
-            Random.int 10 31
+            Random.int 10 21
     in
     Random.andThen
         (\n ->
