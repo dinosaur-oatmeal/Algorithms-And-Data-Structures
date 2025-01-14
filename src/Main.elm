@@ -20,6 +20,12 @@ import Random exposing (Generator, generate)
 -- Import Array for random Functions
 import Array exposing (Array)
 
+-- Custom structs imports (avoid circular import)
+import MainComponents.Structs exposing (..)
+
+-- Algorithm control buttons (run/pause/step/reset)
+import MainComponents.Controls exposing (ControlMsg(..))
+
 -- Home Page
 import MainComponents.Home as Home
 
@@ -35,13 +41,7 @@ import SortingAlgorithms.QuickSort as QuickSort
 import SearchAlgorithms.LinearSearch as LinearSearch
 
 -- Tree Traversals page
-import Trees.TreeTraversal as TreeTraversal
-
--- Custom structs imports (avoid circular import)
-import MainComponents.Structs exposing (..)
-
--- Algorithm control buttons (run/pause/step/reset)
-import MainComponents.Controls exposing (ControlMsg(..))
+import Trees.TreeTraversal as TreeTraversal exposing (Msg(..))
 
 -- Model (info stored during interactions)
 type alias Model =
@@ -100,6 +100,8 @@ type Msg
     | GotRandomArray (List Int)
     -- Initialize random target (searches)
     | GotRandomTarget Int
+    -- Initializes random tree (traversals)
+    | GotRandomTree (Tree)
 
 -- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
@@ -192,6 +194,7 @@ update msg model =
             )
 
         -- Theme, typing effect, and background array point to Home.elm
+            -- Cmd.map wraps submodel messages into a Main model message
         HomeMsg homeMsg ->
             let
                 ( newHome, homeCmd ) =
@@ -201,7 +204,7 @@ update msg model =
             , Cmd.map HomeMsg homeCmd
             )
 
-        -- Tree Traversal updates and buttons point to TreeTraversal.elm
+        -- Tree Traversal updates point to TreeTraversal.elm
         TreeTraversalMsg treeMsg ->
             let
                 ( newTreeTraversalModel, treeCmd ) =
@@ -281,9 +284,8 @@ update msg model =
                             , sortingAlgorithm = defaultSortingTrack []
                             , running = False
                     }
-                    -- Map tree messages to TreeTraversal.elm (Cmd Main.msg)
-                        -- Random.generate GotRandomTree randomTreeGenerator
-                    , Cmd.map TreeTraversalMsg TreeTraversal.randomTreeCmd
+                    -- Generate a new tree when selected
+                    , Random.generate GotRandomTree randomTreeGenerator
                     )
 
                 -- Default to home for algorithms not yet added
@@ -315,6 +317,10 @@ update msg model =
                                     , Random.generate GotRandomArray randomListGenerator
                                     ]
 
+                                -- Regenerate a new tree for traversals
+                                TreeTraversal ->
+                                    [ Random.generate GotRandomTree randomTreeGenerator ]
+
                                 -- Only regenerate array for sorting
                                 _ ->
                                     [ Random.generate GotRandomArray randomListGenerator ]
@@ -329,6 +335,7 @@ update msg model =
 
 
                 Step ->
+                    -- All cases should return ( Model, Cmd.msg )
                     case model.currentPage of
                         BubbleSort ->
                             let
@@ -372,10 +379,84 @@ update msg model =
                             in
                             ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
 
+                        TreeTraversal ->
+                            let
+                                (updatedTreeModel, treeCmd) =
+                                    TreeTraversal.update TraversalStep model.treeTraversalModel
+                            in
+                            ( { model | treeTraversalModel = updatedTreeModel }
+                            , Cmd.map TreeTraversalMsg treeCmd
+                            )
+
                         _ ->
                             ( model, Cmd.none )
 
-        -- Generate new array order
+        -- Running algorithm
+        Tick _ ->
+            if model.running then
+                case model.currentPage of
+                    -- Sorting pages
+                    BubbleSort ->
+                        let
+                            updatedTrack = BubbleSort.bubbleSortStep model.sortingAlgorithm
+                        in
+                        ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    SelectionSort ->
+                        let
+                            updatedTrack = SelectionSort.selectionSortStep model.sortingAlgorithm
+                        in
+                        ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    InsertionSort ->
+                            let
+                                updatedTrack = InsertionSort.insertionSortStep model.sortingAlgorithm
+                            in
+                            ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    ShellSort ->
+                        let
+                            updatedTrack = ShellSort.shellSortStep model.sortingAlgorithm
+                        in
+                        ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    MergeSort ->
+                        let
+                            updatedTrack = MergeSort.mergeSortStep model.sortingAlgorithm
+                        in
+                        ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    QuickSort ->
+                        let
+                            updatedTrack = QuickSort.quickSortStep model.sortingAlgorithm
+                        in
+                        ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    LinearSearch ->
+                        let
+                            updatedTrack = LinearSearch.linearSearchStep model.sortingAlgorithm
+                        in
+                        ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    -- Tree traversal page
+                    TreeTraversal ->
+                        let
+                            (updatedTreeModel, treeCmd) =
+                                TreeTraversal.update TraversalStep model.treeTraversalModel
+                        in
+                        -- Return (Model, Cmd Msg) for TreeTraversal
+                        ( { model | treeTraversalModel = updatedTreeModel }
+                        , Cmd.map TreeTraversalMsg treeCmd
+                        )
+
+                    _ ->
+                        ( model, Cmd.none )
+
+            else
+                -- Don't update if "Run" not active
+                ( model, Cmd.none )
+
+        -- Generate new array order and add to sortingAlgorithm
         GotRandomArray list ->
             let
                 newTrack = defaultSortingTrack list
@@ -384,7 +465,7 @@ update msg model =
             , Cmd.none
             )
 
-        -- Generate new target index
+        -- Generate new target index in model's sortingAlgorithm's currentIndex
         GotRandomTarget newTarget ->
             let
                 -- Current SortingAlgorithm
@@ -419,42 +500,16 @@ update msg model =
             in
             ( updatedModel, Cmd.none )
 
-        -- Running algorithm
-        Tick _ ->
-            if model.running then
-                let
-                    updatedTrack =
-                        -- Run specific algorithm depending on currentPage
-                        case model.currentPage of
-                            BubbleSort ->
-                                BubbleSort.bubbleSortStep model.sortingAlgorithm
-
-                            SelectionSort ->
-                                SelectionSort.selectionSortStep model.sortingAlgorithm
-
-                            InsertionSort ->
-                                InsertionSort.insertionSortStep model.sortingAlgorithm
-
-                            ShellSort ->
-                                ShellSort.shellSortStep model.sortingAlgorithm
-
-                            MergeSort ->
-                                MergeSort.mergeSortStep model.sortingAlgorithm
-
-                            QuickSort ->
-                                QuickSort.quickSortStep model.sortingAlgorithm
-
-                            LinearSearch ->
-                                LinearSearch.linearSearchStep model.sortingAlgorithm
-
-                            _ ->
-                                model.sortingAlgorithm
-                in
-                ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
-
-            else
-                -- Don't update if "Run" not active
-                ( model, Cmd.none )
+        -- Generate new tree in treeTraversalModel
+            -- Cmd.map to return a main model like other cases
+        GotRandomTree newTree ->
+            let 
+                (newTreeModel, treeCmd) =
+                    TreeTraversal.update (TreeTraversal.SetTree newTree) model.treeTraversalModel
+            in
+            ( { model | treeTraversalModel = newTreeModel }
+            , Cmd.map TreeTraversalMsg treeCmd
+            )
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -525,7 +580,6 @@ view model =
                     -- Tree Traversal Page points to TreeTraversal.elm
                     TreeTraversal ->
                         Html.map TreeTraversalMsg (TreeTraversal.view model.treeTraversalModel)
-
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model

@@ -11,6 +11,8 @@ import Random.Extra
 
 import Array exposing (Array)
 
+-- SORTING TRACK
+
 -- Record to hold all data for sorting and searching algorithms
 type alias SortingTrack =
     { array : Array Int
@@ -41,12 +43,14 @@ defaultSortingTrack list =
     , currentStep = 0
     }
 
--- Binary Tree Type
+-- TREE
 type Tree
+    -- No node with no children
     = Empty
+    -- Node, value, left child, right child
     | Node Int Tree Tree
 
--- GENERATORS FOR SORTING AND SEARCHING
+-- GENERATORS for various pages
 
 -- Shuffle list for arrays
 randomListGenerator : Generator (List Int)
@@ -57,3 +61,55 @@ randomListGenerator =
 randomTargetGenerator : Generator Int
 randomTargetGenerator =
     Random.int 1 10
+
+-- Generates tree
+randomTreeGenerator : Generator Tree
+randomTreeGenerator =
+    -- Between 10 and 20 nodes in tree
+        -- Keep size down for smaller screens
+    let
+        sizeGenerator : Generator Int
+        sizeGenerator =
+            Random.int 10 21
+    in
+    Random.andThen
+        (\n ->
+            -- All values in tree are 1 - 50 with no duplicates
+                -- No duplicates needed for highlighting
+            Random.map
+                (\shuffledList ->
+                    let
+                        values = List.take n shuffledList
+                    in
+                        buildTree values 0 0
+                )
+                (shuffle (List.range 1 50))
+        )
+        sizeGenerator
+
+-- Builds binary tree from list of values
+buildTree : List Int -> Int -> Int -> Tree
+buildTree values index depth =
+    -- No more than 5 levels to the tree
+    if index >= List.length values || depth >= 5 then
+        Empty
+    else
+        let
+            val =
+                case List.drop index values of
+                    -- Default (shouldn't ever occur)
+                    [] ->
+                        0
+                    x :: _ ->
+                        x
+
+            -- Builds left subtree recursively
+            leftSubtree =
+                buildTree values (2 * index + 1) (depth + 1)
+
+            -- Builds right subtree recursively
+            rightSubtree =
+                buildTree values (2 * index + 2) (depth + 1)
+        in
+        -- Create node with value pointing to subtrees
+        Node val leftSubtree rightSubtree

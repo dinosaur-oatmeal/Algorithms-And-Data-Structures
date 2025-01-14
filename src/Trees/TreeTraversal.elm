@@ -5,12 +5,13 @@ import Html exposing (Html, div, button, text, ul, li)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
--- Random for generating new trees
-import Random exposing (Generator)
-import Random.List exposing (shuffle)
+-- Needed for "Run" and "Pause"
+import Time
+
+import Random
 
 -- Import necessary structure to track state
-import MainComponents.Structs exposing (Tree(..))
+import MainComponents.Structs exposing (Tree(..), randomTreeGenerator)
 
 -- Import TreeVisualization for visualization
 import Trees.TreeVisualization as Visualization exposing (view)
@@ -34,20 +35,26 @@ type alias Model =
     , traversalResult : List Int
     -- Index traversal is pointing to
     , index : Int
-    -- Whether traversal is running or not
+    -- Algorithm running or not (needed for Controls.elm)
     , running : Bool
     }
 
 -- MESSAGES
 type Msg
-    -- Generates a new tree (reset button)
-    = GenerateRandomTree
-    -- Helper to generate new trees (used in update)
-    | GotRandomTree Tree
     -- Update traversal to something new
-    | ChangeTraversal TraversalType
-    -- Button messages for traversals (Controls.elm)
-    | ControlMsg ControlMsg
+    = ChangeTraversal TraversalType
+    -- Update tree in model (needed in Main.elm for updates)
+    | SetTree Tree
+    -- One step of chosen traversal
+    | TraversalStep
+    -- Run Button
+    | StartTraversal
+    -- Pause Button
+    | StopTraversal
+    -- Reset Button
+    | ResetTraversal
+    -- Generate a new tree (needed for Reset)
+    | TreeGenerated Tree
 
 -- INIT
 initModel : Model
@@ -60,7 +67,7 @@ initModel =
     , traversalResult = []
     -- Start at first index (root)
     , index = 0
-    -- Don't immediately run
+    -- Running should be False
     , running = False
     }
 
@@ -68,26 +75,10 @@ initModel =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        -- Generate new tree
-        GenerateRandomTree ->
-            ( model, randomTreeCmd )
-
-        -- Update Model to hold new tree
-        GotRandomTree newTree ->
-            let
-                newTraversal = getTraversal model.currentTraversal newTree
-            in
-            ( { model
-                | tree = newTree
-                , traversalResult = newTraversal
-                , index = 0
-              }
-            , Cmd.none
-            )
-
-        -- Update traversal selected
+        -- Update type of traversal on tree
         ChangeTraversal traversalType ->
             let
+                -- Call getTraversal helper function
                 newTraversal = getTraversal traversalType model.tree
             in
             ( { model
@@ -98,133 +89,74 @@ update msg model =
             , Cmd.none
             )
 
-        -- Run traversal
-        ControlMsg Run ->
-            ( { model | running = True }, Cmd.none )
-
-        -- Pause traversal
-        ControlMsg Pause ->
-            ( { model | running = False }, Cmd.none )
-
-        -- One step of traversal
-        ControlMsg Step ->
-            -- Move to next visited node in the traversal
-            if model.index < List.length model.traversalResult then
-                ( { model | index = model.index + 1 }, Cmd.none )
-            else
-                ( model, Cmd.none )
-
-        -- Reset and generate new tree
-        ControlMsg Reset ->
+        -- Update tree in the model (used in Main.elm update)
+        SetTree newTree ->
+            let
+                newResult =
+                -- Call getTraversal helper function
+                    getTraversal model.currentTraversal newTree
+            in
             ( { model
-                | tree = Empty
-                , traversalResult = []
+                | tree = newTree
+                , traversalResult = newResult
                 , index = 0
-                , running = False
               }
-            -- Call to generate new tree
-            , randomTreeCmd
+            , Cmd.none
             )
 
--- Call to generate a new tree and update model with it
-randomTreeCmd : Cmd Msg
-randomTreeCmd =
-    Random.generate GotRandomTree randomTreeGenerator
+        -- One step of specific traversal
+        TraversalStep ->
+            let
+                newIndex = model.index + 1
+                totalSteps = List.length model.traversalResult
+            in
+            if newIndex < totalSteps then
+                ( { model | index = newIndex }, Cmd.none )
+            else
+                ( { model | index = newIndex, running = False }, Cmd.none )
 
--- Generates tree
-randomTreeGenerator : Generator Tree
-randomTreeGenerator =
-    -- Between 10 and 20 nodes in tree
-        -- Keep size down for smaller screens
-    let
-        sizeGenerator : Generator Int
-        sizeGenerator =
-            Random.int 10 21
-    in
-    Random.andThen
-        (\n ->
-            -- All values in tree are 1 - 50 with no duplicates
-                -- No duplicates needed for highlighting
-            Random.map
-                (\shuffledList ->
-                    let
-                        values = List.take n shuffledList
-                    in
-                        buildTree values 0 0
-                )
-                (shuffle (List.range 1 50))
-        )
-        sizeGenerator
+        -- Run button
+        StartTraversal ->
+            ( { model | running = True }, Cmd.none )
 
--- Builds binary tree from list of values
-buildTree : List Int -> Int -> Int -> Tree
-buildTree values index depth =
-    -- No more than 5 levels to the tree
-    if index >= List.length values || depth >= 5 then
-        Empty
+        -- Pause button
+        StopTraversal ->
+            ( { model | running = False }, Cmd.none )
+
+        -- Reset button
+        ResetTraversal ->
+            let
+                -- Call to generate new tree
+                cmd = Random.generate TreeGenerated randomTreeGenerator
+            in
+            ( { model
+                | running = False
+                , index = 0
+                , traversalResult = []
+              }
+            , cmd )
+
+        -- Generate new tree
+        TreeGenerated newTree ->
+            let
+                -- Update array showing result to new tree
+                newResult = getTraversal model.currentTraversal newTree
+            in
+            ( { model
+                | tree = newTree
+                , traversalResult = newResult
+                , index = 0
+              }
+            , Cmd.none )
+
+-- Runs algorithm when selected
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    if model.running then
+        -- Update every 1 second
+        Time.every 1000 (\_ -> TraversalStep)
     else
-        let
-            val =
-                case List.drop index values of
-                    -- Default (shouldn't ever occur)
-                    [] ->
-                        0
-                    x :: _ ->
-                        x
-
-            -- Builds left subtree recursively
-            leftSubtree =
-                buildTree values (2 * index + 1) (depth + 1)
-
-            -- Builds right subtree recursively
-            rightSubtree =
-                buildTree values (2 * index + 2) (depth + 1)
-        in
-        -- Create node with value pointing to subtrees
-        Node val leftSubtree rightSubtree
-
--- Updates traversal depending on what's selected
-getTraversal : TraversalType -> Tree -> List Int
-getTraversal traversalType tree =
-    case traversalType of
-        Preorder ->
-            preorder tree
-
-        Inorder ->
-            inorder tree
-
-        Postorder ->
-            postorder tree
-
--- Preorder Traversal
-preorder : Tree -> List Int
-preorder t =
-    case t of
-        Empty ->
-            []
-
-        Node val left right ->
-            val :: (preorder left) ++ (preorder right)
-
--- Inorder Traversal
-inorder : Tree -> List Int
-inorder t =
-    case t of
-        Empty ->
-            []
-
-        Node val left right ->
-            (inorder left) ++ [ val ] ++ (inorder right)
-
--- Postorder Traversal
-postorder : Tree -> List Int
-postorder t =
-    case t of
-        Empty ->
-            []
-
-        Node val left right ->
-            (postorder left) ++ (postorder right) ++ [ val ]
+        Sub.none
 
 {-
     Basic page view for Tree Traversals
@@ -244,37 +176,37 @@ view model =
                   Walk through three different types of traversals below."""
               ]
 
-        -- Traversal Buttons
+          -- Traversal Buttons
         , div []
             [ button [ onClick (ChangeTraversal Preorder) ]  [ text "Preorder" ]
             , button [ onClick (ChangeTraversal Inorder) ]   [ text "Inorder" ]
             , button [ onClick (ChangeTraversal Postorder) ] [ text "Postorder" ]
             ]
 
-        -- Call TreeVisualization.elm for tree diagram
-            -- Also shows progress in traversal
+          -- Tree Visualization
         , Visualization.view
             model.tree
             model.index
             model.traversalResult
             model.running
 
-        -- Algorithm step buttons
-        , Controls.view model.running (ControlMsg >> identity)
+          -- Algorithm step buttons
+        , Controls.view model.running (convertMsg)
 
-        -- Step Counter
+
+          -- Step Counter
         , div [ class "indices" ]
               [ text ("Current Step: " ++ String.fromInt model.index)
               ]
 
-        -- Breakdown
+          -- Breakdown
         , div [ class "variable-list" ]
               [ ul []
                   [ li [] [ text "Current Step: number of steps taken in the traversal." ]
                   ]
               ]
 
-          -- Big-O Notation
+            -- Big-O Notation
         , div [ class "big-o-title" ]
               [ text "Big(O) Notation" ]
         , div [ class "big-o-list" ]
@@ -287,3 +219,66 @@ view model =
         , div [ class "space-complexity" ]
             [ text "Space Complexity: O(h) | h = height of tree" ]
         ]
+
+-- Updates traversal depending on which one is selected
+getTraversal : TraversalType -> Tree -> List Int
+getTraversal traversalType tree =
+    case traversalType of
+        Preorder ->
+            preorder tree
+
+        Inorder ->
+            inorder tree
+
+        Postorder ->
+            postorder tree
+
+-- Preorder Traversal
+preorder : Tree -> List Int
+preorder node =
+    -- Don't update empty nodes
+    case node of
+        -- Recursively call parent, then left, then right
+        Node val left right ->
+            val :: (preorder left) ++ (preorder right)
+
+        -- Base case that returns empty array for leaf nodes
+        _ ->
+            []
+
+-- Inorder Traversal
+inorder : Tree -> List Int
+inorder node =
+    case node of
+        Node val left right ->
+            (inorder left) ++ [ val ] ++ (inorder right)
+
+        _ ->
+            []
+
+-- Postorder Traversal
+postorder : Tree -> List Int
+postorder node =
+    case node of
+        Node val left right ->
+            (postorder left) ++ (postorder right) ++ [ val ]
+
+        _ ->
+            []
+
+-- Convert messages from Controls.elm to local messages
+convertMsg : ControlMsg -> Msg
+convertMsg msg =
+    case msg of
+        Run ->
+            StartTraversal
+
+        Pause ->
+            StopTraversal
+
+        Step ->
+            TraversalStep
+
+        Reset ->
+            ResetTraversal
+            
