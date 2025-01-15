@@ -176,11 +176,26 @@ view model =
                   Walk through three different types of traversals below."""
               ]
 
-          -- Traversal Buttons
-        , div []
-            [ button [ onClick (ChangeTraversal Preorder) ]  [ text "Preorder" ]
-            , button [ onClick (ChangeTraversal Inorder) ]   [ text "Inorder" ]
-            , button [ onClick (ChangeTraversal Postorder) ] [ text "Postorder" ]
+        -- Update class to change button color
+        , div [ class "traversal-controls" ]
+            [ button 
+                [ class "traversal-button"
+                , if model.currentTraversal == Preorder then class "selected" else Html.Attributes.class ""
+                , onClick (ChangeTraversal Preorder)
+                ]  
+                [ text "Preorder" ]
+            , button 
+                [ class "traversal-button"
+                , if model.currentTraversal == Inorder then class "selected" else Html.Attributes.class ""
+                , onClick (ChangeTraversal Inorder)
+                ]   
+                [ text "Inorder" ]
+            , button 
+                [ class "traversal-button"
+                , if model.currentTraversal == Postorder then class "selected" else Html.Attributes.class ""
+                , onClick (ChangeTraversal Postorder)
+                ] 
+                [ text "Postorder" ]
             ]
 
           -- Tree Visualization
@@ -191,8 +206,7 @@ view model =
             model.running
 
           -- Algorithm step buttons
-        , Controls.view model.running (convertMsg)
-
+        , Controls.view model.running convertMsg
 
           -- Step Counter
         , div [ class "indices" ]
