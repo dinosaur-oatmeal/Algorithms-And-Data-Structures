@@ -272,6 +272,7 @@ body {
   width: 80%;
 }
 
+/* Traversal button ocntainer */
 .traversal-controls {
   display: flex;
   justify-content: center;
@@ -295,27 +296,11 @@ body {
   background-color: #1769aa;
 }
 
+/* Change gradient for selected button */
 .traversal-button.selected {
   background: linear-gradient(180deg,   #FF5722, #FF8A65);
 }
-
-/* =========================================
-   ANIMATIONS
-   ========================================= */
-
-@keyframes fadeIn {
-from {
-  opacity: 0;
-}
-to {
-  opacity: 1;
-}
-}
-
-.fade-in {
-animation: fadeIn 0.8s ease forwards;
-}
-
+    
 /* =========================================
    SMALLER MEDIA
    ========================================= */

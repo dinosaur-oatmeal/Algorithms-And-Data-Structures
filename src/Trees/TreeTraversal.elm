@@ -183,11 +183,8 @@ view model =
           div [ class "sort-title" ]
               [ text "Tree Traversal" ]
 
-          -- Description
         , div [ class "description" ]
-              [ text """Tree Traversals are the process of visiting each node once in a tree data structure.
-                  Walk through three different types of traversals below."""
-              ]
+              [ text (getDescription model.currentTraversal) ]
 
         -- Update class to change button color
         , div [ class "traversal-controls" ]
@@ -292,6 +289,19 @@ postorder node =
 
         _ ->
             []
+
+-- Change description based on traversal type
+getDescription : TraversalType -> String
+getDescription traversal =
+    case traversal of
+        Preorder ->
+            "Preorder Traversal visits nodes in the order: Root, Left Subtree, Right Subtree. It's useful for creating a copy of the tree."
+
+        Inorder ->
+            "Inorder Traversal visits nodes in the order: Left Subtree, Root, Right Subtree. It's useful for binary search trees."
+
+        Postorder ->
+            "Postorder Traversal visits nodes in the order: Left Subtree, Right Subtree, Root. It's useful for deleting trees."
 
 -- Convert messages from Controls.elm to local messages
 convertMsg : ControlMsg -> Msg

@@ -9,6 +9,9 @@ import Random exposing (Generator)
 import Random.List exposing (shuffle)
 import Random.Extra
 
+-- Needed for orderedListCmd
+import Task exposing (Task, succeed)
+
 import Array exposing (Array)
 
 -- SORTING TRACK
@@ -51,6 +54,17 @@ type Tree
     | Node Int Tree Tree
 
 -- GENERATORS for various pages
+
+-- Generate an ordered array
+orderedListCmd : (List Int -> msg) -> Cmd msg
+orderedListCmd toMsg =
+    let
+        orderedList =
+            List.range 1 10
+    in
+    -- Converts msg to Cmd msg for Main.elm Update
+    Task.succeed orderedList
+        |> Task.perform toMsg
 
 -- Shuffle list for arrays
 randomListGenerator : Generator (List Int)

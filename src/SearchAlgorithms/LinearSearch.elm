@@ -81,7 +81,7 @@ view track running toMsg =
           -- Variables
         , div [ class "indices" ]
               [ text ("Current Index: " ++ String.fromInt track.outerIndex)
-              , text (" | Target: " ++ String.fromInt track.minIndex)
+              , text (" | Target: " ++ String.fromInt track.gap)
               , text (" | Element Found: " ++ (if track.sorted then "Yes" else "No"))
               ]
 

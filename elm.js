@@ -5333,6 +5333,7 @@ var $author$project$Trees$TreeTraversal$Inorder = {$: 'Inorder'};
 var $author$project$Trees$TreeTraversal$initModel = {currentTraversal: $author$project$Trees$TreeTraversal$Inorder, index: 0, running: false, traversalResult: _List_Nil, tree: $author$project$MainComponents$Structs$Empty};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$BinarySearch = {$: 'BinarySearch'};
 var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
 var $author$project$Main$InsertionSort = {$: 'InsertionSort'};
 var $author$project$Main$LinearSearch = {$: 'LinearSearch'};
@@ -5975,6 +5976,7 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
+var $author$project$Main$BinarySearchRoute = {$: 'BinarySearchRoute'};
 var $author$project$Main$BubbleSortRoute = {$: 'BubbleSortRoute'};
 var $author$project$Main$HomeRoute = {$: 'HomeRoute'};
 var $author$project$Main$InsertionSortRoute = {$: 'InsertionSortRoute'};
@@ -6112,6 +6114,10 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			$elm$url$Url$Parser$s('linear-search')),
 			A2(
 			$elm$url$Url$Parser$map,
+			$author$project$Main$BinarySearchRoute,
+			$elm$url$Url$Parser$s('binary-search')),
+			A2(
+			$elm$url$Url$Parser$map,
 			$author$project$Main$TreeRoute,
 			$elm$url$Url$Parser$s('tree-traversal'))
 		]));
@@ -6143,8 +6149,11 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'LinearSearchRoute':
 				var _v8 = _v0.a;
 				return $author$project$Main$LinearSearch;
-			default:
+			case 'BinarySearchRoute':
 				var _v9 = _v0.a;
+				return $author$project$Main$BinarySearch;
+			default:
+				var _v10 = _v0.a;
 				return $author$project$Main$TreeTraversal;
 		}
 	} else {
@@ -6491,6 +6500,9 @@ var $author$project$Main$subscriptions = function (model) {
 			return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
 };
+var $author$project$Main$GotOrderedArray = function (a) {
+	return {$: 'GotOrderedArray', a: a};
+};
 var $author$project$Main$GotRandomArray = function (a) {
 	return {$: 'GotRandomArray', a: a};
 };
@@ -6504,10 +6516,10 @@ var $author$project$Trees$TreeTraversal$SetTree = function (a) {
 	return {$: 'SetTree', a: a};
 };
 var $author$project$Trees$TreeTraversal$TraversalStep = {$: 'TraversalStep'};
+var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
-var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
 var $elm$core$Array$getHelp = F3(
 	function (shift, index, tree) {
@@ -6549,6 +6561,42 @@ var $elm$core$Array$get = F2(
 var $elm$core$Array$length = function (_v0) {
 	var len = _v0.a;
 	return len;
+};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $author$project$SearchAlgorithms$BinarySearch$binarySearchStep = function (track) {
+	var target = track.currentIndex;
+	var right = track.minIndex;
+	var left = track.outerIndex;
+	var mid = (_Utils_cmp(right, left) > -1) ? (((left + right) / 2) | 0) : (-1);
+	var arr = track.array;
+	var length = $elm$core$Array$length(arr);
+	var midVal = ((mid >= 0) && (_Utils_cmp(mid, length) < 0)) ? A2($elm$core$Array$get, mid, arr) : $elm$core$Maybe$Nothing;
+	if (track.sorted) {
+		return track;
+	} else {
+		if (_Utils_cmp(left, right) < 1) {
+			if (midVal.$ === 'Just') {
+				var value = midVal.a;
+				return _Utils_eq(value, target) ? _Utils_update(
+					track,
+					{sorted: true}) : ((_Utils_cmp(value, target) < 0) ? _Utils_update(
+					track,
+					{currentStep: track.currentStep + 1, outerIndex: mid + 1}) : _Utils_update(
+					track,
+					{currentStep: track.currentStep + 1, minIndex: mid - 1}));
+			} else {
+				return _Utils_update(
+					track,
+					{currentStep: track.currentStep, sorted: false});
+			}
+		} else {
+			return _Utils_update(
+				track,
+				{currentStep: track.currentStep, sorted: false});
+		}
+	}
 };
 var $elm$core$Basics$not = _Basics_not;
 var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
@@ -7279,6 +7327,13 @@ var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track)
 			sorted: isSorted
 		});
 };
+var $author$project$MainComponents$Structs$orderedListCmd = function (toMsg) {
+	var orderedList = A2($elm$core$List$range, 1, 10);
+	return A2(
+		$elm$core$Task$perform,
+		toMsg,
+		$elm$core$Task$succeed(orderedList));
+};
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -7377,9 +7432,6 @@ var $author$project$SortingAlgorithms$QuickSort$quickSortStep = function (track)
 				{stack: rest});
 		}
 	}
-};
-var $elm$core$Basics$negate = function (n) {
-	return -n;
 };
 var $elm$core$Bitwise$xor = _Bitwise_xor;
 var $elm$random$Random$peel = function (_v0) {
@@ -8019,11 +8071,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							currentPage: page,
-							running: false,
-							sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
-						}),
+						{currentPage: page, running: false}),
 					$elm$core$Platform$Cmd$none);
 			case 'HomeMsg':
 				var homeMsg = msg.a;
@@ -8123,6 +8171,21 @@ var $author$project$Main$update = F2(
 										A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
 										A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator)
 									])));
+					case 'Binary Search':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$BinarySearch,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							$elm$core$Platform$Cmd$batch(
+								_List_fromArray(
+									[
+										A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
+										$author$project$MainComponents$Structs$orderedListCmd($author$project$Main$GotOrderedArray)
+									])));
 					case 'Tree Traversal':
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -8168,6 +8231,12 @@ var $author$project$Main$update = F2(
 										[
 											A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
 											A2($elm$random$Random$generate, $author$project$Main$GotRandomArray, $author$project$MainComponents$Structs$randomListGenerator)
+										]);
+								case 'BinarySearch':
+									return _List_fromArray(
+										[
+											A2($elm$random$Random$generate, $author$project$Main$GotRandomTarget, $author$project$MainComponents$Structs$randomTargetGenerator),
+											$author$project$MainComponents$Structs$orderedListCmd($author$project$Main$GotOrderedArray)
 										]);
 								case 'TreeTraversal':
 									return _List_fromArray(
@@ -8241,6 +8310,13 @@ var $author$project$Main$update = F2(
 										model,
 										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
+							case 'BinarySearch':
+								var updatedTrack = $author$project$SearchAlgorithms$BinarySearch$binarySearchStep(model.sortingAlgorithm);
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{sortingAlgorithm: updatedTrack}),
+									$elm$core$Platform$Cmd$none);
 							case 'TreeTraversal':
 								var _v7 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
 								var updatedTreeModel = _v7.a;
@@ -8307,6 +8383,13 @@ var $author$project$Main$update = F2(
 									model,
 									{sortingAlgorithm: updatedTrack}),
 								$elm$core$Platform$Cmd$none);
+						case 'BinarySearch':
+							var updatedTrack = $author$project$SearchAlgorithms$BinarySearch$binarySearchStep(model.sortingAlgorithm);
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{sortingAlgorithm: updatedTrack}),
+								$elm$core$Platform$Cmd$none);
 						case 'TreeTraversal':
 							var _v9 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
 							var updatedTreeModel = _v9.a;
@@ -8332,6 +8415,15 @@ var $author$project$Main$update = F2(
 							sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(list)
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'GotOrderedArray':
+				var orderedList = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(orderedList)
+						}),
+					$elm$core$Platform$Cmd$none);
 			case 'GotRandomTarget':
 				var newTarget = msg.a;
 				var currentSortingAlgorithm = model.sortingAlgorithm;
@@ -8348,7 +8440,7 @@ var $author$project$Main$update = F2(
 					}();
 					return _Utils_update(
 						currentSortingAlgorithm,
-						{array: array, currentIndex: newTarget, minIndex: targetValue, outerIndex: 0, sorted: false});
+						{array: array, currentIndex: newTarget, gap: targetValue, minIndex: 9, outerIndex: 0, sorted: false});
 				}();
 				var updatedModel = _Utils_update(
 					model,
@@ -8687,6 +8779,195 @@ var $author$project$MainComponents$Controls$view = F2(
 						]))
 				]));
 	});
+var $author$project$SearchAlgorithms$BinarySearch$view = F3(
+	function (track, running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('sort-page')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sort-title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Binary Search')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Binary Search efficiently finds a target value within a sorted array by repeatedly dividing the search interval in half.\r\n              If the value of the midpoint is less than the target, it searches the right half; otherwise, it searches the left half.')
+						])),
+					A6(
+					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
+					track.array,
+					'Walk through the steps below',
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.minIndex)),
+					A2($author$project$MainComponents$Controls$view, running, toMsg),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('indices')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Left index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							$elm$html$Html$text(
+							' | Right index: ' + $elm$core$String$fromInt(track.minIndex)),
+							$elm$html$Html$text(
+							' | Target Value: ' + $elm$core$String$fromInt(track.gap)),
+							$elm$html$Html$text(
+							' | Element Found: ' + (track.sorted ? 'Yes' : 'No'))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('variable-list')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$ul,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Left/Right: bounds of our current search window.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Mid: the midpoint we compare against the target.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Target Value: the element we want to find (must be in sorted array).')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Found?: indicates if we’ve located the target.')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('big-o-title')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Big(O) Notation')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('big-o-list')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Best-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(1)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Average-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(log n)')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('big-o-item')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Worst-Case')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('O(log n)')
+										]))
+								]))
+						]))
+				]));
+	});
 var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 	function (track, running, toMsg) {
 		return A2(
@@ -8730,7 +9011,7 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 							$elm$html$Html$text(
 							'Current Index: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Target: ' + $elm$core$String$fromInt(track.minIndex)),
+							' | Target: ' + $elm$core$String$fromInt(track.gap)),
 							$elm$html$Html$text(
 							' | Element Found: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
@@ -10036,7 +10317,16 @@ var $author$project$Trees$TreeTraversal$convertMsg = function (msg) {
 			return $author$project$Trees$TreeTraversal$ResetTraversal;
 	}
 };
-var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
+var $author$project$Trees$TreeTraversal$getDescription = function (traversal) {
+	switch (traversal.$) {
+		case 'Preorder':
+			return 'Preorder Traversal visits nodes in the order: Root, Left Subtree, Right Subtree. It\'s useful for creating a copy of the tree.';
+		case 'Inorder':
+			return 'Inorder Traversal visits nodes in the order: Left Subtree, Root, Right Subtree. It\'s useful for binary search trees.';
+		default:
+			return 'Postorder Traversal visits nodes in the order: Left Subtree, Right Subtree, Root. It\'s useful for deleting trees.';
+	}
+};
 var $author$project$Trees$TreeVisualization$countNodes = function (node) {
 	if (node.$ === 'Empty') {
 		return 0;
@@ -10265,7 +10555,7 @@ var $author$project$Trees$TreeVisualization$view = F4(
 								[
 									$elm$svg$Svg$Attributes$width('1000'),
 									$elm$svg$Svg$Attributes$height('375'),
-									$elm$svg$Svg$Attributes$class('fade-in')
+									$elm$svg$Svg$Attributes$style('transition: fill 0.6s ease')
 								]),
 							_Utils_ap(
 								$author$project$Trees$TreeVisualization$lines(positionedRoot),
@@ -10309,7 +10599,8 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Tree Traversals are the process of visiting each node once in a tree data structure.\r\n                  Walk through three different types of traversals below.')
+						$elm$html$Html$text(
+						$author$project$Trees$TreeTraversal$getDescription(model.currentTraversal))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -10646,6 +10937,16 @@ var $author$project$Main$viewHeader = A2(
 							_List_fromArray(
 								[
 									$elm$html$Html$text('Linear Search')
+								])),
+							A2(
+							$elm$html$Html$option,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value('Binary Search')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Binary Search')
 								]))
 						])),
 					A3(
@@ -10752,6 +11053,8 @@ var $author$project$Main$view = function (model) {
 										return A3($author$project$SortingAlgorithms$QuickSort$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
 									case 'LinearSearch':
 										return A3($author$project$SearchAlgorithms$LinearSearch$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
+									case 'BinarySearch':
+										return A3($author$project$SearchAlgorithms$BinarySearch$view, model.sortingAlgorithm, model.running, $author$project$Main$ControlMsg);
 									default:
 										return A2(
 											$elm$html$Html$map,

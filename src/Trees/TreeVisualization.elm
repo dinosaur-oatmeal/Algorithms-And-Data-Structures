@@ -75,7 +75,8 @@ view tree currentIndex traversalResult running =
                     -- Size of SVG viewport
                     [ width "1000"
                     , height "375"
-                    , Svg.Attributes.class "fade-in"
+                    -- Ease into new colors
+                    , Svg.Attributes.style "transition: fill 0.6s ease"
                     ]
                     -- Receive lists of SVG elements to render
                     (lines positionedRoot ++ nodes positionedRoot maybeActiveVal)

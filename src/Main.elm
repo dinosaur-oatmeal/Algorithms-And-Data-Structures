@@ -39,6 +39,7 @@ import SortingAlgorithms.QuickSort as QuickSort
 
 -- Searching Algorithm pages that can be visited
 import SearchAlgorithms.LinearSearch as LinearSearch
+import SearchAlgorithms.BinarySearch as BinarySearch
 
 -- Tree Traversals page
 import Trees.TreeTraversal as TreeTraversal exposing (Msg(..))
@@ -68,6 +69,7 @@ type Route
     | MergeSortRoute
     | QuickSortRoute
     | LinearSearchRoute
+    | BinarySearchRoute
     | TreeRoute
 
 -- PAGE (different views for the website)
@@ -80,6 +82,7 @@ type Page
     | MergeSort
     | QuickSort
     | LinearSearch
+    | BinarySearch
     | TreeTraversal
 
 -- MESSAGES (all possible messages for hte program to receive)
@@ -98,6 +101,8 @@ type Msg
     | Tick Time.Posix
     -- Initialize random array (sorts and searches)
     | GotRandomArray (List Int)
+    -- Initialize ordered array (binary search)
+    | GotOrderedArray (List Int)
     -- Initialize random target (searches)
     | GotRandomTarget Int
     -- Initializes random tree (traversals)
@@ -115,6 +120,7 @@ routeParser =
         , Parser.map MergeSortRoute (s "merge-sort")
         , Parser.map QuickSortRoute (s "quick-sort")
         , Parser.map LinearSearchRoute (s "linear-search")
+        , Parser.map BinarySearchRoute (s "binary-search")
         , Parser.map TreeRoute (s "tree-traversal")
         ]
 
@@ -154,6 +160,10 @@ parseUrl url =
         Just LinearSearchRoute ->
             LinearSearch
 
+        -- BinarySearch Page
+        Just BinarySearchRoute ->
+            BinarySearch
+
         -- TreeTraversal Page
         Just TreeRoute ->
             TreeTraversal
@@ -186,8 +196,6 @@ update msg model =
         NavigateTo page ->
             ( { model
                 | currentPage = page
-                -- Reset sorting information and set running to false
-                , sortingAlgorithm = defaultSortingTrack []
                 , running = False
               }
             , Cmd.none
@@ -279,6 +287,19 @@ update msg model =
                         ]
                     )
 
+                "Binary Search" ->
+                    ( { model
+                        | currentPage = BinarySearch
+                        , sortingAlgorithm = defaultSortingTrack []
+                        , running = False
+                    }
+                    -- Batch ordered array generation and random target to find
+                    , Cmd.batch
+                        [ Random.generate GotRandomTarget randomTargetGenerator
+                        , orderedListCmd GotOrderedArray
+                        ]
+                    )
+
                 "Tree Traversal" ->
                     ( { model | currentPage = TreeTraversal
                             , sortingAlgorithm = defaultSortingTrack []
@@ -315,6 +336,12 @@ update msg model =
                                 LinearSearch ->
                                     [ Random.generate GotRandomTarget randomTargetGenerator
                                     , Random.generate GotRandomArray randomListGenerator
+                                    ]
+
+                                -- Regenerate target and ordered array for BinarySearch
+                                BinarySearch ->
+                                    [ Random.generate GotRandomTarget randomTargetGenerator
+                                    , orderedListCmd GotOrderedArray
                                     ]
 
                                 -- Regenerate a new tree for traversals
@@ -379,6 +406,12 @@ update msg model =
                             in
                             ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
 
+                        BinarySearch ->
+                            let
+                                updatedTrack = BinarySearch.binarySearchStep model.sortingAlgorithm
+                            in
+                            ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
                         TreeTraversal ->
                             let
                                 (updatedTreeModel, treeCmd) =
@@ -432,11 +465,18 @@ update msg model =
                         in
                         ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
 
+                    -- Searching pages
                     LinearSearch ->
                         let
                             updatedTrack = LinearSearch.linearSearchStep model.sortingAlgorithm
                         in
                         ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
+
+                    BinarySearch ->
+                            let
+                                updatedTrack = BinarySearch.binarySearchStep model.sortingAlgorithm
+                            in
+                            ( { model | sortingAlgorithm = updatedTrack }, Cmd.none )
 
                     -- Tree traversal page
                     TreeTraversal ->
@@ -464,6 +504,12 @@ update msg model =
             ( { model | sortingAlgorithm = defaultSortingTrack list }
             , Cmd.none
             )
+        
+        -- Generate an ordered array and add to sortingAlgorithm
+        GotOrderedArray orderedList ->
+            ( { model | sortingAlgorithm = defaultSortingTrack orderedList }
+            , Cmd.none
+            )
 
         -- Generate new target index in model's sortingAlgorithm's currentIndex
         GotRandomTarget newTarget ->
@@ -489,9 +535,11 @@ update msg model =
                         , outerIndex = 0
                         , currentIndex = newTarget
                         , sorted = False
-                        -- Set minIndex to targetValue
+                        -- Set gap to targetValue
                             -- Needed for indices under array to work correctly
-                        , minIndex = targetValue
+                        , gap = targetValue
+                        -- Set minIndex to last one in array for highlighting
+                        , minIndex = 9
                     }
 
                 -- Update model to reflect updatedSortingAlgorithm
@@ -582,6 +630,9 @@ view model =
                     LinearSearch ->
                         LinearSearch.view model.sortingAlgorithm model.running ControlMsg
 
+                    BinarySearch ->
+                        BinarySearch.view model.sortingAlgorithm model.running ControlMsg
+
                     -- Tree Traversal Page points to TreeTraversal.elm
                     TreeTraversal ->
                         Html.map TreeTraversalMsg (TreeTraversal.view model.treeTraversalModel)
@@ -615,7 +666,8 @@ viewHeader =
                 , option [ value "Quick Sort" ] [ text "Quick Sort" ]
                 ]
             , node "optgroup" [ attribute "label" "Searching" ]
-                [ option [ value "Linear Search" ] [ text "Linear Search" ] ]
+                [ option [ value "Linear Search" ] [ text "Linear Search" ]
+                , option [ value "Binary Search" ] [ text "Binary Search" ] ]
             , node "optgroup" [ attribute "label" "Trees" ]
                 [ option [ value "Tree Traversal" ] [ text "Tree Traversals" ] ]
             ]
