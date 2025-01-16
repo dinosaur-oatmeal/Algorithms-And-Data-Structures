@@ -137,22 +137,6 @@ subscriptions model =
         , Time.every 1000 (always SwapNeeded)
         ]
 
-
--- HELPER to swap array elements
-swap : Int -> Int -> Array Int -> Array Int
-swap indexOne indexTwo array =
-        case ( Array.get indexOne array, Array.get indexTwo array ) of
-            -- Values are swapped
-            ( Just valueOne, Just valueTwo ) ->
-                array
-                    |> Array.set indexOne valueTwo
-                    |> Array.set indexTwo valueOne
-
-            -- Default (never used)
-            _ ->
-                array
-
-
 -- VIEW
 view : Model -> Html Msg
 view model =
@@ -168,3 +152,18 @@ view model =
         , div [ class "home-text" ]
             [ text "Select and algorithm to learn about from the dropdown above." ]
         ]
+
+-- HELPER to swap array elements
+swap : Int -> Int -> Array Int -> Array Int
+swap indexOne indexTwo array =
+        case ( Array.get indexOne array, Array.get indexTwo array ) of
+            -- Values are swapped
+            ( Just valueOne, Just valueTwo ) ->
+                array
+                    |> Array.set indexOne valueTwo
+                    |> Array.set indexTwo valueOne
+
+            -- Default (never used)
+            _ ->
+                array
+                

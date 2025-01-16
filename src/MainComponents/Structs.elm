@@ -70,7 +70,7 @@ randomTreeGenerator =
     let
         sizeGenerator : Generator Int
         sizeGenerator =
-            Random.int 10 21
+            Random.int 9 31
     in
     Random.andThen
         (\n ->

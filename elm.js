@@ -7649,7 +7649,7 @@ var $elm$core$List$take = F2(
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
 var $author$project$MainComponents$Structs$randomTreeGenerator = function () {
-	var sizeGenerator = A2($elm$random$Random$int, 10, 21);
+	var sizeGenerator = A2($elm$random$Random$int, 9, 31);
 	return A2(
 		$elm$random$Random$andThen,
 		function (n) {
@@ -10012,6 +10012,15 @@ var $author$project$Trees$TreeTraversal$convertMsg = function (msg) {
 			return $author$project$Trees$TreeTraversal$ResetTraversal;
 	}
 };
+var $author$project$Trees$TreeVisualization$countNodes = function (node) {
+	if (node.$ === 'Empty') {
+		return 0;
+	} else {
+		var left = node.b;
+		var right = node.c;
+		return (1 + $author$project$Trees$TreeVisualization$countNodes(left)) + $author$project$Trees$TreeVisualization$countNodes(right);
+	}
+};
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -10028,6 +10037,164 @@ var $author$project$Trees$TreeVisualization$currentIndexNode = F2(
 			$elm$core$List$length(traversal)) < 1)) ? $elm$core$List$head(
 			A2($elm$core$List$drop, idx - 1, traversal)) : $elm$core$Maybe$Nothing;
 	});
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $author$project$Trees$TreeVisualization$PositionedNode = function (a) {
+	return {$: 'PositionedNode', a: a};
+};
+var $author$project$Trees$TreeVisualization$layoutHelper = F5(
+	function (tree, x, dx, y, dy) {
+		if (tree.$ === 'Empty') {
+			return _Utils_Tuple2($elm$core$Maybe$Nothing, x);
+		} else {
+			var val = tree.a;
+			var left = tree.b;
+			var right = tree.c;
+			var _v1 = A5($author$project$Trees$TreeVisualization$layoutHelper, left, x, dx, y + dy, dy);
+			var maybeLeftTree = _v1.a;
+			var nextXAfterLeft = _v1.b;
+			var currentX = nextXAfterLeft;
+			var _v2 = A5($author$project$Trees$TreeVisualization$layoutHelper, right, currentX + dx, dx, y + dy, dy);
+			var maybeRightTree = _v2.a;
+			var nextXAfterRight = _v2.b;
+			var positionedNode = $author$project$Trees$TreeVisualization$PositionedNode(
+				{left: maybeLeftTree, right: maybeRightTree, val: val, x: currentX, y: y});
+			return _Utils_Tuple2(
+				$elm$core$Maybe$Just(positionedNode),
+				nextXAfterRight);
+		}
+	});
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var $author$project$Trees$TreeVisualization$lines = function (tree) {
+	var node = tree.a;
+	var parentToChild = function (childNode) {
+		return A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1(
+					$elm$core$String$fromFloat(node.x)),
+					$elm$svg$Svg$Attributes$y1(
+					$elm$core$String$fromFloat(node.y)),
+					$elm$svg$Svg$Attributes$x2(
+					$elm$core$String$fromFloat(childNode.x)),
+					$elm$svg$Svg$Attributes$y2(
+					$elm$core$String$fromFloat(childNode.y)),
+					$elm$svg$Svg$Attributes$stroke('#808080'),
+					$elm$svg$Svg$Attributes$strokeWidth('2')
+				]),
+			_List_Nil);
+	};
+	var rightLines = function () {
+		var _v3 = node.right;
+		if (_v3.$ === 'Just') {
+			var childTree = _v3.a;
+			var childNode = childTree.a;
+			return A2(
+				$elm$core$List$cons,
+				parentToChild(childNode),
+				$author$project$Trees$TreeVisualization$lines(childTree));
+		} else {
+			return _List_Nil;
+		}
+	}();
+	var leftLines = function () {
+		var _v1 = node.left;
+		if (_v1.$ === 'Just') {
+			var childTree = _v1.a;
+			var childNode = childTree.a;
+			return A2(
+				$elm$core$List$cons,
+				parentToChild(childNode),
+				$author$project$Trees$TreeVisualization$lines(childTree));
+		} else {
+			return _List_Nil;
+		}
+	}();
+	return _Utils_ap(leftLines, rightLines);
+};
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
+var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $author$project$Trees$TreeVisualization$nodes = F2(
+	function (tree, maybeActive) {
+		var node = tree.a;
+		var rightNodes = function () {
+			var _v3 = node.right;
+			if (_v3.$ === 'Just') {
+				var r = _v3.a;
+				return A2($author$project$Trees$TreeVisualization$nodes, r, maybeActive);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var leftNodes = function () {
+			var _v2 = node.left;
+			if (_v2.$ === 'Just') {
+				var l = _v2.a;
+				return A2($author$project$Trees$TreeVisualization$nodes, l, maybeActive);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var label = A2(
+			$elm$svg$Svg$text_,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x(
+					$elm$core$String$fromFloat(node.x)),
+					$elm$svg$Svg$Attributes$y(
+					$elm$core$String$fromFloat(node.y + 5)),
+					$elm$svg$Svg$Attributes$fill('white'),
+					$elm$svg$Svg$Attributes$fontSize('14'),
+					$elm$svg$Svg$Attributes$textAnchor('middle')
+				]),
+			_List_fromArray(
+				[
+					$elm$svg$Svg$text(
+					$elm$core$String$fromInt(node.val))
+				]));
+		var isActive = function () {
+			if (maybeActive.$ === 'Just') {
+				var x = maybeActive.a;
+				return _Utils_eq(x, node.val);
+			} else {
+				return false;
+			}
+		}();
+		var circleColor = isActive ? '#FF5722' : '#64B5F6';
+		var myCircle = A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx(
+					$elm$core$String$fromFloat(node.x)),
+					$elm$svg$Svg$Attributes$cy(
+					$elm$core$String$fromFloat(node.y)),
+					$elm$svg$Svg$Attributes$r('15'),
+					$elm$svg$Svg$Attributes$fill(circleColor)
+				]),
+			_List_Nil);
+		return _Utils_ap(
+			_List_fromArray(
+				[myCircle, label]),
+			_Utils_ap(leftNodes, rightNodes));
+	});
 var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
 	function (xs, idx) {
 		var visited = A2($elm$core$List$take, idx, xs);
@@ -10035,75 +10202,17 @@ var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
 			$elm$core$String$join,
 			', ',
 			A2($elm$core$List$map, $elm$core$String$fromInt, visited)) + ']');
-		var remaining = A2($elm$core$List$drop, idx, xs);
-		var remainingStr = '[' + (A2(
-			$elm$core$String$join,
-			', ',
-			A2($elm$core$List$map, $elm$core$String$fromInt, remaining)) + ']');
-		return visitedStr + (' | ' + remainingStr);
+		return visitedStr;
 	});
-var $author$project$Trees$TreeVisualization$renderTree = F2(
-	function (tree, maybeActive) {
-		if (tree.$ === 'Empty') {
-			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('tree-empty')
-					]),
-				_List_Nil);
-		} else {
-			var val = tree.a;
-			var left = tree.b;
-			var right = tree.c;
-			var isActive = function () {
-				if (maybeActive.$ === 'Just') {
-					var x = maybeActive.a;
-					return _Utils_eq(x, val);
-				} else {
-					return false;
-				}
-			}();
-			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('tree-node-wrapper')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$div,
-						_Utils_ap(
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('tree-node')
-								]),
-							isActive ? _List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('active-node')
-								]) : _List_Nil),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$elm$core$String$fromInt(val))
-							])),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('tree-children')
-							]),
-						_List_fromArray(
-							[
-								A2($author$project$Trees$TreeVisualization$renderTree, left, maybeActive),
-								A2($author$project$Trees$TreeVisualization$renderTree, right, maybeActive)
-							]))
-					]));
-		}
-	});
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
 var $author$project$Trees$TreeVisualization$view = F4(
 	function (tree, currentIndex, traversalResult, running) {
+		var totalNodes = $author$project$Trees$TreeVisualization$countNodes(tree);
+		var startX = (totalNodes > 0) ? (((1000 - (totalNodes * 25)) + 25) / 2) : 500;
+		var maybeActiveVal = A2($author$project$Trees$TreeVisualization$currentIndexNode, traversalResult, currentIndex);
+		var _v0 = A5($author$project$Trees$TreeVisualization$layoutHelper, tree, startX, 25, 40, 75);
+		var maybePositionedRoot = _v0.a;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -10112,19 +10221,29 @@ var $author$project$Trees$TreeVisualization$view = F4(
 				]),
 			_List_fromArray(
 				[
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('tree-info')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$author$project$Trees$TreeVisualization$renderTree,
-							tree,
-							A2($author$project$Trees$TreeVisualization$currentIndexNode, traversalResult, currentIndex))
-						])),
+					function () {
+					if (maybePositionedRoot.$ === 'Nothing') {
+						return A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Empty Tree')
+								]));
+					} else {
+						var positionedRoot = maybePositionedRoot.a;
+						return A2(
+							$elm$svg$Svg$svg,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$width('1000'),
+									$elm$svg$Svg$Attributes$height('375')
+								]),
+							_Utils_ap(
+								$author$project$Trees$TreeVisualization$lines(positionedRoot),
+								A2($author$project$Trees$TreeVisualization$nodes, positionedRoot, maybeActiveVal)));
+					}
+				}(),
 					A2(
 					$elm$html$Html$div,
 					_List_Nil,
@@ -10223,7 +10342,7 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						'Current Step: ' + $elm$core$String$fromInt(model.index))
+						'Current Step Number: ' + $elm$core$String$fromInt(model.index))
 					])),
 				A2(
 				$elm$html$Html$div,

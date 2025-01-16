@@ -198,7 +198,7 @@ view model =
                 [ text "Postorder" ]
             ]
 
-          -- Tree Visualization
+          -- Tree Visualization (creates SVG and traversal steps)
         , Visualization.view
             model.tree
             model.index
@@ -210,7 +210,7 @@ view model =
 
           -- Step Counter
         , div [ class "indices" ]
-              [ text ("Current Step: " ++ String.fromInt model.index)
+              [ text ("Current Step Number: " ++ String.fromInt model.index)
               ]
 
           -- Breakdown
