@@ -75,6 +75,7 @@ view tree currentIndex traversalResult running =
                     -- Size of SVG viewport
                     [ width "1000"
                     , height "375"
+                    , Svg.Attributes.class "fade-in"
                     ]
                     -- Receive lists of SVG elements to render
                     (lines positionedRoot ++ nodes positionedRoot maybeActiveVal)
@@ -238,6 +239,7 @@ nodes tree maybeActive =
                         , cy (String.fromFloat node.y)
                         , r "15"
                         , fill circleColor
+                        , Svg.Attributes.style "transition: fill 0.5s ease"
                         ]
                         []
 

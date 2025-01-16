@@ -47,6 +47,8 @@ type Msg
     | SetTree Tree
     -- One step of chosen traversal
     | TraversalStep
+    -- Timing for running the algorithm
+    | Tick Time.Posix
     -- Run Button
     | StartTraversal
     -- Pause Button
@@ -114,6 +116,17 @@ update msg model =
                 ( { model | index = newIndex }, Cmd.none )
             else
                 ( { model | index = newIndex, running = False }, Cmd.none )
+        
+        -- One step of traversal each second
+        Tick _ ->
+            let
+                newIndex = model.index + 1
+                totalSteps = List.length model.traversalResult
+            in
+            if newIndex < totalSteps then
+                ( { model | index = newIndex }, Cmd.none )
+            else
+                ( { model | index = newIndex, running = False }, Cmd.none )
 
         -- Run button
         StartTraversal ->
@@ -154,7 +167,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     if model.running then
         -- Update every 1 second
-        Time.every 1000 (\_ -> TraversalStep)
+        Time.every 1000 Tick
     else
         Sub.none
 

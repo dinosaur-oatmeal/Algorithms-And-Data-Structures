@@ -520,6 +520,11 @@ subscriptions model =
             Home.subscriptions model.homeModel
                 |> Sub.map HomeMsg
 
+        -- Redirect TreeTraversal subscriptions to TreeTraversal.elm
+        TreeTraversal ->
+            TreeTraversal.subscriptions model.treeTraversalModel
+                |> Sub.map TreeTraversalMsg
+
         -- Default to every 0.5 seconds if running flag True
             -- Used for running algorithms
         _ ->

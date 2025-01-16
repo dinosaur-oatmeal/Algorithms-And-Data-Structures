@@ -6169,6 +6169,9 @@ var $author$project$Main$HomeMsg = function (a) {
 var $author$project$Main$Tick = function (a) {
 	return {$: 'Tick', a: a};
 };
+var $author$project$Main$TreeTraversalMsg = function (a) {
+	return {$: 'TreeTraversalMsg', a: a};
+};
 var $elm$time$Time$Every = F2(
 	function (a, b) {
 		return {$: 'Every', a: a, b: b};
@@ -6465,15 +6468,27 @@ var $author$project$MainComponents$Home$subscriptions = function (model) {
 				$elm$core$Basics$always($author$project$MainComponents$Home$SwapNeeded))
 			]));
 };
+var $author$project$Trees$TreeTraversal$Tick = function (a) {
+	return {$: 'Tick', a: a};
+};
+var $author$project$Trees$TreeTraversal$subscriptions = function (model) {
+	return model.running ? A2($elm$time$Time$every, 1000, $author$project$Trees$TreeTraversal$Tick) : $elm$core$Platform$Sub$none;
+};
 var $author$project$Main$subscriptions = function (model) {
 	var _v0 = model.currentPage;
-	if (_v0.$ === 'Home') {
-		return A2(
-			$elm$core$Platform$Sub$map,
-			$author$project$Main$HomeMsg,
-			$author$project$MainComponents$Home$subscriptions(model.homeModel));
-	} else {
-		return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
+	switch (_v0.$) {
+		case 'Home':
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$HomeMsg,
+				$author$project$MainComponents$Home$subscriptions(model.homeModel));
+		case 'TreeTraversal':
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$TreeTraversalMsg,
+				$author$project$Trees$TreeTraversal$subscriptions(model.treeTraversalModel));
+		default:
+			return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
 };
 var $author$project$Main$GotRandomArray = function (a) {
@@ -6489,9 +6504,6 @@ var $author$project$Trees$TreeTraversal$SetTree = function (a) {
 	return {$: 'SetTree', a: a};
 };
 var $author$project$Trees$TreeTraversal$TraversalStep = {$: 'TraversalStep'};
-var $author$project$Main$TreeTraversalMsg = function (a) {
-	return {$: 'TreeTraversalMsg', a: a};
-};
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
@@ -7947,6 +7959,18 @@ var $author$project$Trees$TreeTraversal$update = F2(
 						{index: 0, traversalResult: newResult, tree: newTree}),
 					$elm$core$Platform$Cmd$none);
 			case 'TraversalStep':
+				var totalSteps = $elm$core$List$length(model.traversalResult);
+				var newIndex = model.index + 1;
+				return (_Utils_cmp(newIndex, totalSteps) < 0) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{index: newIndex}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{index: newIndex, running: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'Tick':
 				var totalSteps = $elm$core$List$length(model.traversalResult);
 				var newIndex = model.index + 1;
 				return (_Utils_cmp(newIndex, totalSteps) < 0) ? _Utils_Tuple2(
@@ -10012,6 +10036,7 @@ var $author$project$Trees$TreeTraversal$convertMsg = function (msg) {
 			return $author$project$Trees$TreeTraversal$ResetTraversal;
 	}
 };
+var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
 var $author$project$Trees$TreeVisualization$countNodes = function (node) {
 	if (node.$ === 'Empty') {
 		return 0;
@@ -10126,6 +10151,7 @@ var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
 var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
 var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
@@ -10187,7 +10213,8 @@ var $author$project$Trees$TreeVisualization$nodes = F2(
 					$elm$svg$Svg$Attributes$cy(
 					$elm$core$String$fromFloat(node.y)),
 					$elm$svg$Svg$Attributes$r('15'),
-					$elm$svg$Svg$Attributes$fill(circleColor)
+					$elm$svg$Svg$Attributes$fill(circleColor),
+					$elm$svg$Svg$Attributes$style('transition: fill 0.5s ease')
 				]),
 			_List_Nil);
 		return _Utils_ap(
@@ -10237,7 +10264,8 @@ var $author$project$Trees$TreeVisualization$view = F4(
 							_List_fromArray(
 								[
 									$elm$svg$Svg$Attributes$width('1000'),
-									$elm$svg$Svg$Attributes$height('375')
+									$elm$svg$Svg$Attributes$height('375'),
+									$elm$svg$Svg$Attributes$class('fade-in')
 								]),
 							_Utils_ap(
 								$author$project$Trees$TreeVisualization$lines(positionedRoot),
