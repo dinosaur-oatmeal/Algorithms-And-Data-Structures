@@ -8853,14 +8853,14 @@ var $author$project$SearchAlgorithms$BinarySearch$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Left/Right: bounds of our current search window.')
+											$elm$html$Html$text('Left Index: left bound of our current search window.')
 										])),
 									A2(
 									$elm$html$Html$li,
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Mid: the midpoint we compare against the target.')
+											$elm$html$Html$text('Right Index: right bound of our current search window.')
 										])),
 									A2(
 									$elm$html$Html$li,
@@ -8874,7 +8874,7 @@ var $author$project$SearchAlgorithms$BinarySearch$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Found?: indicates if we’ve located the target.')
+											$elm$html$Html$text('Found: indicates if we’ve located the target.')
 										]))
 								]))
 						])),
@@ -9757,8 +9757,6 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 							$elm$html$Html$text(
 							' | Current Index: ' + $elm$core$String$fromInt(track.currentIndex)),
 							$elm$html$Html$text(
-							' | Element Swapped: ' + (track.didSwap ? 'Yes' : 'No')),
-							$elm$html$Html$text(
 							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
 					A2(
@@ -10179,7 +10177,7 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Current index: tracks the element being moved to it\'s correct relative location.')
+											$elm$html$Html$text('Current Index: tracks the element being moved to it\'s correct relative location.')
 										])),
 									A2(
 									$elm$html$Html$li,

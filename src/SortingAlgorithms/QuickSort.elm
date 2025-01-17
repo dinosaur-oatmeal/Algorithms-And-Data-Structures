@@ -137,7 +137,6 @@ view track running toMsg =
         , div [ class "indices" ]
               [ text ("Pivot Index: " ++ String.fromInt track.outerIndex)
               , text (" | Current Index: " ++ String.fromInt track.currentIndex)
-              , text (" | Element Swapped: " ++ (if track.didSwap then "Yes" else "No"))
               , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
               ]
 

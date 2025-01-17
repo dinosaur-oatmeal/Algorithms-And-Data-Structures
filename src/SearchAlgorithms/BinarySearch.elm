@@ -123,10 +123,10 @@ view track running toMsg =
           -- Breakdown
         , div [ class "variable-list" ]
               [ ul []
-                  [ li [] [ text "Left/Right: bounds of our current search window." ]
-                  , li [] [ text "Mid: the midpoint we compare against the target." ]
+                  [ li [] [ text "Left Index: left bound of our current search window." ]
+                  , li [] [ text "Right Index: right bound of our current search window." ]
                   , li [] [ text "Target Value: the element we want to find (must be in sorted array)." ]
-                  , li [] [ text "Found?: indicates if we’ve located the target." ]
+                  , li [] [ text "Found: indicates if we’ve located the target." ]
                   ]
               ]
 

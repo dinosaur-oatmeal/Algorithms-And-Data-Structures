@@ -130,7 +130,7 @@ view track running toMsg =
         , div [ class "variable-list" ]
               [ ul []
                   [ li [] [ text "Outer Index: tracks the last element of the sorted section of the array." ]
-                  , li [] [ text "Current index: tracks the element being moved to it's correct relative location." ]
+                  , li [] [ text "Current Index: tracks the element being moved to it's correct relative location." ]
                   , li [] [text "Gap: tracks the gap elements are being swapped from in the array."]
                   , li [] [ text "Sorted: tells us once the array is sorted." ]
                   ]

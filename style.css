@@ -78,6 +78,10 @@ body {
   color: #808080;
 }
 
+.dropdown-content button:hover {
+  color: #FF5722;
+}
+
 /* The page-content can hold the content of Home, BubbleSort, etc. */
 .page-content {
   margin: 20px;
