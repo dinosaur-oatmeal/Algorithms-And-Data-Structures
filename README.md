@@ -59,15 +59,15 @@ The following sorting algorithms are included:
 - **Time Complexity**: $O(\log n)$.
 - **Space Complexity**: $O(1)$ for iterative implementation, $O(\log n)$ for recursive implementation.
 
----
-
-## Upcoming Features
-
 ### **Trees**
 #### **Tree Traversals**
 - **In-order Traversal**: Visits nodes in ascending order.
 - **Pre-order Traversal**: Visits the root node first, then the left subtree, and finally the right subtree.
 - **Post-order Traversal**: Visits the left subtree, the right subtree, and then the root node.
+  
+---
+
+## Upcoming Features
 
 ### **Heaps**
 #### **Heap Data Structure** (Planned)
