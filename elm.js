@@ -10752,56 +10752,6 @@ var $author$project$Main$viewFooter = A2(
 var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
 };
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$virtual_dom$VirtualDom$node = function (tag) {
-	return _VirtualDom_node(
-		_VirtualDom_noScript(tag));
-};
-var $elm$html$Html$node = $elm$virtual_dom$VirtualDom$node;
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$html$Html$select = _VirtualDom_node('select');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Main$viewHeader = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
@@ -10811,162 +10761,288 @@ var $author$project$Main$viewHeader = A2(
 	_List_fromArray(
 		[
 			A2(
-			$elm$html$Html$label,
+			$elm$html$Html$button,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('dropdown-label')
+					$elm$html$Html$Attributes$class('home-button'),
+					$elm$html$Html$Events$onClick(
+					$author$project$Main$NavigateTo($author$project$Main$Home))
 				]),
 			_List_fromArray(
 				[
-					$elm$html$Html$text('Algorithms:')
+					$elm$html$Html$text('🏠')
 				])),
 			A2(
-			$elm$html$Html$select,
+			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('dropdown'),
-					$elm$html$Html$Events$onInput($author$project$Main$SelectAlgorithm)
+					$elm$html$Html$Attributes$class('nav')
 				]),
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$option,
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$value('')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Home Page')
-						])),
-					A3(
-					$elm$html$Html$node,
-					'optgroup',
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$attribute, 'label', 'Comparison-based')
+							$elm$html$Html$Attributes$class('dropdown-group')
 						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Bubble Sort')
+									$elm$html$Html$Attributes$class('dropdown-label')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Bubble Sort')
+									$elm$html$Html$text('Comparison-based')
 								])),
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$ul,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Selection Sort')
+									$elm$html$Html$Attributes$class('dropdown-content')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Selection Sort')
-								])),
-							A2(
-							$elm$html$Html$option,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$value('Insertion Sort')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Insertion Sort')
-								])),
-							A2(
-							$elm$html$Html$option,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$value('Shell Sort')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Shell Sort')
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Bubble Sort'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Bubble Sort')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Selection Sort'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Selection Sort')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Insertion Sort'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Insertion Sort')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Shell Sort'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Shell Sort')
+												]))
+										]))
 								]))
 						])),
-					A3(
-					$elm$html$Html$node,
-					'optgroup',
+					A2(
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$attribute, 'label', 'Divide & Conquer')
+							$elm$html$Html$Attributes$class('dropdown-group')
 						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Merge Sort')
+									$elm$html$Html$Attributes$class('dropdown-label')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Merge Sort')
+									$elm$html$Html$text('Divide & Conquer')
 								])),
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$ul,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Quick Sort')
+									$elm$html$Html$Attributes$class('dropdown-content')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Quick Sort')
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Merge Sort'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Merge Sort')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Quick Sort'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Quick Sort')
+												]))
+										]))
 								]))
 						])),
-					A3(
-					$elm$html$Html$node,
-					'optgroup',
+					A2(
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$attribute, 'label', 'Searching')
+							$elm$html$Html$Attributes$class('dropdown-group')
 						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Linear Search')
+									$elm$html$Html$Attributes$class('dropdown-label')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Linear Search')
+									$elm$html$Html$text('Searches')
 								])),
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$ul,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Binary Search')
+									$elm$html$Html$Attributes$class('dropdown-content')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Binary Search')
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Linear Search'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Linear Search')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Binary Search'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Binary Search')
+												]))
+										]))
 								]))
 						])),
-					A3(
-					$elm$html$Html$node,
-					'optgroup',
+					A2(
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$attribute, 'label', 'Trees')
+							$elm$html$Html$Attributes$class('dropdown-group')
 						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$option,
+							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$value('Tree Traversal')
+									$elm$html$Html$Attributes$class('dropdown-label')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Tree Traversals')
+									$elm$html$Html$text('Trees')
+								])),
+							A2(
+							$elm$html$Html$ul,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-content')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Tree Traversal'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Traversals')
+												]))
+										]))
 								]))
 						]))
 				]))
@@ -10974,7 +11050,7 @@ var $author$project$Main$viewHeader = A2(
 var $author$project$MainComponents$Home$ToggleTheme = {$: 'ToggleTheme'};
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Main$viewThemeToggle = function (model) {
-	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$MainComponents$Home$Light) ? _Utils_Tuple2('☀', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
+	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$MainComponents$Home$Light) ? _Utils_Tuple2('☼', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
 	var icon = _v0.a;
 	var tooltip = _v0.b;
 	return A2(

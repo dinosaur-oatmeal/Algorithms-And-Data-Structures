@@ -5,7 +5,7 @@ module Main exposing (main)
 -- Imports for website to work
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, div, text, label, select, option, node, button)
+import Html exposing (Html, div, text, label, select, option, node, button, ul, li)
 import Html.Attributes exposing (class, value, attribute, title)
 import Html.Events exposing (onInput, onClick)
 import Url exposing (Url)
@@ -652,24 +652,55 @@ view model =
 viewHeader : Html Msg
 viewHeader =
     div [ class "header" ]
-        [ label [ class "dropdown-label" ] [ text "Algorithms:" ]
-        , select [ class "dropdown", onInput SelectAlgorithm ]
-            [ option [ value "" ] [ text "Home Page" ]
-            , node "optgroup" [ attribute "label" "Comparison-based" ]
-                [ option [ value "Bubble Sort" ] [ text "Bubble Sort" ]
-                , option [ value "Selection Sort" ] [ text "Selection Sort" ]
-                , option [ value "Insertion Sort" ] [ text "Insertion Sort" ]
-                , option [ value "Shell Sort" ] [ text "Shell Sort" ]
+        -- Home button
+        [ button [ class "home-button", onClick (NavigateTo Home) ]
+            [ text "🏠" ]
+        , div [ class "nav" ]
+            -- Comparisons
+            [ div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Comparison-based" ]
+                , ul [ class "dropdown-content" ]
+                    [ li [] 
+                        [ button [ onClick (SelectAlgorithm "Bubble Sort") ] [ text "Bubble Sort" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "Selection Sort") ] [ text "Selection Sort" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "Insertion Sort") ] [ text "Insertion Sort" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "Shell Sort") ] [ text "Shell Sort" ] ]
+                    ]
                 ]
-            , node "optgroup" [ attribute "label" "Divide & Conquer" ]
-                [ option [ value "Merge Sort" ] [ text "Merge Sort" ]
-                , option [ value "Quick Sort" ] [ text "Quick Sort" ]
+            
+            -- Divide and Conquer
+            , div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Divide & Conquer" ]
+                , ul [ class "dropdown-content" ]
+                    [ li [] 
+                        [ button [ onClick (SelectAlgorithm "Merge Sort") ] [ text "Merge Sort" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "Quick Sort") ] [ text "Quick Sort" ] ]
+                    ]
                 ]
-            , node "optgroup" [ attribute "label" "Searching" ]
-                [ option [ value "Linear Search" ] [ text "Linear Search" ]
-                , option [ value "Binary Search" ] [ text "Binary Search" ] ]
-            , node "optgroup" [ attribute "label" "Trees" ]
-                [ option [ value "Tree Traversal" ] [ text "Tree Traversals" ] ]
+
+            -- Searches
+            , div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Searches" ]
+                , ul [ class "dropdown-content" ]
+                    [ li [] 
+                        [ button [ onClick (SelectAlgorithm "Linear Search") ] [ text "Linear Search" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "Binary Search") ] [ text "Binary Search" ] ]
+                    ]
+                ]
+            
+            -- Trees
+            , div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Trees" ]
+                , ul [ class "dropdown-content" ]
+                    [ li []
+                        [ button [ onClick (SelectAlgorithm "Tree Traversal") ] [ text "Traversals" ] ]
+                    ]
+                ]
             ]
         ]
 
@@ -679,7 +710,7 @@ viewThemeToggle model =
     let
         ( icon, tooltip ) =
             if model.homeModel.theme == Home.Light then
-                ( "☀", "Switch to Dark Mode" )
+                ( "☼", "Switch to Dark Mode" )
             else
                 ( "☾", "Switch to Light Mode" )
     in
