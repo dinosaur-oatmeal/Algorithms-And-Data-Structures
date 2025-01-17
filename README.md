@@ -54,7 +54,7 @@ The following sorting algorithms are included:
 - **Time Complexity**: $O(n)$ in the worst case.  
 - **Space Complexity**: $O(1)$.  
 
-#### **2. Binary Search** (Planned)
+#### **2. Binary Search**
 - A search algorithm that works on sorted arrays by repeatedly dividing the search interval in half. If the target value is less than the middle element, search in the left half; otherwise, search in the right half.
 - **Time Complexity**: $O(\log n)$.
 - **Space Complexity**: $O(1)$ for iterative implementation, $O(\log n)$ for recursive implementation.
@@ -64,7 +64,7 @@ The following sorting algorithms are included:
 ## Upcoming Features
 
 ### **Trees**
-#### **Tree Traversals** (Planned)
+#### **Tree Traversals**
 - **In-order Traversal**: Visits nodes in ascending order.
 - **Pre-order Traversal**: Visits the root node first, then the left subtree, and finally the right subtree.
 - **Post-order Traversal**: Visits the left subtree, the right subtree, and then the root node.
