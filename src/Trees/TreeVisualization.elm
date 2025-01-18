@@ -48,7 +48,7 @@ view tree currentIndex traversalResult running =
         startX =
             -- Get root node close to center to ensure whole tree visible
             if totalNodes > 0 then
-                (1000 - (toFloat totalNodes * 25) + 25) / 2
+                500
             
             -- Empty tree (should never occur)
             else
@@ -119,7 +119,7 @@ renderHighlighted xs idx =
     in
     visitedStr
 
--- Get X and Y coordinates of each node in the tree (in-order traversal)
+-- Get X and Y coordinates of each node in the tree (pre-order traversal)
 layoutHelper : Tree -> Float -> Float -> Float -> Float -> (Maybe PositionedTree, Float)
 layoutHelper tree x dx y dy =
     case tree of
@@ -131,30 +131,28 @@ layoutHelper tree x dx y dy =
         Node val left right ->
             let
                 -- Layout left subtree
-                ( maybeLeftTree, nextXAfterLeft ) =
-                    layoutHelper left x dx (y + dy) dy
-
-                -- Calculate X coordinate for current node
-                currentX =
-                    nextXAfterLeft
+                ( maybeLeftTree, leftSubtreeWidth ) =
+                    layoutHelper left (x - 6 * dx) (dx / 2) (y + dy) dy
 
                 -- Layout right subtree
-                ( maybeRightTree, nextXAfterRight ) =
-                    layoutHelper right (currentX + dx) dx (y + dy) dy
+                ( maybeRightTree, rightSubtreeWidth ) =
+                    layoutHelper right (x + 6 * dx) (dx / 2) (y + dy) dy
+
+                -- Recalculate X coordinate for current node
+                currentX = x
 
                 -- Create positioned node
-                positionedNode =
+                updatedNode =
                     PositionedNode
                         { val = val
                         , x = currentX
                         , y = y
-                        -- Only children if not a leaf
                         , left = maybeLeftTree
                         , right = maybeRightTree
                         }
-            -- Return entire tree of Nodes with X and Y coordinates
             in
-            ( Just positionedNode, nextXAfterRight )
+            -- Return updated node and subtree width (left = right)
+            ( Just updatedNode, rightSubtreeWidth )
 
 -- Draw lines from parent nodes to children
     -- Return a list of SVG elements to be rendered

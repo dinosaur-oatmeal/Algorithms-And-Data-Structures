@@ -10362,18 +10362,18 @@ var $author$project$Trees$TreeVisualization$layoutHelper = F5(
 			var val = tree.a;
 			var left = tree.b;
 			var right = tree.c;
-			var _v1 = A5($author$project$Trees$TreeVisualization$layoutHelper, left, x, dx, y + dy, dy);
-			var maybeLeftTree = _v1.a;
-			var nextXAfterLeft = _v1.b;
-			var currentX = nextXAfterLeft;
-			var _v2 = A5($author$project$Trees$TreeVisualization$layoutHelper, right, currentX + dx, dx, y + dy, dy);
-			var maybeRightTree = _v2.a;
-			var nextXAfterRight = _v2.b;
-			var positionedNode = $author$project$Trees$TreeVisualization$PositionedNode(
+			var currentX = x;
+			var _v1 = A5($author$project$Trees$TreeVisualization$layoutHelper, right, x + (6 * dx), dx / 2, y + dy, dy);
+			var maybeRightTree = _v1.a;
+			var rightSubtreeWidth = _v1.b;
+			var _v2 = A5($author$project$Trees$TreeVisualization$layoutHelper, left, x - (6 * dx), dx / 2, y + dy, dy);
+			var maybeLeftTree = _v2.a;
+			var leftSubtreeWidth = _v2.b;
+			var updatedNode = $author$project$Trees$TreeVisualization$PositionedNode(
 				{left: maybeLeftTree, right: maybeRightTree, val: val, x: currentX, y: y});
 			return _Utils_Tuple2(
-				$elm$core$Maybe$Just(positionedNode),
-				nextXAfterRight);
+				$elm$core$Maybe$Just(updatedNode),
+				rightSubtreeWidth);
 		}
 	});
 var $elm$core$String$fromFloat = _String_fromNumber;
@@ -10524,7 +10524,7 @@ var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
 var $author$project$Trees$TreeVisualization$view = F4(
 	function (tree, currentIndex, traversalResult, running) {
 		var totalNodes = $author$project$Trees$TreeVisualization$countNodes(tree);
-		var startX = (totalNodes > 0) ? (((1000 - (totalNodes * 25)) + 25) / 2) : 500;
+		var startX = (totalNodes > 0) ? 500 : 500;
 		var maybeActiveVal = A2($author$project$Trees$TreeVisualization$currentIndexNode, traversalResult, currentIndex);
 		var _v0 = A5($author$project$Trees$TreeVisualization$layoutHelper, tree, startX, 25, 40, 75);
 		var maybePositionedRoot = _v0.a;
