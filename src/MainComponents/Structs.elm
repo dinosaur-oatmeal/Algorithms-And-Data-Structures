@@ -38,7 +38,7 @@ defaultSortingTrack list =
     , sorted = False
     , minIndex = 0
     -- Initialize for ShellSort
-    , gap = 10 // 2
+    , gap = (List.length list) // 2
     -- Initialize to Array Size for QuickSort
     , stack = [ ( 0, List.length list - 1 ) ]
     -- Initialize for BubbleSort
@@ -60,7 +60,7 @@ orderedListCmd : (List Int -> msg) -> Cmd msg
 orderedListCmd toMsg =
     let
         orderedList =
-            List.range 1 10
+            List.range 1 30
     in
     -- Converts msg to Cmd msg for Main.elm Update
     Task.succeed orderedList
@@ -69,12 +69,12 @@ orderedListCmd toMsg =
 -- Shuffle list for arrays
 randomListGenerator : Generator (List Int)
 randomListGenerator =
-    shuffle (List.range 1 10)
+    shuffle (List.range 1 30)
 
 -- Grab a random int for target in searching
 randomTargetGenerator : Generator Int
 randomTargetGenerator =
-    Random.int 1 10
+    Random.int 1 30
 
 -- Generates tree
 randomTreeGenerator : Generator Tree

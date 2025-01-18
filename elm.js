@@ -5304,7 +5304,7 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 		currentIndex: 1,
 		currentStep: 0,
 		didSwap: false,
-		gap: (10 / 2) | 0,
+		gap: ($elm$core$List$length(list) / 2) | 0,
 		minIndex: 0,
 		outerIndex: 0,
 		sorted: false,
@@ -7328,7 +7328,7 @@ var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track)
 		});
 };
 var $author$project$MainComponents$Structs$orderedListCmd = function (toMsg) {
-	var orderedList = A2($elm$core$List$range, 1, 10);
+	var orderedList = A2($elm$core$List$range, 1, 30);
 	return A2(
 		$elm$core$Task$perform,
 		toMsg,
@@ -7546,8 +7546,8 @@ var $elm_community$random_extra$Random$List$shuffle = function (list) {
 		$elm$random$Random$independentSeed);
 };
 var $author$project$MainComponents$Structs$randomListGenerator = $elm_community$random_extra$Random$List$shuffle(
-	A2($elm$core$List$range, 1, 10));
-var $author$project$MainComponents$Structs$randomTargetGenerator = A2($elm$random$Random$int, 1, 10);
+	A2($elm$core$List$range, 1, 30));
+var $author$project$MainComponents$Structs$randomTargetGenerator = A2($elm$random$Random$int, 1, 30);
 var $elm$random$Random$andThen = F2(
 	function (callback, _v0) {
 		var genA = _v0.a;
@@ -8440,7 +8440,7 @@ var $author$project$Main$update = F2(
 					}();
 					return _Utils_update(
 						currentSortingAlgorithm,
-						{array: array, currentIndex: newTarget, gap: targetValue, minIndex: 9, outerIndex: 0, sorted: false});
+						{array: array, currentIndex: newTarget, gap: targetValue, minIndex: 29, outerIndex: 0, sorted: false});
 				}();
 				var updatedModel = _Utils_update(
 					model,
@@ -8627,7 +8627,7 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderComparison = F6
 					A2($elm$html$Html$Attributes$style, 'flex-direction', 'column'),
 					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
 					A2($elm$html$Html$Attributes$style, 'width', '150%'),
-					A2($elm$html$Html$Attributes$style, 'height', '200px'),
+					A2($elm$html$Html$Attributes$style, 'height', '400px'),
 					A2($elm$html$Html$Attributes$style, 'padding', '10px')
 				]),
 			_List_fromArray(
@@ -8637,7 +8637,7 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderComparison = F6
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'font-size', '20px'),
-							A2($elm$html$Html$Attributes$style, 'margin-bottom', '10px'),
+							A2($elm$html$Html$Attributes$style, 'margin-bottom', '35px'),
 							A2($elm$html$Html$Attributes$style, 'font-weight', 'bold')
 						]),
 					_List_fromArray(

@@ -30,12 +30,12 @@ renderComparison array title sorted outerIndex currentIndex maybeMinIndex =
         , style "flex-direction" "column"
         , style "align-items" "center"
         , style "width" "150%"
-        , style "height" "200px"
+        , style "height" "400px"
         , style "padding" "10px"
         ]
         [ div 
             [ style "font-size" "20px"
-            , style "margin-bottom" "10px"
+            , style "margin-bottom" "35px"
             , style "font-weight" "bold"
             ]
             [ text title ]

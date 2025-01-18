@@ -539,7 +539,7 @@ update msg model =
                             -- Needed for indices under array to work correctly
                         , gap = targetValue
                         -- Set minIndex to last one in array for highlighting
-                        , minIndex = 9
+                        , minIndex = 29
                     }
 
                 -- Update model to reflect updatedSortingAlgorithm
