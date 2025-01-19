@@ -111,7 +111,7 @@ renderBar sorted outerIndex currentIndex maybeMinIndex position value =
         []
     , div
         -- Styling for the value text below the bar
-        [ class "indices"
+        [ class "index"
         , style "font-size" "16px"
         , style "margin-top" "10px"
         ]

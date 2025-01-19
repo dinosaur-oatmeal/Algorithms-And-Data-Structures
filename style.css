@@ -34,10 +34,12 @@ body {
 .nav {
   display: flex;
   gap: 2rem;
+  align-items: center;
 }
 
 .dropdown-group {
   position: relative; /* Relative needed for dropdowns to look right */
+  align-items: center;
 }
 
 /* Labels always seen */
@@ -45,6 +47,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   color: #808080;
+  text-align: center;
 }
 
 /* Hidden dropdown content */
@@ -58,6 +61,14 @@ body {
   padding: 0.5rem;
   margin: 0;
   z-index: 10;
+}
+
+.light-theme .dropdown-content {
+  background-color: #ffffff;
+}
+
+.dark-theme .dropdown-content {
+  background-color: #343a40;
 }
 
 .dropdown-content li {
@@ -167,15 +178,15 @@ body {
   /* z-index and position for background array */
   z-index: 0;
   position: relative;
+  min-height: 600px;
   /* Big width and height for array to take up background */
-  min-width: 50vh;
-  min-height: 50vh;
 }
 
 /* Title: Algorithms and Data Structures */
 .home-title {
   font-size: 2rem;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 /* Brief description below title */
@@ -183,6 +194,7 @@ body {
   font-size: 1.1rem;
   max-width: 600px;
   line-height: 1.5;
+  text-align: center;
 }
 
 .background-bar {
@@ -205,6 +217,7 @@ body {
   font-size: 2.5rem;
   margin-left: -10px;
   font-weight: bold;
+  text-align: center;
   
 }
 
@@ -215,6 +228,7 @@ body {
   font-size: 1.2rem;
   line-height: 1.5;
   max-width: 600px;
+  text-align: center;
 }
 
 .light-theme .indices {
@@ -266,6 +280,7 @@ body {
 .big-o-title {
   font-size: 2rem;
   font-weight: 100;
+  text-align: center;
 }
 
 /* List of complexities */
@@ -275,6 +290,7 @@ body {
   align-items: center;
   justify-content: space-around;
   gap: 1rem;
+  text-align: center;
 }
 
 /* Individual item in list */
@@ -290,6 +306,7 @@ body {
 .space-complexity {
   align-items: center;
   margin-top: 20px;
+  text-align: center;
 }
 
 /* =========================================
@@ -335,15 +352,33 @@ body {
    SMALLER MEDIA
    ========================================= */
 
+@media (max-width: 1000px) {
+  .sorting-bar {
+    width: 20px;
+  }
+
+  .tree-page {
+    display: none;
+  }
+}
+
 @media (max-width: 800px) {
 
   /* No label and reduced font on algorithm dropdown */
   .dropdown-label {
-    font-size: 0rem;
+    font-size: 10px;
   }
 
-  .dropdown {
-    font-size: 0.7rem;
+  .nav {
+    gap: 1rem;
+  }
+
+  .dropdown-content {
+    top: 1rem; /* Do not change or too far to hover over! */
+  }
+
+  .dropdown-content button {
+    font-size: 10px;
   }
 
   /* Theme button smaller and closer to corner */
@@ -358,22 +393,19 @@ body {
     font-size: 1rem;
   }
 
-  /* get rid of graph on small screens */
-  .home-container {
-    min-width: 1vh;
-    min-height: 1vh;
-  }
-
   /* Fix text to specific place on page */
   .home-text {
-    position: fixed;
-    margin-top: auto;
-    top: 350px;
+    display: none;
   }
 
   /* Made bar chart less wide */
   .sorting-bar {
-    width: 20px;
+    width: 8px;
+    gap: 3px;
+  }
+
+  .index {
+    display: none;
   }
 
   /* Reduced size of sorting buttons */

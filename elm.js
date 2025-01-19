@@ -8605,7 +8605,7 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderBar = F6(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('indices'),
+							$elm$html$Html$Attributes$class('index'),
 							A2($elm$html$Html$Attributes$style, 'font-size', '16px'),
 							A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
 						]),
