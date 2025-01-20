@@ -44,6 +44,8 @@ import SearchAlgorithms.BinarySearch as BinarySearch
 -- Tree Traversals page
 import Trees.TreeTraversal as TreeTraversal exposing (Msg(..))
 
+import Heaps.HeapType as HeapType exposing (Msg(..))
+
 -- Model (info stored during interactions)
 type alias Model =
     { key : Nav.Key
@@ -53,6 +55,8 @@ type alias Model =
     , homeModel : Home.Model
     -- Call TreeTraversal.elm model
     , treeTraversalModel : TreeTraversal.Model
+    -- Call HeapType.elm model
+    , heapTypeModel : HeapType.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
@@ -71,6 +75,7 @@ type Route
     | LinearSearchRoute
     | BinarySearchRoute
     | TreeRoute
+    | HeapRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -84,6 +89,7 @@ type Page
     | LinearSearch
     | BinarySearch
     | TreeTraversal
+    | HeapType
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -93,6 +99,8 @@ type Msg
     | HomeMsg Home.Msg
     -- Update something on tree traversal page (type of algorithm/buttons)
     | TreeTraversalMsg TreeTraversal.Msg
+    -- Update something on heap type page (type of heap/buttons)
+    | HeapTypeMsg HeapType.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -122,6 +130,7 @@ routeParser =
         , Parser.map LinearSearchRoute (s "linear-search")
         , Parser.map BinarySearchRoute (s "binary-search")
         , Parser.map TreeRoute (s "tree-traversal")
+        , Parser.map HeapRoute (s "heap-type")
         ]
 
 -- Convert URL into a page
@@ -168,6 +177,10 @@ parseUrl url =
         Just TreeRoute ->
             TreeTraversal
 
+        -- HeapType Page
+        Just HeapRoute ->
+            HeapType
+
         -- Default to Home
         _ ->
             Home
@@ -181,6 +194,7 @@ init _ url key =
             , currentPage = parseUrl url
             , homeModel = Home.initModel
             , treeTraversalModel = TreeTraversal.initModel
+            , heapTypeModel = HeapType.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
             }
@@ -220,6 +234,16 @@ update msg model =
             in
             ( { model | treeTraversalModel = newTreeTraversalModel }
             , Cmd.map TreeTraversalMsg treeCmd
+            )
+
+        -- Heap Type updates point to HeapType.elm
+        HeapTypeMsg heapMsg ->
+            let
+                ( newHeapTypeModel, heapCmd ) =
+                    HeapType.update heapMsg model.heapTypeModel
+            in
+            ( { model | heapTypeModel = newHeapTypeModel }
+            , Cmd.map HeapTypeMsg heapCmd
             )
 
         -- Algorithm selection from dropdown
@@ -302,6 +326,15 @@ update msg model =
 
                 "Tree Traversal" ->
                     ( { model | currentPage = TreeTraversal
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    -- Generate a new tree when selected
+                    , Random.generate GotRandomTree randomTreeGenerator
+                    )
+
+                "Heap Type" ->
+                    ( { model | currentPage = HeapType
                             , sortingAlgorithm = defaultSortingTrack []
                             , running = False
                     }
@@ -421,6 +454,15 @@ update msg model =
                             , Cmd.map TreeTraversalMsg treeCmd
                             )
 
+                        HeapType ->
+                            let
+                                (updatedHeapModel, heapCmd) =
+                                    HeapType.update HeapifyStep model.heapTypeModel
+                            in
+                            ( { model | heapTypeModel = updatedHeapModel }
+                            , Cmd.map HeapTypeMsg heapCmd
+                            )
+
                         _ ->
                             ( model, Cmd.none )
 
@@ -488,6 +530,16 @@ update msg model =
                         ( { model | treeTraversalModel = updatedTreeModel }
                         , Cmd.map TreeTraversalMsg treeCmd
                         )
+
+                    -- Heap Page
+                    HeapType ->
+                            let
+                                (updatedHeapModel, heapCmd) =
+                                    HeapType.update HeapifyStep model.heapTypeModel
+                            in
+                            ( { model | heapTypeModel = updatedHeapModel }
+                            , Cmd.map HeapTypeMsg heapCmd
+                            )
 
                     _ ->
                         ( model, Cmd.none )
@@ -573,6 +625,10 @@ subscriptions model =
             TreeTraversal.subscriptions model.treeTraversalModel
                 |> Sub.map TreeTraversalMsg
 
+        HeapType ->
+            HeapType.subscriptions model.heapTypeModel
+                |> Sub.map HeapTypeMsg
+
         -- Default to every 0.5 seconds if running flag True
             -- Used for running algorithms
         _ ->
@@ -636,6 +692,9 @@ view model =
                     -- Tree Traversal Page points to TreeTraversal.elm
                     TreeTraversal ->
                         Html.map TreeTraversalMsg (TreeTraversal.view model.treeTraversalModel)
+
+                    HeapType ->
+                        Html.map HeapTypeMsg (HeapType.view model.heapTypeModel)
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -699,6 +758,8 @@ viewHeader =
                 , ul [ class "dropdown-content" ]
                     [ li []
                         [ button [ onClick (SelectAlgorithm "Tree Traversal") ] [ text "Traversals" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "Heap Type" ) ] [ text "Heaps" ] ]
                     ]
                 ]
             ]

@@ -147,7 +147,8 @@ update msg model =
                 , index = 0
                 , traversalResult = []
               }
-            , cmd )
+            , cmd
+            )
 
         -- Generate new tree
         TreeGenerated newTree ->
@@ -160,7 +161,8 @@ update msg model =
                 , traversalResult = newResult
                 , index = 0
               }
-            , Cmd.none )
+            , Cmd.none
+            )
 
 -- Runs algorithm when selected
 subscriptions : Model -> Sub Msg

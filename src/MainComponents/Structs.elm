@@ -84,7 +84,7 @@ randomTreeGenerator =
     let
         sizeGenerator : Generator Int
         sizeGenerator =
-            Random.int 9 31
+            Random.int 9 30
     in
     Random.andThen
         (\n ->
@@ -97,7 +97,7 @@ randomTreeGenerator =
                     in
                         buildTree values 0 0
                 )
-                (shuffle (List.range 1 50))
+                (shuffle (List.range 1 99))
         )
         sizeGenerator
 
