@@ -600,16 +600,32 @@ update msg model =
             in
             ( updatedModel, Cmd.none )
 
-        -- Generate new tree in treeTraversalModel
-            -- Cmd.map to return a main model like other cases
+        -- Cmd.map to return a main model like other cases
         GotRandomTree newTree ->
-            let 
-                (newTreeModel, treeCmd) =
-                    TreeTraversal.update (TreeTraversal.SetTree newTree) model.treeTraversalModel
-            in
-            ( { model | treeTraversalModel = newTreeModel }
-            , Cmd.map TreeTraversalMsg treeCmd
-            )
+            case model.currentPage of
+                -- Generate new tree in treeTraversalModel
+                TreeTraversal ->
+                    let
+                        (newTreeModel, treeCmd) =
+                            TreeTraversal.update (TreeTraversal.SetTree newTree) model.treeTraversalModel
+                    in
+                    ( { model | treeTraversalModel = newTreeModel }
+                    , Cmd.map TreeTraversalMsg treeCmd
+                    )
+
+                -- Generate a new tree in heapTypeModel
+                HeapType ->
+                    let
+                        (newTreeModel, treeCmd) =
+                            HeapType.update (HeapType.SetTree newTree) model.heapTypeModel
+                    in
+                    ( { model | heapTypeModel = newTreeModel }
+                    , Cmd.map HeapTypeMsg treeCmd
+                    )
+
+                -- Default to not not updating anything
+                _ ->
+                    ( model, Cmd.none )
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg

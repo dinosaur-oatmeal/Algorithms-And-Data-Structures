@@ -6539,6 +6539,9 @@ var $author$project$Main$GotRandomTree = function (a) {
 	return {$: 'GotRandomTree', a: a};
 };
 var $author$project$Heaps$HeapType$HeapifyStep = {$: 'HeapifyStep'};
+var $author$project$Heaps$HeapType$SetTree = function (a) {
+	return {$: 'SetTree', a: a};
+};
 var $author$project$Trees$TreeTraversal$SetTree = function (a) {
 	return {$: 'SetTree', a: a};
 };
@@ -8880,17 +8883,35 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(updatedModel, $elm$core$Platform$Cmd$none);
 			default:
 				var newTree = msg.a;
-				var _v14 = A2(
-					$author$project$Trees$TreeTraversal$update,
-					$author$project$Trees$TreeTraversal$SetTree(newTree),
-					model.treeTraversalModel);
-				var newTreeModel = _v14.a;
-				var treeCmd = _v14.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{treeTraversalModel: newTreeModel}),
-					A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
+				var _v14 = model.currentPage;
+				switch (_v14.$) {
+					case 'TreeTraversal':
+						var _v15 = A2(
+							$author$project$Trees$TreeTraversal$update,
+							$author$project$Trees$TreeTraversal$SetTree(newTree),
+							model.treeTraversalModel);
+						var newTreeModel = _v15.a;
+						var treeCmd = _v15.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{treeTraversalModel: newTreeModel}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
+					case 'HeapType':
+						var _v16 = A2(
+							$author$project$Heaps$HeapType$update,
+							$author$project$Heaps$HeapType$SetTree(newTree),
+							model.heapTypeModel);
+						var newTreeModel = _v16.a;
+						var treeCmd = _v16.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{heapTypeModel: newTreeModel}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$HeapTypeMsg, treeCmd));
+					default:
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$Main$ControlMsg = function (a) {
