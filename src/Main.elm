@@ -616,11 +616,11 @@ update msg model =
                 -- Generate a new tree in heapTypeModel
                 HeapType ->
                     let
-                        (newTreeModel, treeCmd) =
+                        (newHeapTypeModel, heapCmd) =
                             HeapType.update (HeapType.SetTree newTree) model.heapTypeModel
                     in
-                    ( { model | heapTypeModel = newTreeModel }
-                    , Cmd.map HeapTypeMsg treeCmd
+                    ( { model | heapTypeModel = newHeapTypeModel }
+                    , Cmd.map HeapTypeMsg heapCmd
                     )
 
                 -- Default to not not updating anything

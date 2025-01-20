@@ -86,12 +86,13 @@ initModel =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        -- Update type of heap
+        -- Update type of heap and generate new heap
         ChangeHeapType newHeapType ->
-            ( { model | heapType = newHeapType }, Cmd.none )
+            resetAndGenerateTree newHeapType model
 
+        -- Needed for Main.elm when page selected
         SetTree newTree ->
-            ( { model | tree = newTree, heapifySteps = [], index = 0 }, Cmd.none )
+            resetAndGenerateTree model.heapType model
 
         -- Update typed value in model
         UpdateNewValue val ->
@@ -195,6 +196,7 @@ update msg model =
                 , Cmd.none
                 )
 
+        -- Update when algorithm running
         Tick _ ->
             let
                 -- Increase index and total steps
@@ -239,18 +241,7 @@ update msg model =
 
         -- Reset button
         ResetHeap ->
-            let
-                -- Call to generate new tree
-                cmd = Random.generate TreeGenerated randomTreeGenerator
-            in
-            ( { model
-                | running = False
-                , index = 0
-                , heapifySteps = []
-                -- Reset user input
-                , newValue = ""
-              }
-            , cmd )
+            resetAndGenerateTree model.heapType model
 
         -- Heapify tree generated immediately after being made
         TreeGenerated newTree ->
@@ -398,6 +389,23 @@ convertMsg control =
 
         Reset ->
             ResetHeap
+
+-- Reset tree (used for ChangeHeapType, SetTree, and Reset)
+resetAndGenerateTree : HeapType -> Model -> (Model, Cmd Msg)
+resetAndGenerateTree newHeapType model =
+    let
+        -- Command to generate a new random tree
+        cmd = Random.generate TreeGenerated randomTreeGenerator
+    in
+    ( { model
+        | running = False
+        , heapType = newHeapType
+        , index = 0
+        , heapifySteps = []
+        , newValue = ""
+      }
+    , cmd )
+
 
 -- Change description based on traversal type
 getDescription : HeapType -> String

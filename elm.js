@@ -7855,9 +7855,6 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 		}
 	}
 };
-var $author$project$Heaps$HeapType$TreeGenerated = function (a) {
-	return {$: 'TreeGenerated', a: a};
-};
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -8030,6 +8027,18 @@ var $author$project$Heaps$HeapType$buildSubtree = F2(
 var $author$project$Heaps$HeapType$levelArrayToTree = function (arr) {
 	return A2($author$project$Heaps$HeapType$buildSubtree, arr, 0);
 };
+var $author$project$Heaps$HeapType$TreeGenerated = function (a) {
+	return {$: 'TreeGenerated', a: a};
+};
+var $author$project$Heaps$HeapType$resetAndGenerateTree = F2(
+	function (newHeapType, model) {
+		var cmd = A2($elm$random$Random$generate, $author$project$Heaps$HeapType$TreeGenerated, $author$project$MainComponents$Structs$randomTreeGenerator);
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{heapType: newHeapType, heapifySteps: _List_Nil, index: 0, newValue: '', running: false}),
+			cmd);
+	});
 var $author$project$Heaps$HeapType$levelOrderHelper = F2(
 	function (queue, accumulatorList) {
 		levelOrderHelper:
@@ -8076,18 +8085,10 @@ var $author$project$Heaps$HeapType$update = F2(
 		switch (msg.$) {
 			case 'ChangeHeapType':
 				var newHeapType = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{heapType: newHeapType}),
-					$elm$core$Platform$Cmd$none);
+				return A2($author$project$Heaps$HeapType$resetAndGenerateTree, newHeapType, model);
 			case 'SetTree':
 				var newTree = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{heapifySteps: _List_Nil, index: 0, tree: newTree}),
-					$elm$core$Platform$Cmd$none);
+				return A2($author$project$Heaps$HeapType$resetAndGenerateTree, model.heapType, model);
 			case 'UpdateNewValue':
 				var val = msg.a;
 				return _Utils_Tuple2(
@@ -8195,12 +8196,7 @@ var $author$project$Heaps$HeapType$update = F2(
 						{running: false}),
 					$elm$core$Platform$Cmd$none);
 			case 'ResetHeap':
-				var cmd = A2($elm$random$Random$generate, $author$project$Heaps$HeapType$TreeGenerated, $author$project$MainComponents$Structs$randomTreeGenerator);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{heapifySteps: _List_Nil, index: 0, newValue: '', running: false}),
-					cmd);
+				return A2($author$project$Heaps$HeapType$resetAndGenerateTree, model.heapType, model);
 			default:
 				var newTree = msg.a;
 				var arr = $author$project$Heaps$HeapType$treeToLevelArray(newTree);
@@ -8902,13 +8898,13 @@ var $author$project$Main$update = F2(
 							$author$project$Heaps$HeapType$update,
 							$author$project$Heaps$HeapType$SetTree(newTree),
 							model.heapTypeModel);
-						var newTreeModel = _v16.a;
-						var treeCmd = _v16.b;
+						var newHeapTypeModel = _v16.a;
+						var heapCmd = _v16.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{heapTypeModel: newTreeModel}),
-							A2($elm$core$Platform$Cmd$map, $author$project$Main$HeapTypeMsg, treeCmd));
+								{heapTypeModel: newHeapTypeModel}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$HeapTypeMsg, heapCmd));
 					default:
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
