@@ -363,7 +363,7 @@ view model =
         , div [ class "big-o-list" ]
             [ div [ class "big-o-item" ]
                 [ div [] [ text "Insertion Complexity" ]
-                , div [] [ text "O(n)" ]
+                , div [] [ text "O(log n)" ]
                 ]
             , div [ class "big-o-item" ]
                 [ div [] [ text "Deletion Complexity" ]
