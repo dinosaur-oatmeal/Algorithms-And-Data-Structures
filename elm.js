@@ -9550,7 +9550,7 @@ var $author$project$Heaps$HeapType$view = function (model) {
 								_List_Nil,
 								_List_fromArray(
 									[
-										$elm$html$Html$text('O(n)')
+										$elm$html$Html$text('O(log n)')
 									]))
 							])),
 						A2(
