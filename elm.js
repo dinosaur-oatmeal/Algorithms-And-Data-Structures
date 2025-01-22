@@ -7870,6 +7870,30 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
+var $author$project$Heaps$HeapType$buildSubtree = F2(
+	function (arr, index) {
+		if (_Utils_cmp(
+			index,
+			$elm$core$List$length(arr)) < 0) {
+			var _v0 = $elm$core$List$head(
+				A2($elm$core$List$drop, index, arr));
+			if (_v0.$ === 'Just') {
+				var actualVal = _v0.a;
+				return A3(
+					$author$project$MainComponents$Structs$Node,
+					actualVal,
+					A2($author$project$Heaps$HeapType$buildSubtree, arr, (2 * index) + 1),
+					A2($author$project$Heaps$HeapType$buildSubtree, arr, (2 * index) + 2));
+			} else {
+				return $author$project$MainComponents$Structs$Empty;
+			}
+		} else {
+			return $author$project$MainComponents$Structs$Empty;
+		}
+	});
+var $author$project$Heaps$HeapType$levelArrayToTree = function (arr) {
+	return A2($author$project$Heaps$HeapType$buildSubtree, arr, 0);
+};
 var $author$project$Heaps$HeapType$swapIndices = F3(
 	function (arr, indexOne, indexTwo) {
 		if (_Utils_eq(indexOne, indexTwo)) {
@@ -7929,121 +7953,20 @@ var $author$project$Heaps$HeapType$heapifySteps = F4(
 			var target1 = withinBounds(left) ? A3(compareIndex, arr, index, left) : index;
 			var target2 = withinBounds(right) ? A3(compareIndex, arr, target1, right) : target1;
 			if (!_Utils_eq(target2, index)) {
-				var swapped = A3($author$project$Heaps$HeapType$swapIndices, arr, index, target2);
-				var newState = swapped;
-				var subsequentStates = A4($author$project$Heaps$HeapType$heapifySteps, newState, target2, size, heapType);
-				return A2($elm$core$List$cons, newState, subsequentStates);
+				var swappedArray = A3($author$project$Heaps$HeapType$swapIndices, arr, index, target2);
+				var subsequentStates = A4($author$project$Heaps$HeapType$heapifySteps, swappedArray, target2, size, heapType);
+				var oldValue = A2(get, arr, index);
+				var newValue = A2(get, arr, target2);
+				var currentStep = {
+					swappedIndices: $elm$core$Maybe$Just(
+						_Utils_Tuple2(oldValue, newValue)),
+					tree: $author$project$Heaps$HeapType$levelArrayToTree(swappedArray)
+				};
+				return A2($elm$core$List$cons, currentStep, subsequentStates);
 			} else {
 				return _List_Nil;
 			}
 		}
-	});
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $author$project$Heaps$HeapType$buildHeapSteps = F2(
-	function (arr, heapType) {
-		var length = $elm$core$List$length(arr);
-		var indices = $elm$core$List$reverse(
-			A2($elm$core$List$range, 0, ((length / 2) | 0) - 1));
-		if (!length) {
-			return _List_fromArray(
-				[_List_Nil]);
-		} else {
-			var initial = _List_fromArray(
-				[arr]);
-			return A3(
-				$elm$core$List$foldl,
-				F2(
-					function (index, statesSoFar) {
-						var currentArray = function () {
-							var _v1 = $elm$core$List$head(
-								$elm$core$List$reverse(statesSoFar));
-							if (_v1.$ === 'Just') {
-								var array = _v1.a;
-								return array;
-							} else {
-								return _List_Nil;
-							}
-						}();
-						var newStates = A4($author$project$Heaps$HeapType$heapifySteps, currentArray, index, length, heapType);
-						var finalArray = $elm$core$List$isEmpty(newStates) ? currentArray : A2(
-							$elm$core$Maybe$withDefault,
-							currentArray,
-							$elm$core$List$head(
-								$elm$core$List$reverse(newStates)));
-						return _Utils_ap(
-							statesSoFar,
-							_Utils_ap(
-								newStates,
-								(!_Utils_eq(finalArray, currentArray)) ? _List_fromArray(
-									[finalArray]) : _List_Nil));
-					}),
-				initial,
-				indices);
-		}
-	});
-var $author$project$Heaps$HeapType$deleteRoot = F2(
-	function (arr, heapType) {
-		var _v0 = $elm$core$List$length(arr);
-		if (!_v0) {
-			return _List_fromArray(
-				[_List_Nil]);
-		} else {
-			var lastIndex = $elm$core$List$length(arr) - 1;
-			var swapped = A3($author$project$Heaps$HeapType$swapIndices, arr, 0, lastIndex);
-			var removed = A2($elm$core$List$take, lastIndex, swapped);
-			var siftSteps = A4(
-				$author$project$Heaps$HeapType$heapifySteps,
-				removed,
-				0,
-				$elm$core$List$length(removed),
-				heapType);
-			return A2(
-				$elm$core$List$cons,
-				swapped,
-				A2($elm$core$List$cons, removed, siftSteps));
-		}
-	});
-var $author$project$Heaps$HeapType$buildSubtree = F2(
-	function (arr, index) {
-		if (_Utils_cmp(
-			index,
-			$elm$core$List$length(arr)) < 0) {
-			var _v0 = $elm$core$List$head(
-				A2($elm$core$List$drop, index, arr));
-			if (_v0.$ === 'Just') {
-				var actualVal = _v0.a;
-				return A3(
-					$author$project$MainComponents$Structs$Node,
-					actualVal,
-					A2($author$project$Heaps$HeapType$buildSubtree, arr, (2 * index) + 1),
-					A2($author$project$Heaps$HeapType$buildSubtree, arr, (2 * index) + 2));
-			} else {
-				return $author$project$MainComponents$Structs$Empty;
-			}
-		} else {
-			return $author$project$MainComponents$Structs$Empty;
-		}
-	});
-var $author$project$Heaps$HeapType$levelArrayToTree = function (arr) {
-	return A2($author$project$Heaps$HeapType$buildSubtree, arr, 0);
-};
-var $author$project$Heaps$HeapType$TreeGenerated = function (a) {
-	return {$: 'TreeGenerated', a: a};
-};
-var $author$project$Heaps$HeapType$resetAndGenerateTree = F2(
-	function (newHeapType, model) {
-		var cmd = A2($elm$random$Random$generate, $author$project$Heaps$HeapType$TreeGenerated, $author$project$MainComponents$Structs$randomTreeGenerator);
-		return _Utils_Tuple2(
-			_Utils_update(
-				model,
-				{heapType: newHeapType, heapifySteps: _List_Nil, index: 0, newValue: '', running: false}),
-			cmd);
 	});
 var $author$project$Heaps$HeapType$levelOrderHelper = F2(
 	function (queue, accumulatorList) {
@@ -8086,6 +8009,99 @@ var $author$project$Heaps$HeapType$treeToLevelArray = function (tree) {
 			[tree]),
 		_List_Nil);
 };
+var $author$project$Heaps$HeapType$buildHeapSteps = F2(
+	function (arr, heapType) {
+		var length = $elm$core$List$length(arr);
+		var processIndex = F2(
+			function (index, _v2) {
+				var currentArr = _v2.a;
+				var stepsSoFar = _v2.b;
+				var newStates = A4($author$project$Heaps$HeapType$heapifySteps, currentArr, index, length, heapType);
+				var updatedArr = function () {
+					var _v1 = $elm$core$List$reverse(newStates);
+					if (_v1.b) {
+						var step = _v1.a;
+						return $author$project$Heaps$HeapType$treeToLevelArray(step.tree);
+					} else {
+						return currentArr;
+					}
+				}();
+				return _Utils_Tuple2(
+					updatedArr,
+					_Utils_ap(stepsSoFar, newStates));
+			});
+		var initialStep = {
+			swappedIndices: $elm$core$Maybe$Nothing,
+			tree: $author$project$Heaps$HeapType$levelArrayToTree(arr)
+		};
+		var indices = $elm$core$List$reverse(
+			A2($elm$core$List$range, 0, ((length / 2) | 0) - 1));
+		if (!length) {
+			return _List_Nil;
+		} else {
+			var _v0 = A3(
+				$elm$core$List$foldl,
+				processIndex,
+				_Utils_Tuple2(
+					arr,
+					_List_fromArray(
+						[initialStep])),
+				indices);
+			var steps = _v0.b;
+			return steps;
+		}
+	});
+var $author$project$Heaps$HeapType$deleteRoot = F2(
+	function (arr, heapType) {
+		var n = $elm$core$List$length(arr);
+		if (n === 1) {
+			return _List_Nil;
+		} else {
+			var rootVal = A2(
+				$elm$core$Maybe$withDefault,
+				-1,
+				$elm$core$List$head(arr));
+			var lastIndex = n - 1;
+			var lastVal = A2(
+				$elm$core$Maybe$withDefault,
+				-1,
+				$elm$core$List$head(
+					A2($elm$core$List$drop, lastIndex, arr)));
+			var swapped = A3($author$project$Heaps$HeapType$swapIndices, arr, 0, lastIndex);
+			var removed = A2($elm$core$List$take, lastIndex, swapped);
+			var reheapifySteps = A4(
+				$author$project$Heaps$HeapType$heapifySteps,
+				removed,
+				0,
+				$elm$core$List$length(removed),
+				heapType);
+			var removeStep = {
+				swappedIndices: $elm$core$Maybe$Nothing,
+				tree: $author$project$Heaps$HeapType$levelArrayToTree(removed)
+			};
+			var swapStep = {
+				swappedIndices: $elm$core$Maybe$Just(
+					_Utils_Tuple2(rootVal, lastVal)),
+				tree: $author$project$Heaps$HeapType$levelArrayToTree(swapped)
+			};
+			return A2(
+				$elm$core$List$cons,
+				swapStep,
+				A2($elm$core$List$cons, removeStep, reheapifySteps));
+		}
+	});
+var $author$project$Heaps$HeapType$TreeGenerated = function (a) {
+	return {$: 'TreeGenerated', a: a};
+};
+var $author$project$Heaps$HeapType$resetAndGenerateTree = F2(
+	function (newHeapType, model) {
+		var cmd = A2($elm$random$Random$generate, $author$project$Heaps$HeapType$TreeGenerated, $author$project$MainComponents$Structs$randomTreeGenerator);
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{heapType: newHeapType, heapifySteps: _List_Nil, index: 0, newValue: '', running: false}),
+			cmd);
+	});
 var $author$project$Heaps$HeapType$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -8107,19 +8123,19 @@ var $author$project$Heaps$HeapType$update = F2(
 				if (_v1.$ === 'Just') {
 					var num = _v1.a;
 					var arrayBefore = $author$project$Heaps$HeapType$treeToLevelArray(model.tree);
-					if ($elm$core$List$length(arrayBefore) >= 31) {
+					var canInsert = $elm$core$List$length(arrayBefore) < 31;
+					if (!canInsert) {
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					} else {
 						var arrayWithNew = _Utils_ap(
 							arrayBefore,
 							_List_fromArray(
 								[num]));
-						var arrayStates = A2($author$project$Heaps$HeapType$buildHeapSteps, arrayWithNew, model.heapType);
-						var treeStates = A2($elm$core$List$map, $author$project$Heaps$HeapType$levelArrayToTree, arrayStates);
+						var steps = A2($author$project$Heaps$HeapType$buildHeapSteps, arrayWithNew, model.heapType);
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{heapifySteps: treeStates, index: 0, newValue: '', running: false}),
+								{heapifySteps: steps, index: 0, newValue: '', running: false}),
 							$elm$core$Platform$Cmd$none);
 					}
 				} else {
@@ -8131,12 +8147,11 @@ var $author$project$Heaps$HeapType$update = F2(
 					var _int = arrayBefore.a;
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				} else {
-					var allStates = A2($author$project$Heaps$HeapType$deleteRoot, arrayBefore, model.heapType);
-					var treeSteps = A2($elm$core$List$map, $author$project$Heaps$HeapType$levelArrayToTree, allStates);
+					var steps = A2($author$project$Heaps$HeapType$deleteRoot, arrayBefore, model.heapType);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{heapifySteps: treeSteps, index: 0, running: false}),
+							{heapifySteps: steps, index: 0, running: false}),
 						$elm$core$Platform$Cmd$none);
 				}
 			case 'HeapifyStep':
@@ -8153,7 +8168,7 @@ var $author$project$Heaps$HeapType$update = F2(
 						var _v3 = $elm$core$List$reverse(model.heapifySteps);
 						if (_v3.b) {
 							var last = _v3.a;
-							return last;
+							return last.tree;
 						} else {
 							return model.tree;
 						}
@@ -8178,7 +8193,7 @@ var $author$project$Heaps$HeapType$update = F2(
 						var _v4 = $elm$core$List$reverse(model.heapifySteps);
 						if (_v4.b) {
 							var last = _v4.a;
-							return last;
+							return last.tree;
 						} else {
 							return model.tree;
 						}
@@ -8210,8 +8225,8 @@ var $author$project$Heaps$HeapType$update = F2(
 				var finalArr = function () {
 					var _v5 = $elm$core$List$reverse(states);
 					if (_v5.b) {
-						var a = _v5.a;
-						return a;
+						var lastStep = _v5.a;
+						return $author$project$Heaps$HeapType$treeToLevelArray(lastStep.tree);
 					} else {
 						return arr;
 					}
@@ -9018,6 +9033,13 @@ var $author$project$Heaps$HeapType$getDescription = function (heapType) {
 	}
 };
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
 var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -9175,16 +9197,267 @@ var $author$project$MainComponents$Controls$view = F2(
 						]))
 				]));
 	});
-var $author$project$Heaps$HeapType$view = function (model) {
-	var currentTree = function () {
-		var _v0 = A2($elm$core$List$drop, model.index, model.heapifySteps);
-		if (_v0.b) {
-			var step = _v0.a;
-			return step;
+var $author$project$Trees$TreeVisualization$countNodes = function (node) {
+	if (node.$ === 'Empty') {
+		return 0;
+	} else {
+		var left = node.b;
+		var right = node.c;
+		return (1 + $author$project$Trees$TreeVisualization$countNodes(left)) + $author$project$Trees$TreeVisualization$countNodes(right);
+	}
+};
+var $author$project$Trees$TreeVisualization$currentIndexNode = F2(
+	function (traversal, maybeIdx) {
+		if (maybeIdx.$ === 'Just') {
+			var idx = maybeIdx.a;
+			return ((idx > 0) && (_Utils_cmp(
+				idx,
+				$elm$core$List$length(traversal)) < 1)) ? $elm$core$List$head(
+				A2($elm$core$List$drop, idx - 1, traversal)) : $elm$core$Maybe$Nothing;
 		} else {
-			return model.tree;
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $author$project$Trees$TreeVisualization$PositionedNode = function (a) {
+	return {$: 'PositionedNode', a: a};
+};
+var $author$project$Trees$TreeVisualization$layoutHelper = F5(
+	function (tree, x, dx, y, dy) {
+		if (tree.$ === 'Empty') {
+			return _Utils_Tuple2($elm$core$Maybe$Nothing, x);
+		} else {
+			var val = tree.a;
+			var left = tree.b;
+			var right = tree.c;
+			var currentX = x;
+			var _v1 = A5($author$project$Trees$TreeVisualization$layoutHelper, right, x + (6 * dx), dx / 2, y + dy, dy);
+			var maybeRightTree = _v1.a;
+			var rightSubtreeWidth = _v1.b;
+			var _v2 = A5($author$project$Trees$TreeVisualization$layoutHelper, left, x - (6 * dx), dx / 2, y + dy, dy);
+			var maybeLeftTree = _v2.a;
+			var leftSubtreeWidth = _v2.b;
+			var updatedNode = $author$project$Trees$TreeVisualization$PositionedNode(
+				{left: maybeLeftTree, right: maybeRightTree, val: val, x: currentX, y: y});
+			return _Utils_Tuple2(
+				$elm$core$Maybe$Just(updatedNode),
+				rightSubtreeWidth);
+		}
+	});
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var $author$project$Trees$TreeVisualization$lines = function (tree) {
+	var node = tree.a;
+	var parentToChild = function (childNode) {
+		return A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1(
+					$elm$core$String$fromFloat(node.x)),
+					$elm$svg$Svg$Attributes$y1(
+					$elm$core$String$fromFloat(node.y)),
+					$elm$svg$Svg$Attributes$x2(
+					$elm$core$String$fromFloat(childNode.x)),
+					$elm$svg$Svg$Attributes$y2(
+					$elm$core$String$fromFloat(childNode.y)),
+					$elm$svg$Svg$Attributes$stroke('#808080'),
+					$elm$svg$Svg$Attributes$strokeWidth('2')
+				]),
+			_List_Nil);
+	};
+	var rightLines = function () {
+		var _v3 = node.right;
+		if (_v3.$ === 'Just') {
+			var childTree = _v3.a;
+			var childNode = childTree.a;
+			return A2(
+				$elm$core$List$cons,
+				parentToChild(childNode),
+				$author$project$Trees$TreeVisualization$lines(childTree));
+		} else {
+			return _List_Nil;
 		}
 	}();
+	var leftLines = function () {
+		var _v1 = node.left;
+		if (_v1.$ === 'Just') {
+			var childTree = _v1.a;
+			var childNode = childTree.a;
+			return A2(
+				$elm$core$List$cons,
+				parentToChild(childNode),
+				$author$project$Trees$TreeVisualization$lines(childTree));
+		} else {
+			return _List_Nil;
+		}
+	}();
+	return _Utils_ap(leftLines, rightLines);
+};
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
+var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $author$project$Trees$TreeVisualization$nodes = F3(
+	function (tree, maybeActive, maybeSwapIndex) {
+		var node = tree.a;
+		var rightNodes = function () {
+			var _v5 = node.right;
+			if (_v5.$ === 'Just') {
+				var r = _v5.a;
+				return A3($author$project$Trees$TreeVisualization$nodes, r, maybeActive, maybeSwapIndex);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var leftNodes = function () {
+			var _v4 = node.left;
+			if (_v4.$ === 'Just') {
+				var l = _v4.a;
+				return A3($author$project$Trees$TreeVisualization$nodes, l, maybeActive, maybeSwapIndex);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var label = A2(
+			$elm$svg$Svg$text_,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x(
+					$elm$core$String$fromFloat(node.x)),
+					$elm$svg$Svg$Attributes$y(
+					$elm$core$String$fromFloat(node.y + 5)),
+					$elm$svg$Svg$Attributes$fill('white'),
+					$elm$svg$Svg$Attributes$fontSize('14'),
+					$elm$svg$Svg$Attributes$textAnchor('middle')
+				]),
+			_List_fromArray(
+				[
+					$elm$svg$Svg$text(
+					$elm$core$String$fromInt(node.val))
+				]));
+		var isSwapped = function () {
+			if (maybeSwapIndex.$ === 'Just') {
+				var _v3 = maybeSwapIndex.a;
+				var a = _v3.a;
+				var b = _v3.b;
+				return _Utils_eq(node.val, a) || _Utils_eq(node.val, b);
+			} else {
+				return false;
+			}
+		}();
+		var isActive = function () {
+			if (maybeActive.$ === 'Just') {
+				var x = maybeActive.a;
+				return _Utils_eq(x, node.val);
+			} else {
+				return false;
+			}
+		}();
+		var circleColor = (isActive || isSwapped) ? '#FF5722' : '#64B5F6';
+		var myCircle = A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx(
+					$elm$core$String$fromFloat(node.x)),
+					$elm$svg$Svg$Attributes$cy(
+					$elm$core$String$fromFloat(node.y)),
+					$elm$svg$Svg$Attributes$r('15'),
+					$elm$svg$Svg$Attributes$fill(circleColor),
+					$elm$svg$Svg$Attributes$style('transition: fill 0.5s ease')
+				]),
+			_List_Nil);
+		return _Utils_ap(
+			_List_fromArray(
+				[myCircle, label]),
+			_Utils_ap(leftNodes, rightNodes));
+	});
+var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
+	function (xs, maybeIdx) {
+		if (maybeIdx.$ === 'Just') {
+			var idx = maybeIdx.a;
+			var visited = A2($elm$core$List$take, idx, xs);
+			var visitedStr = '[' + (A2(
+				$elm$core$String$join,
+				', ',
+				A2($elm$core$List$map, $elm$core$String$fromInt, visited)) + ']');
+			return visitedStr;
+		} else {
+			return 'No step';
+		}
+	});
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var $author$project$Trees$TreeVisualization$view = F5(
+	function (tree, maybeCurrentIndex, maybeSwapIndex, traversalResult, running) {
+		var totalNodes = $author$project$Trees$TreeVisualization$countNodes(tree);
+		var maybeActiveVal = A2($author$project$Trees$TreeVisualization$currentIndexNode, traversalResult, maybeCurrentIndex);
+		var _v0 = A5($author$project$Trees$TreeVisualization$layoutHelper, tree, 500, 25, 40, 75);
+		var maybePositionedRoot = _v0.a;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('tree-page')
+				]),
+			_List_fromArray(
+				[
+					function () {
+					if (maybePositionedRoot.$ === 'Nothing') {
+						return A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Empty Tree')
+								]));
+					} else {
+						var positionedRoot = maybePositionedRoot.a;
+						return A2(
+							$elm$svg$Svg$svg,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$width('1000'),
+									$elm$svg$Svg$Attributes$height('375'),
+									$elm$svg$Svg$Attributes$style('transition: fill 0.6s ease')
+								]),
+							_Utils_ap(
+								$author$project$Trees$TreeVisualization$lines(positionedRoot),
+								A3($author$project$Trees$TreeVisualization$nodes, positionedRoot, maybeActiveVal, maybeSwapIndex)));
+					}
+				}(),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Traversal so far: ' + A2($author$project$Trees$TreeVisualization$renderHighlighted, traversalResult, maybeCurrentIndex))
+						]))
+				]));
+	});
+var $author$project$Heaps$HeapType$view = function (model) {
+	var currentTree = $elm$core$List$isEmpty(model.heapifySteps) ? {swappedIndices: $elm$core$Maybe$Nothing, tree: model.tree} : A2(
+		$elm$core$Maybe$withDefault,
+		{swappedIndices: $elm$core$Maybe$Nothing, tree: model.tree},
+		$elm$core$List$head(
+			A2($elm$core$List$drop, model.index, model.heapifySteps)));
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -9297,6 +9570,18 @@ var $author$project$Heaps$HeapType$view = function (model) {
 								$elm$html$Html$text('Delete Root')
 							]))
 					])),
+				function () {
+				var currentStep = function () {
+					var _v0 = A2($elm$core$List$drop, model.index, model.heapifySteps);
+					if (_v0.b) {
+						var step = _v0.a;
+						return step;
+					} else {
+						return {swappedIndices: $elm$core$Maybe$Nothing, tree: model.tree};
+					}
+				}();
+				return A5($author$project$Trees$TreeVisualization$view, currentStep.tree, $elm$core$Maybe$Nothing, currentStep.swappedIndices, _List_Nil, model.running);
+			}(),
 				A2($author$project$MainComponents$Controls$view, model.running, $author$project$Heaps$HeapType$convertMsg),
 				A2(
 				$elm$html$Html$div,
@@ -11131,261 +11416,6 @@ var $author$project$Trees$TreeTraversal$getDescription = function (traversal) {
 			return 'Postorder Traversal visits nodes in the order: Left Subtree, Right Subtree, Root. It\'s useful for deleting trees.';
 	}
 };
-var $author$project$Trees$TreeVisualization$countNodes = function (node) {
-	if (node.$ === 'Empty') {
-		return 0;
-	} else {
-		var left = node.b;
-		var right = node.c;
-		return (1 + $author$project$Trees$TreeVisualization$countNodes(left)) + $author$project$Trees$TreeVisualization$countNodes(right);
-	}
-};
-var $author$project$Trees$TreeVisualization$currentIndexNode = F2(
-	function (traversal, maybeIdx) {
-		if (maybeIdx.$ === 'Just') {
-			var idx = maybeIdx.a;
-			return ((idx > 0) && (_Utils_cmp(
-				idx,
-				$elm$core$List$length(traversal)) < 1)) ? $elm$core$List$head(
-				A2($elm$core$List$drop, idx - 1, traversal)) : $elm$core$Maybe$Nothing;
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
-var $author$project$Trees$TreeVisualization$PositionedNode = function (a) {
-	return {$: 'PositionedNode', a: a};
-};
-var $author$project$Trees$TreeVisualization$layoutHelper = F5(
-	function (tree, x, dx, y, dy) {
-		if (tree.$ === 'Empty') {
-			return _Utils_Tuple2($elm$core$Maybe$Nothing, x);
-		} else {
-			var val = tree.a;
-			var left = tree.b;
-			var right = tree.c;
-			var currentX = x;
-			var _v1 = A5($author$project$Trees$TreeVisualization$layoutHelper, right, x + (6 * dx), dx / 2, y + dy, dy);
-			var maybeRightTree = _v1.a;
-			var rightSubtreeWidth = _v1.b;
-			var _v2 = A5($author$project$Trees$TreeVisualization$layoutHelper, left, x - (6 * dx), dx / 2, y + dy, dy);
-			var maybeLeftTree = _v2.a;
-			var leftSubtreeWidth = _v2.b;
-			var updatedNode = $author$project$Trees$TreeVisualization$PositionedNode(
-				{left: maybeLeftTree, right: maybeRightTree, val: val, x: currentX, y: y});
-			return _Utils_Tuple2(
-				$elm$core$Maybe$Just(updatedNode),
-				rightSubtreeWidth);
-		}
-	});
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
-var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
-var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
-var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
-var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
-var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
-var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
-var $author$project$Trees$TreeVisualization$lines = function (tree) {
-	var node = tree.a;
-	var parentToChild = function (childNode) {
-		return A2(
-			$elm$svg$Svg$line,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x1(
-					$elm$core$String$fromFloat(node.x)),
-					$elm$svg$Svg$Attributes$y1(
-					$elm$core$String$fromFloat(node.y)),
-					$elm$svg$Svg$Attributes$x2(
-					$elm$core$String$fromFloat(childNode.x)),
-					$elm$svg$Svg$Attributes$y2(
-					$elm$core$String$fromFloat(childNode.y)),
-					$elm$svg$Svg$Attributes$stroke('#808080'),
-					$elm$svg$Svg$Attributes$strokeWidth('2')
-				]),
-			_List_Nil);
-	};
-	var rightLines = function () {
-		var _v3 = node.right;
-		if (_v3.$ === 'Just') {
-			var childTree = _v3.a;
-			var childNode = childTree.a;
-			return A2(
-				$elm$core$List$cons,
-				parentToChild(childNode),
-				$author$project$Trees$TreeVisualization$lines(childTree));
-		} else {
-			return _List_Nil;
-		}
-	}();
-	var leftLines = function () {
-		var _v1 = node.left;
-		if (_v1.$ === 'Just') {
-			var childTree = _v1.a;
-			var childNode = childTree.a;
-			return A2(
-				$elm$core$List$cons,
-				parentToChild(childNode),
-				$author$project$Trees$TreeVisualization$lines(childTree));
-		} else {
-			return _List_Nil;
-		}
-	}();
-	return _Utils_ap(leftLines, rightLines);
-};
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
-var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
-var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
-var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
-var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
-var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
-var $author$project$Trees$TreeVisualization$nodes = F3(
-	function (tree, maybeActive, maybeSwapIndex) {
-		var node = tree.a;
-		var rightNodes = function () {
-			var _v5 = node.right;
-			if (_v5.$ === 'Just') {
-				var r = _v5.a;
-				return A3($author$project$Trees$TreeVisualization$nodes, r, maybeActive, maybeSwapIndex);
-			} else {
-				return _List_Nil;
-			}
-		}();
-		var leftNodes = function () {
-			var _v4 = node.left;
-			if (_v4.$ === 'Just') {
-				var l = _v4.a;
-				return A3($author$project$Trees$TreeVisualization$nodes, l, maybeActive, maybeSwapIndex);
-			} else {
-				return _List_Nil;
-			}
-		}();
-		var label = A2(
-			$elm$svg$Svg$text_,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x(
-					$elm$core$String$fromFloat(node.x)),
-					$elm$svg$Svg$Attributes$y(
-					$elm$core$String$fromFloat(node.y + 5)),
-					$elm$svg$Svg$Attributes$fill('white'),
-					$elm$svg$Svg$Attributes$fontSize('14'),
-					$elm$svg$Svg$Attributes$textAnchor('middle')
-				]),
-			_List_fromArray(
-				[
-					$elm$svg$Svg$text(
-					$elm$core$String$fromInt(node.val))
-				]));
-		var isSwapped = function () {
-			if (maybeSwapIndex.$ === 'Just') {
-				var _v3 = maybeSwapIndex.a;
-				var a = _v3.a;
-				var b = _v3.b;
-				return _Utils_eq(node.val, a) || _Utils_eq(node.val, b);
-			} else {
-				return false;
-			}
-		}();
-		var isActive = function () {
-			if (maybeActive.$ === 'Just') {
-				var x = maybeActive.a;
-				return _Utils_eq(x, node.val);
-			} else {
-				return false;
-			}
-		}();
-		var circleColor = (isActive || isSwapped) ? '#FF5722' : '#64B5F6';
-		var myCircle = A2(
-			$elm$svg$Svg$circle,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$cx(
-					$elm$core$String$fromFloat(node.x)),
-					$elm$svg$Svg$Attributes$cy(
-					$elm$core$String$fromFloat(node.y)),
-					$elm$svg$Svg$Attributes$r('15'),
-					$elm$svg$Svg$Attributes$fill(circleColor),
-					$elm$svg$Svg$Attributes$style('transition: fill 0.5s ease')
-				]),
-			_List_Nil);
-		return _Utils_ap(
-			_List_fromArray(
-				[myCircle, label]),
-			_Utils_ap(leftNodes, rightNodes));
-	});
-var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
-	function (xs, maybeIdx) {
-		if (maybeIdx.$ === 'Just') {
-			var idx = maybeIdx.a;
-			var visited = A2($elm$core$List$take, idx, xs);
-			var visitedStr = '[' + (A2(
-				$elm$core$String$join,
-				', ',
-				A2($elm$core$List$map, $elm$core$String$fromInt, visited)) + ']');
-			return visitedStr;
-		} else {
-			return 'No step';
-		}
-	});
-var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
-var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
-var $author$project$Trees$TreeVisualization$view = F5(
-	function (tree, maybeCurrentIndex, maybeSwapIndex, traversalResult, running) {
-		var totalNodes = $author$project$Trees$TreeVisualization$countNodes(tree);
-		var maybeActiveVal = A2($author$project$Trees$TreeVisualization$currentIndexNode, traversalResult, maybeCurrentIndex);
-		var _v0 = A5($author$project$Trees$TreeVisualization$layoutHelper, tree, 500, 25, 40, 75);
-		var maybePositionedRoot = _v0.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('tree-page')
-				]),
-			_List_fromArray(
-				[
-					function () {
-					if (maybePositionedRoot.$ === 'Nothing') {
-						return A2(
-							$elm$html$Html$div,
-							_List_Nil,
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Empty Tree')
-								]));
-					} else {
-						var positionedRoot = maybePositionedRoot.a;
-						return A2(
-							$elm$svg$Svg$svg,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$width('1000'),
-									$elm$svg$Svg$Attributes$height('375'),
-									$elm$svg$Svg$Attributes$style('transition: fill 0.6s ease')
-								]),
-							_Utils_ap(
-								$author$project$Trees$TreeVisualization$lines(positionedRoot),
-								A3($author$project$Trees$TreeVisualization$nodes, positionedRoot, maybeActiveVal, maybeSwapIndex)));
-					}
-				}(),
-					A2(
-					$elm$html$Html$div,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							'Traversal so far: ' + A2($author$project$Trees$TreeVisualization$renderHighlighted, traversalResult, maybeCurrentIndex))
-						]))
-				]));
-	});
 var $author$project$Trees$TreeTraversal$view = function (model) {
 	return A2(
 		$elm$html$Html$div,

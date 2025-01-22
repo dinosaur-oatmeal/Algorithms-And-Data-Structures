@@ -24,14 +24,20 @@ type HeapType
     = MinHeap
     | MaxHeap
 
+-- Tree and swapped indices in a given step
+type alias HeapifySteps =
+    { tree : Tree
+    , swappedIndices : Maybe (Int, Int)
+    }
+
 -- MODEL
 type alias Model =
     -- Root node in tree structure
     { tree : Tree
     -- Type of heap being looked at
     , heapType : HeapType
-    -- List of trees generated during heapify (needed for step)
-    , heapifySteps : List Tree
+    -- List of trees and swapped indices generated during heapify (needed for step)
+    , heapifySteps : List HeapifySteps
     -- Index of list we're at (needed for step)
     , index : Int
     -- Algorithm running or not (needed for Controls.elm)
@@ -98,32 +104,35 @@ update msg model =
         UpdateNewValue val ->
             ( { model | newValue = val }, Cmd.none )
 
-        -- Add a node to the heap (add at end)
         AddNode ->
             case String.toInt model.newValue of
                 Just num ->
                     let
-                        -- Turn tree into an array
-                        arrayBefore = treeToLevelArray model.tree
+                        -- Convert tree to array
+                        arrayBefore =
+                            treeToLevelArray model.tree
+
+                        -- Only insert if not at capacity
+                        canInsert =
+                            List.length arrayBefore < 31
                     in
-                    if List.length arrayBefore >= 31 then
-                        -- No more than 31 nodes (5 layers)
-                            -- Due to svg view restrictions
+                    -- Don't update model if at capacity
+                    if not canInsert then
                         ( model, Cmd.none )
                     else
                         let
-                            -- Append new value to end of array
+                            -- Append new value at end of array
                             arrayWithNew = arrayBefore ++ [ num ]
-                            arrayStates = buildHeapSteps arrayWithNew model.heapType
-                            -- Convert intermediate arrays back into a tree to be visualized
-                            treeStates = List.map levelArrayToTree arrayStates
+
+                            -- Build entire list of (tree, maybeSwappedValues) after insertion
+                            steps = buildHeapSteps arrayWithNew model.heapType
                         in
                         ( { model
-                            | heapifySteps = treeStates
+                            | heapifySteps = steps
                             , index = 0
                             , running = False
                             , newValue = ""
-                          }
+                        }
                         , Cmd.none
                         )
 
@@ -134,30 +143,25 @@ update msg model =
         -- Delete root node in heap
         DeleteRoot ->
             let
-                -- Convert tree into an array
-                arrayBefore = treeToLevelArray model.tree
+                -- Convert tree to array
+                arrayBefore =
+                    treeToLevelArray model.tree
             in
             case arrayBefore of
                 -- Don't delete root if only one node in tree
                 [ int ] ->
                     ( model, Cmd.none )
 
-
-                -- Delete root (more than 1 node)
                 _ ->
                     let
-
-                       -- Find all states used to delete root in tree 
-                        allStates = deleteRoot arrayBefore model.heapType
-
-                        -- Convert arrays into trees
-                        treeSteps = List.map levelArrayToTree allStates
+                        -- Compute steps and swapped values to delete root
+                        steps = deleteRoot arrayBefore model.heapType
                     in
                     ( { model
-                        | heapifySteps = treeSteps
+                        | heapifySteps = steps
                         , index = 0
                         , running = False
-                      }
+                    }
                     , Cmd.none
                     )
 
@@ -181,7 +185,7 @@ update msg model =
                         case List.reverse model.heapifySteps of
                             -- Last snapshot of heap
                             last :: _ ->
-                                last
+                                last.tree
 
                             -- Empty tree (never used)
                             _ ->
@@ -192,7 +196,7 @@ update msg model =
                     | index = newIndex - 1
                     , running = False
                     , tree = finalTree
-                  }
+                }
                 , Cmd.none
                 )
 
@@ -216,7 +220,7 @@ update msg model =
                         case List.reverse model.heapifySteps of
                             -- Last snapshot of heap
                             last :: _ ->
-                                last
+                                last.tree
 
                             -- Empty tree (never used)
                             _ ->
@@ -227,7 +231,7 @@ update msg model =
                     | index = newIndex - 1
                     , running = False
                     , tree = finalTree
-                  }
+                }
                 , Cmd.none
                 )
 
@@ -255,8 +259,14 @@ update msg model =
                 -- Final array from heapify steps
                 finalArr =
                     case List.reverse states of
-                        a :: _ -> a
-                        _ -> arr
+                        -- Last snapshot of heap
+                        lastStep :: _ ->
+                            -- Convert final tree to array
+                            treeToLevelArray lastStep.tree
+
+                        -- Empty states, fallback to original array
+                        _ ->
+                            arr
 
                 -- Convert final array into a tree
                 finalTree = levelArrayToTree finalArr
@@ -267,7 +277,7 @@ update msg model =
                 -- Reset heapifySteps for user input
                 , heapifySteps = []
                 , index = 0
-              }
+            }
             , Cmd.none
             )
 
@@ -290,11 +300,14 @@ view model =
     let
         -- Current tree in heapifySteps list to be shown (index stores which one to show)
         currentTree =
-            case List.drop model.index model.heapifySteps of
-                step :: _ ->
-                    step
-                _ ->
-                    model.tree
+            -- Don't update model or highlights if list is empty
+            if List.isEmpty model.heapifySteps then
+                { tree = model.tree, swappedIndices = Nothing}
+            else
+                -- Take first item in list if not empty
+                List.drop model.index model.heapifySteps
+                    |> List.head
+                    |> Maybe.withDefault { tree = model.tree, swappedIndices = Nothing}
     in
     div [ class "sort-page" ]
         [ -- Title
@@ -341,7 +354,20 @@ view model =
 
         -- Current visualization
             -- Keep array empty (will be implemented later)
-        -- , Visualization.view currentTree model.index [] model.running
+        , let
+            -- Curred state of heap in list
+            currentStep =
+                case List.drop model.index model.heapifySteps of
+                    step :: _ ->
+                        step
+
+                    -- Default case (never used)
+                    _ ->
+                        { tree = model.tree, swappedIndices = Nothing }
+        in
+        -- Call Visualization.elm to render heap (tree)
+        Visualization.view currentStep.tree Nothing currentStep.swappedIndices [] model.running
+
 
         -- Algorithm step buttons
         , Controls.view model.running convertMsg
@@ -477,66 +503,54 @@ buildSubtree arr index =
 
 -- Build heap and tracks states to do so
     -- Takes an array and type of heap to build and returns list of states
-buildHeapSteps : List Int -> HeapType -> List (List Int)
+buildHeapSteps : List Int -> HeapType -> List HeapifySteps
 buildHeapSteps arr heapType =
     let
         length = List.length arr
 
         -- All indices that aren't leaves (start at bottom and go up)
         indices = List.reverse (List.range 0 ((length // 2) - 1))
-    in
-    case length of
-        -- Return empty array for no array values (never used)
-        0 ->
-            [ [] ]
 
-        -- 1 or more values in array
-        _ ->
+        -- initial step with no swaps
+        initialStep : HeapifySteps
+        initialStep =
+            { tree = levelArrayToTree arr
+            , swappedIndices = Nothing
+            }
+    
+        -- Helper function to process each index and accumulate steps
+        processIndex : Int -> (List Int, List HeapifySteps) -> (List Int, List HeapifySteps)
+        processIndex index (currentArr, stepsSoFar) =
             let
-                -- Initial array is first state
-                initial = [ arr ]
+                -- Apply heapify to the current array at the given index
+                newStates = heapifySteps currentArr index length heapType
+
+                -- Get updated array from the last step
+                updatedArr =
+                    case List.reverse newStates of
+                        -- Last step in list
+                        step :: _ ->
+                            treeToLevelArray step.tree
+
+                        -- Default
+                        _ ->
+                            currentArr
             in
-            List.foldl
-                -- Take current index and list of states so far
-                (\index statesSoFar ->
-                    let
-                        -- Grab last state in list
-                        currentArray =
-                            case List.head (List.reverse statesSoFar) of
-                                Just array -> array
-
-                                -- Default to empty
-                                _ -> []
-
-                        -- heapify currentArray at index
-                            -- Returns a list of states
-                        newStates =
-                            heapifySteps currentArray index length heapType
-
-                        finalArray =
-                            if List.isEmpty newStates then
-                                -- No heapify swaps, so don't update
-                                currentArray
-                            else
-                                -- Reverse list to walk from last state to first state
-                                List.head (List.reverse newStates)
-                                    -- Default to showing currentArray because Maybe (List Int)
-                                    |> Maybe.withDefault currentArray
-                    in
-                    statesSoFar
-                        -- Append newStates
-                        ++ newStates
-
-                        -- Append finalArray if it's different from previous one
-                            -- If the same, append an empty array
-                        ++ (if finalArray /= currentArray then [ finalArray ] else [])
-                )
-                initial
-                indices
+                ( updatedArr, stepsSoFar ++ newStates )
+    in
+    -- Don't update if no indices
+    if length == 0 then
+        []
+    else
+        let
+            -- Fold over the indices, starting with original array and initial step
+            (_, steps) = List.foldl processIndex (arr, [ initialStep ]) indices
+        in
+        steps
 
 -- Get states at current index in heap
     -- Array, index, length, type of heap
-heapifySteps : List Int -> Int -> Int -> HeapType -> List (List Int)
+heapifySteps : List Int -> Int -> Int -> HeapType -> List HeapifySteps
 heapifySteps arr index size heapType =
     let
         -- Calculate indices of children nodes
@@ -600,13 +614,24 @@ heapifySteps arr index size heapType =
         -- Check if swap is necessary
         if target2 /= index then
             let
-                swapped = swapIndices arr index target2
-                newState = swapped
+                -- Get values for highlighting
+                oldValue = get arr index
+                newValue = get arr target2
+
+                swappedArray = swapIndices arr index target2
+
                 subsequentStates =
                     -- Recursively call heapifySteps for current index
-                    heapifySteps newState target2 size heapType
+                    heapifySteps swappedArray target2 size heapType
+
+                -- Step for immediate swap
+                currentStep : HeapifySteps
+                currentStep =
+                    { tree = levelArrayToTree swappedArray
+                    , swappedIndices = Just (oldValue, newValue)
+                    }
             in
-            newState :: subsequentStates
+            currentStep :: subsequentStates
         -- Return empty array if heap property violated (should never happen)
         else
             []
@@ -643,24 +668,45 @@ swapIndices arr indexOne indexTwo =
 
 -- Deletes root in heap and replaces value with last index value
     -- Takes array to have root removed from, type of heap, and returns list of arrays
-deleteRoot : List Int -> HeapType -> List (List Int)
+deleteRoot : List Int -> HeapType -> List HeapifySteps
 deleteRoot arr heapType =
-    case List.length arr of
-        -- Empty array, so return empty array (never used)
-        0 ->
-            [ [] ]
+    let
+        n = List.length arr
+    in
+    case n of
 
-        -- More than 1 element in array
+        -- Don't remove final node in heap
+        1 ->
+            []
+
         _ ->
             let
-                -- Find last index in array
-                lastIndex = List.length arr - 1
-                -- Swap last index and root
-                swapped = swapIndices arr 0 lastIndex
-                -- Delete last index (value that was stored in root)
-                removed = List.take lastIndex swapped
+                lastIndex = n - 1
+                rootVal   = List.head arr |> Maybe.withDefault -1
+                lastVal   = List.head (List.drop lastIndex arr) |> Maybe.withDefault -1
 
-                -- Show the array right after swapping root last and pass to be heapified
-                siftSteps = heapifySteps removed 0 (List.length removed) heapType
+                -- Swap root value and last value
+                swapped   = swapIndices arr 0 lastIndex
+
+                -- Remove last value from array
+                removed   = List.take lastIndex swapped
+
+                -- Reheapify steps after root altered
+                reheapifySteps = heapifySteps removed 0 (List.length removed) heapType
+
+                -- Swap root with last value step
+                swapStep : HeapifySteps
+                swapStep =
+                    { tree = levelArrayToTree swapped
+                    , swappedIndices = Just (rootVal, lastVal)
+                    }
+
+                -- Deleting last index step
+                removeStep : HeapifySteps
+                removeStep =
+                    { tree = levelArrayToTree removed
+                    , swappedIndices = Nothing
+                    }
             in
-            swapped :: removed :: siftSteps
+            -- Combine steps and append reheapify ones
+            swapStep :: removeStep :: reheapifySteps
