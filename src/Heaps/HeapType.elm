@@ -341,7 +341,7 @@ view model =
 
         -- Current visualization
             -- Keep array empty (will be implemented later)
-        , Visualization.view currentTree model.index [] model.running
+        -- , Visualization.view currentTree model.index [] model.running
 
         -- Algorithm step buttons
         , Controls.view model.running convertMsg

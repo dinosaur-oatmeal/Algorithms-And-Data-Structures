@@ -34,7 +34,7 @@ type alias Model =
     -- Result of traversal from tree
     , traversalResult : List Int
     -- Index traversal is pointing to
-    , index : Int
+    , index : Maybe Int
     -- Algorithm running or not (needed for Controls.elm)
     , running : Bool
     }
@@ -68,7 +68,7 @@ initModel =
     -- No result from traversal
     , traversalResult = []
     -- Start at first index (root)
-    , index = 0
+    , index = Just 0
     -- Running should be False
     , running = False
     }
@@ -86,7 +86,7 @@ update msg model =
             ( { model
                 | currentTraversal = traversalType
                 , traversalResult = newTraversal
-                , index = 0
+                , index = Just 0
               }
             , Cmd.none
             )
@@ -101,7 +101,7 @@ update msg model =
             ( { model
                 | tree = newTree
                 , traversalResult = newResult
-                , index = 0
+                , index = Just 0
               }
             , Cmd.none
             )
@@ -109,24 +109,54 @@ update msg model =
         -- One step of specific traversal
         TraversalStep ->
             let
-                newIndex = model.index + 1
+                -- Safely increment the index if it exists
+                newIndex =
+                    case model.index of
+                        Just i ->
+                            Just (i + 1)
+
+                        Nothing ->
+                            Nothing
+
                 totalSteps = List.length model.traversalResult
+                updatedModel =
+                    case newIndex of
+                        Just ni ->
+                            if ni < totalSteps then
+                                { model | index = Just ni }
+                            else
+                                { model | index = Just ni, running = False }
+
+                        Nothing ->
+                            model  -- No change if index is Nothing
             in
-            if newIndex < totalSteps then
-                ( { model | index = newIndex }, Cmd.none )
-            else
-                ( { model | index = newIndex, running = False }, Cmd.none )
+            ( updatedModel, Cmd.none )
         
         -- One step of traversal each second
         Tick _ ->
             let
-                newIndex = model.index + 1
+                -- Safely increment the index if it exists
+                newIndex =
+                    case model.index of
+                        Just i ->
+                            Just (i + 1)
+
+                        Nothing ->
+                            Nothing
+
                 totalSteps = List.length model.traversalResult
+                updatedModel =
+                    case newIndex of
+                        Just ni ->
+                            if ni < totalSteps then
+                                { model | index = Just ni }
+                            else
+                                { model | index = Just ni, running = False }
+
+                        Nothing ->
+                            model  -- No change if index is Nothing
             in
-            if newIndex < totalSteps then
-                ( { model | index = newIndex }, Cmd.none )
-            else
-                ( { model | index = newIndex, running = False }, Cmd.none )
+            ( updatedModel, Cmd.none )
 
         -- Run button
         StartTraversal ->
@@ -144,7 +174,7 @@ update msg model =
             in
             ( { model
                 | running = False
-                , index = 0
+                , index = Just 0
                 , traversalResult = []
               }
             , cmd
@@ -159,7 +189,7 @@ update msg model =
             ( { model
                 | tree = newTree
                 , traversalResult = newResult
-                , index = 0
+                , index = Just 0
               }
             , Cmd.none
             )
@@ -214,6 +244,7 @@ view model =
         , Visualization.view
             model.tree
             model.index
+            Nothing
             model.traversalResult
             model.running
 
@@ -222,7 +253,12 @@ view model =
 
           -- Step Counter
         , div [ class "indices" ]
-              [ text ("Current Step Number: " ++ String.fromInt model.index)
+              [ case model.index of
+                    Just idx ->
+                        text ("Current Step Number: " ++ String.fromInt idx)
+
+                    Nothing ->
+                        text "Current Step Number: 0"
               ]
 
           -- Breakdown

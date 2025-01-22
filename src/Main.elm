@@ -667,7 +667,7 @@ view model =
                 Home.Dark ->
                     "dark-theme"
     in
-    Browser.Document "Sorting Visualizer"
+    Browser.Document "Algorithms & Data Structures"
         [ div [ class ("main-container " ++ themeClass) ]
             -- Call viewHeader for algorithm dropdown
             [ viewHeader
