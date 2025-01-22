@@ -5,8 +5,8 @@ module Main exposing (main)
 -- Imports for website to work
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, div, text, label, select, option, node, button, ul, li)
-import Html.Attributes exposing (class, value, attribute, title)
+import Html exposing (Html, div, text, label, select, option, node, button, ul, li, a)
+import Html.Attributes exposing (class, value, attribute, title, href, target)
 import Html.Events exposing (onInput, onClick)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), s, top)
@@ -805,7 +805,17 @@ viewThemeToggle model =
 viewFooter : Html Msg
 viewFooter =
     div [ class "footer-left" ]
-        [ text "An educational platform built by Will Maberry" ]
+        [ text "An educational platform built by "
+        , a
+            -- Open GitHub profile in a new tab
+            [ href "https://github.com/dinosaur-oatmeal"
+            , target "_blank"
+            -- Keep text white and underlined
+            , class "underline"
+            ]
+            [ text "Will Maberry" ]
+        ]
+
 
 -- MAIN (handles application state in browser)
 main : Program () Model Msg

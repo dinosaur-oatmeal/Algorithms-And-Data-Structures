@@ -11561,6 +11561,14 @@ var $author$project$Trees$TreeTraversal$view = function (model) {
 					]))
 			]));
 };
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
 var $author$project$Main$viewFooter = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
@@ -11569,7 +11577,19 @@ var $author$project$Main$viewFooter = A2(
 		]),
 	_List_fromArray(
 		[
-			$elm$html$Html$text('An educational platform built by Will Maberry')
+			$elm$html$Html$text('An educational platform built by '),
+			A2(
+			$elm$html$Html$a,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$href('https://github.com/dinosaur-oatmeal'),
+					$elm$html$Html$Attributes$target('_blank'),
+					$elm$html$Html$Attributes$class('underline')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Will Maberry')
+				]))
 		]));
 var $author$project$Main$SelectAlgorithm = function (a) {
 	return {$: 'SelectAlgorithm', a: a};
