@@ -112,9 +112,10 @@ update msg model =
                         arrayBefore =
                             treeToLevelArray model.tree
 
-                        -- Only insert if not at capacity
+                        -- Only insert if not at capacity and don't allow duplicates
+                            -- No duplicates due to highlighting
                         canInsert =
-                            List.length arrayBefore < 31
+                            List.length arrayBefore < 31 && not (List.member num arrayBefore)
                     in
                     -- Don't update model if at capacity
                     if not canInsert then
@@ -333,24 +334,25 @@ view model =
                 [ text "MaxHeap" ]
             ]
 
-        -- User Input
-        , div [ class "insert-node" ]
+        , div [ class "insert-delete-container" ]
+        [ -- User Input
+          div [ class "insert-node" ]
             [ input
                 [ type_ "text"
-                , placeholder "Value to insert..."
+                , placeholder "Insert Value"
                 -- Update value in Model to reflect what's typed
                 , value model.newValue
                 , onInput UpdateNewValue
                 ]
                 []
-            -- Call AddNode when button clicked
             , button [ onClick AddNode ] [ text "Insert" ]
             ]
 
-        -- Delete
+          -- Delete
         , div [ class "delete-root" ]
             -- Call DeleteRoot when button clicked
             [ button [ onClick DeleteRoot ] [ text "Delete Root" ] ]
+        ]
 
         -- Current visualization
             -- Keep array empty (will be implemented later)
@@ -705,7 +707,8 @@ deleteRoot arr heapType =
                 removeStep : HeapifySteps
                 removeStep =
                     { tree = levelArrayToTree removed
-                    , swappedIndices = Nothing
+                    -- Only highlight root (lastVal in original array)
+                    , swappedIndices = Just (lastVal, lastVal)
                     }
             in
             -- Combine steps and append reheapify ones

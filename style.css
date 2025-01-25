@@ -323,7 +323,7 @@ body {
   width: 80%;
 }
 
-/* Traversal button ocntainer */
+/* Traversal button container */
 .traversal-controls {
   display: flex;
   justify-content: center;
@@ -347,9 +347,49 @@ body {
   background-color: #1769aa;
 }
 
-/* Change gradient for selected button */
 .traversal-button.selected {
   background: linear-gradient(180deg,   #FF5722, #FF8A65);
+}
+
+/* Typing, insert, and delete container */
+.insert-delete-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.insert-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Typing field */
+.insert-node input {
+  padding: 10px 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 80px;
+}
+
+.insert-node button,
+.delete-root button {
+  padding: 10px 20px;
+  background-color: #2196F3;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.insert-node button:hover,
+.delete-root button:hover {
+  background-color: #1769aa;
 }
     
 /* =========================================

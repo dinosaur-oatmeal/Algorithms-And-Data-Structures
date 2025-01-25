@@ -8076,7 +8076,8 @@ var $author$project$Heaps$HeapType$deleteRoot = F2(
 				$elm$core$List$length(removed),
 				heapType);
 			var removeStep = {
-				swappedIndices: $elm$core$Maybe$Nothing,
+				swappedIndices: $elm$core$Maybe$Just(
+					_Utils_Tuple2(lastVal, lastVal)),
 				tree: $author$project$Heaps$HeapType$levelArrayToTree(removed)
 			};
 			var swapStep = {
@@ -8089,6 +8090,36 @@ var $author$project$Heaps$HeapType$deleteRoot = F2(
 				swapStep,
 				A2($elm$core$List$cons, removeStep, reheapifySteps));
 		}
+	});
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
 	});
 var $author$project$Heaps$HeapType$TreeGenerated = function (a) {
 	return {$: 'TreeGenerated', a: a};
@@ -8123,7 +8154,7 @@ var $author$project$Heaps$HeapType$update = F2(
 				if (_v1.$ === 'Just') {
 					var num = _v1.a;
 					var arrayBefore = $author$project$Heaps$HeapType$treeToLevelArray(model.tree);
-					var canInsert = $elm$core$List$length(arrayBefore) < 31;
+					var canInsert = ($elm$core$List$length(arrayBefore) < 31) && (!A2($elm$core$List$member, num, arrayBefore));
 					if (!canInsert) {
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					} else {
@@ -9526,48 +9557,57 @@ var $author$project$Heaps$HeapType$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('insert-node')
+						$elm$html$Html$Attributes$class('insert-delete-container')
 					]),
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$input,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$type_('text'),
-								$elm$html$Html$Attributes$placeholder('Value to insert...'),
-								$elm$html$Html$Attributes$value(model.newValue),
-								$elm$html$Html$Events$onInput($author$project$Heaps$HeapType$UpdateNewValue)
+								$elm$html$Html$Attributes$class('insert-node')
 							]),
-						_List_Nil),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('text'),
+										$elm$html$Html$Attributes$placeholder('Insert Value'),
+										$elm$html$Html$Attributes$value(model.newValue),
+										$elm$html$Html$Events$onInput($author$project$Heaps$HeapType$UpdateNewValue)
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$Heaps$HeapType$AddNode)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Insert')
+									]))
+							])),
 						A2(
-						$elm$html$Html$button,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$Heaps$HeapType$AddNode)
+								$elm$html$Html$Attributes$class('delete-root')
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Insert')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('delete-root')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick($author$project$Heaps$HeapType$DeleteRoot)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Delete Root')
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$Heaps$HeapType$DeleteRoot)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Delete Root')
+									]))
 							]))
 					])),
 				function () {
