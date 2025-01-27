@@ -164,8 +164,12 @@ body {
   left: 30px;
 }
 
-.underline {
-  color: white;
+.dark-theme .underline {
+  color: #f8f9fa;
+}
+
+.light-theme .underline {
+  color: #495057;
 }
 
 /* =========================================
@@ -354,28 +358,49 @@ body {
 /* Typing, insert, and delete container */
 .insert-delete-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
+  width: 100%;
 }
 
-.insert-node {
+/* Row containing input and buttons */
+.insert-delete-row {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
 }
 
-/* Typing field */
-.insert-node input {
-  padding: 10px 5px;
-  border: 1px solid #ccc;
+/* Typing field (input) */
+.insert-delete-row input {
+  padding: 10px 15px;
+  border: none;
   border-radius: 5px;
-  font-size: 14px;
-  width: 80px;
+  font-size: 16px;
+  text-align: center;
+  background-color: #6c757d;
+  color: white;
+  width: 95px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.insert-node button,
-.delete-root button {
+.insert-delete-row input::placeholder {
+  color: #ced4da;
+  text-align: center;
+}
+
+/* Disclaimer below row */
+.disclaimer {
+  font-size: 0.8rem;
+  color: #adb5bd;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* Buttons container */
+.insert-delete-row button {
   padding: 10px 20px;
   background-color: #2196F3;
   border-radius: 5px;
@@ -387,8 +412,7 @@ body {
   cursor: pointer;
 }
 
-.insert-node button:hover,
-.delete-root button:hover {
+.insert-delete-row button:hover {
   background-color: #1769aa;
 }
     

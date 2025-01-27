@@ -9473,14 +9473,24 @@ var $author$project$Trees$TreeVisualization$view = F5(
 								A3($author$project$Trees$TreeVisualization$nodes, positionedRoot, maybeActiveVal, maybeSwapIndex)));
 					}
 				}(),
-					A2(
-					$elm$html$Html$div,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							'Traversal so far: ' + A2($author$project$Trees$TreeVisualization$renderHighlighted, traversalResult, maybeCurrentIndex))
-						]))
+					function () {
+					if (maybeCurrentIndex.$ === 'Just') {
+						var currentIndex = maybeCurrentIndex.a;
+						return A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text(
+									'Traversal so far: ' + A2(
+										$author$project$Trees$TreeVisualization$renderHighlighted,
+										traversalResult,
+										$elm$core$Maybe$Just(currentIndex)))
+								]));
+					} else {
+						return $elm$html$Html$text('');
+					}
+				}()
 				]));
 	});
 var $author$project$Heaps$HeapType$view = function (model) {
@@ -9565,20 +9575,10 @@ var $author$project$Heaps$HeapType$view = function (model) {
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('insert-node')
+								$elm$html$Html$Attributes$class('insert-delete-row')
 							]),
 						_List_fromArray(
 							[
-								A2(
-								$elm$html$Html$input,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$type_('text'),
-										$elm$html$Html$Attributes$placeholder('Insert Value'),
-										$elm$html$Html$Attributes$value(model.newValue),
-										$elm$html$Html$Events$onInput($author$project$Heaps$HeapType$UpdateNewValue)
-									]),
-								_List_Nil),
 								A2(
 								$elm$html$Html$button,
 								_List_fromArray(
@@ -9588,16 +9588,17 @@ var $author$project$Heaps$HeapType$view = function (model) {
 								_List_fromArray(
 									[
 										$elm$html$Html$text('Insert')
-									]))
-							])),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('delete-root')
-							]),
-						_List_fromArray(
-							[
+									])),
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('text'),
+										$elm$html$Html$Attributes$placeholder('Value To Add'),
+										$elm$html$Html$Attributes$value(model.newValue),
+										$elm$html$Html$Events$onInput($author$project$Heaps$HeapType$UpdateNewValue)
+									]),
+								_List_Nil),
 								A2(
 								$elm$html$Html$button,
 								_List_fromArray(
@@ -9606,8 +9607,18 @@ var $author$project$Heaps$HeapType$view = function (model) {
 									]),
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Delete Root')
+										$elm$html$Html$text('Delete')
 									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('disclaimer')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Duplicates are not allowed.')
 							]))
 					])),
 				function () {

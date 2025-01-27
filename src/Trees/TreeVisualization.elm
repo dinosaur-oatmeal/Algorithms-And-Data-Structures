@@ -71,9 +71,12 @@ view tree maybeCurrentIndex maybeSwapIndex traversalResult running =
                     -- Receive lists of SVG elements to render
                     (lines positionedRoot ++ nodes positionedRoot maybeActiveVal maybeSwapIndex)
 
-        -- Display traversal progress
-        , div []
-            [ text ("Traversal so far: " ++ renderHighlighted traversalResult maybeCurrentIndex) ]
+        -- Display traversal progress for tree traversal but not for heaps
+        , case maybeCurrentIndex of
+            Just currentIndex ->
+                div []
+                    [ text ("Traversal so far: " ++ renderHighlighted traversalResult (Just currentIndex)) ]
+            Nothing -> text ""
         ]
 
 -- Finds node to highlight

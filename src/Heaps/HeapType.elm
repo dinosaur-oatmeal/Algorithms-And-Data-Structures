@@ -335,24 +335,28 @@ view model =
             ]
 
         , div [ class "insert-delete-container" ]
-        [ -- User Input
-          div [ class "insert-node" ]
-            [ input
-                [ type_ "text"
-                , placeholder "Insert Value"
-                -- Update value in Model to reflect what's typed
-                , value model.newValue
-                , onInput UpdateNewValue
-                ]
-                []
-            , button [ onClick AddNode ] [ text "Insert" ]
-            ]
+            [ -- Row containing input and buttons
+            div [ class "insert-delete-row" ]
+                -- Insert Button
+                [ button [ onClick AddNode ] [ text "Insert" ]
+                
+                -- Input field
+                , input
+                    [ type_ "text"
+                    , placeholder "Value To Add"
+                    , value model.newValue
+                    , onInput UpdateNewValue
+                    ]
+                    []
 
-          -- Delete
-        , div [ class "delete-root" ]
-            -- Call DeleteRoot when button clicked
-            [ button [ onClick DeleteRoot ] [ text "Delete Root" ] ]
-        ]
+                -- Delete Root Button
+                , button [ onClick DeleteRoot ] [ text "Delete" ]
+                ]
+
+            -- Disclaimer text
+            , div [ class "disclaimer" ]
+                [ text "Duplicates are not allowed." ]
+            ]
 
         -- Current visualization
             -- Keep array empty (will be implemented later)
