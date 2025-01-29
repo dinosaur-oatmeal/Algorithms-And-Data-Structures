@@ -44,7 +44,10 @@ import SearchAlgorithms.BinarySearch as BinarySearch
 -- Tree Traversals page
 import Trees.TreeTraversal as TreeTraversal exposing (Msg(..))
 
+-- Min/Max Heaps page
 import Heaps.HeapType as HeapType exposing (Msg(..))
+
+import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
 
 -- Model (info stored during interactions)
 type alias Model =
@@ -57,6 +60,7 @@ type alias Model =
     , treeTraversalModel : TreeTraversal.Model
     -- Call HeapType.elm model
     , heapTypeModel : HeapType.Model
+    , dijkstraModel : Dijkstra.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
@@ -76,6 +80,7 @@ type Route
     | BinarySearchRoute
     | TreeRoute
     | HeapRoute
+    | DijkstraRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -90,6 +95,7 @@ type Page
     | BinarySearch
     | TreeTraversal
     | HeapType
+    | Dijkstra
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -101,6 +107,7 @@ type Msg
     | TreeTraversalMsg TreeTraversal.Msg
     -- Update something on heap type page (type of heap/buttons)
     | HeapTypeMsg HeapType.Msg
+    | DijkstraMsg Dijkstra.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -131,6 +138,7 @@ routeParser =
         , Parser.map BinarySearchRoute (s "binary-search")
         , Parser.map TreeRoute (s "tree-traversal")
         , Parser.map HeapRoute (s "heap-type")
+        , Parser.map DijkstraRoute (s "dijkstra")
         ]
 
 -- Convert URL into a page
@@ -181,6 +189,9 @@ parseUrl url =
         Just HeapRoute ->
             HeapType
 
+        Just DijkstraRoute ->
+            Dijkstra
+
         -- Default to Home
         _ ->
             Home
@@ -195,6 +206,7 @@ init _ url key =
             , homeModel = Home.initModel
             , treeTraversalModel = TreeTraversal.initModel
             , heapTypeModel = HeapType.initModel
+            , dijkstraModel = Dijkstra.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
             }
@@ -244,6 +256,15 @@ update msg model =
             in
             ( { model | heapTypeModel = newHeapTypeModel }
             , Cmd.map HeapTypeMsg heapCmd
+            )
+
+        DijkstraMsg dijkstraMsg ->
+            let
+                ( newDijkstraModel, dijkstraCmd ) =
+                    Dijkstra.update dijkstraMsg model.dijkstraModel
+            in
+            ( { model | dijkstraModel = newDijkstraModel }
+            , Cmd.map DijkstraMsg dijkstraCmd
             )
 
         -- Algorithm selection from dropdown
@@ -340,6 +361,15 @@ update msg model =
                     }
                     -- Generate a new tree when selected
                     , Random.generate GotRandomTree randomTreeGenerator
+                    )
+
+                "Dijkstra" ->
+                    ( { model | currentPage = Dijkstra
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    -- Generate a new tree when selected
+                    , Cmd.none
                     )
 
                 -- Default to home for algorithms not yet added
@@ -711,6 +741,9 @@ view model =
 
                     HeapType ->
                         Html.map HeapTypeMsg (HeapType.view model.heapTypeModel)
+                    
+                    Dijkstra ->
+                        Html.map DijkstraMsg (Dijkstra.view model.dijkstraModel)
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -778,6 +811,20 @@ viewHeader =
                         [ button [ onClick (SelectAlgorithm "Heap Type" ) ] [ text "Heaps" ] ]
                     ]
                 ]
+
+
+            -- DIJKSTRA WIP
+
+            {-
+            -- Graphs
+            , div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Graphs" ]
+                , ul [ class "dropdown-content" ]
+                    [ li []
+                        [ button [ onClick (SelectAlgorithm "Dijkstra") ] [ text "Dijkstra's" ] ]
+                    ]
+                ]
+            -}
             ]
         ]
 

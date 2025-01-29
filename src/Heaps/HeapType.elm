@@ -465,7 +465,7 @@ levelOrderHelper queue accumulatorList =
             case tree of
                 -- Tree is valid, so enqueue children to be processed
                     -- Then, add value in node to accumulator list
-                Node val left right ->
+                TreeNode val left right ->
                     levelOrderHelper (rest ++ [ left, right ]) (accumulatorList ++ [ val ])
 
                 -- Tree is empty so continue with the rest of the queue
@@ -493,7 +493,7 @@ buildSubtree arr index =
             -- Valid value
             Just actualVal ->
                 -- Create a Node structure
-                Node actualVal
+                TreeNode actualVal
                     -- Recursively call buildSubtree with child nodes
                         -- 2 * index + 1 and 2 * index + 2 correctly points to child nodes in array
                     (buildSubtree arr (2 * index + 1))

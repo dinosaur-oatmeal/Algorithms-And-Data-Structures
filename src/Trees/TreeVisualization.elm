@@ -103,7 +103,7 @@ countNodes node =
         Empty -> 0
 
         -- Add 1 and recursively call countNodes for children
-        Node _ left right -> 1 + countNodes left + countNodes right
+        TreeNode _ left right -> 1 + countNodes left + countNodes right
 
 -- Renders the highlighted node
 renderHighlighted : List Int -> Maybe Int -> String
@@ -131,7 +131,7 @@ layoutHelper tree x dx y dy =
             ( Nothing, x )
 
         -- Process the node to find coordinates
-        Node val left right ->
+        TreeNode val left right ->
             let
                 -- Layout left subtree
                 ( maybeLeftTree, leftSubtreeWidth ) =

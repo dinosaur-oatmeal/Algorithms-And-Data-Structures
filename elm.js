@@ -5316,6 +5316,11 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 			])
 	};
 };
+var $author$project$Graphs$Dijkstra$initModel = {
+	currentIndex: 0,
+	graph: {edges: _List_Nil, nodes: _List_Nil},
+	running: false
+};
 var $author$project$MainComponents$Structs$Empty = {$: 'Empty'};
 var $author$project$Heaps$HeapType$MinHeap = {$: 'MinHeap'};
 var $author$project$Heaps$HeapType$initModel = {heapType: $author$project$Heaps$HeapType$MinHeap, heapifySteps: _List_Nil, index: 0, newValue: '', running: false, tree: $author$project$MainComponents$Structs$Empty};
@@ -5343,6 +5348,7 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$BinarySearch = {$: 'BinarySearch'};
 var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
+var $author$project$Main$Dijkstra = {$: 'Dijkstra'};
 var $author$project$Main$HeapType = {$: 'HeapType'};
 var $author$project$Main$InsertionSort = {$: 'InsertionSort'};
 var $author$project$Main$LinearSearch = {$: 'LinearSearch'};
@@ -5987,6 +5993,7 @@ var $elm$url$Url$Parser$parse = F2(
 	});
 var $author$project$Main$BinarySearchRoute = {$: 'BinarySearchRoute'};
 var $author$project$Main$BubbleSortRoute = {$: 'BubbleSortRoute'};
+var $author$project$Main$DijkstraRoute = {$: 'DijkstraRoute'};
 var $author$project$Main$HeapRoute = {$: 'HeapRoute'};
 var $author$project$Main$HomeRoute = {$: 'HomeRoute'};
 var $author$project$Main$InsertionSortRoute = {$: 'InsertionSortRoute'};
@@ -6133,7 +6140,11 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$HeapRoute,
-			$elm$url$Url$Parser$s('heap-type'))
+			$elm$url$Url$Parser$s('heap-type')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$DijkstraRoute,
+			$elm$url$Url$Parser$s('dijkstra'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6169,9 +6180,12 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'TreeRoute':
 				var _v10 = _v0.a;
 				return $author$project$Main$TreeTraversal;
-			default:
+			case 'HeapRoute':
 				var _v11 = _v0.a;
 				return $author$project$Main$HeapType;
+			default:
+				var _v12 = _v0.a;
+				return $author$project$Main$Dijkstra;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6181,6 +6195,7 @@ var $author$project$Main$init = F3(
 	function (_v0, url, key) {
 		var model = {
 			currentPage: $author$project$Main$parseUrl(url),
+			dijkstraModel: $author$project$Graphs$Dijkstra$initModel,
 			heapTypeModel: $author$project$Heaps$HeapType$initModel,
 			homeModel: $author$project$MainComponents$Home$initModel,
 			key: key,
@@ -6531,6 +6546,9 @@ var $author$project$Main$subscriptions = function (model) {
 		default:
 			return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
+};
+var $author$project$Main$DijkstraMsg = function (a) {
+	return {$: 'DijkstraMsg', a: a};
 };
 var $author$project$Main$GotOrderedArray = function (a) {
 	return {$: 'GotOrderedArray', a: a};
@@ -7597,9 +7615,9 @@ var $elm$random$Random$andThen = F2(
 				return genB(newSeed);
 			});
 	});
-var $author$project$MainComponents$Structs$Node = F3(
+var $author$project$MainComponents$Structs$TreeNode = F3(
 	function (a, b, c) {
-		return {$: 'Node', a: a, b: b, c: c};
+		return {$: 'TreeNode', a: a, b: b, c: c};
 	});
 var $author$project$MainComponents$Structs$buildTree = F3(
 	function (values, index, depth) {
@@ -7619,7 +7637,7 @@ var $author$project$MainComponents$Structs$buildTree = F3(
 			}();
 			var rightSubtree = A3($author$project$MainComponents$Structs$buildTree, values, (2 * index) + 2, depth + 1);
 			var leftSubtree = A3($author$project$MainComponents$Structs$buildTree, values, (2 * index) + 1, depth + 1);
-			return A3($author$project$MainComponents$Structs$Node, val, leftSubtree, rightSubtree);
+			return A3($author$project$MainComponents$Structs$TreeNode, val, leftSubtree, rightSubtree);
 		}
 	});
 var $elm$core$List$takeReverse = F3(
@@ -7861,6 +7879,299 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 		}
 	}
 };
+var $author$project$Graphs$Dijkstra$GotGraph = function (a) {
+	return {$: 'GotGraph', a: a};
+};
+var $author$project$MainComponents$Structs$allUniquePairs = function (ids) {
+	if (ids.b) {
+		var x = ids.a;
+		var rest = ids.b;
+		return _Utils_ap(
+			A2(
+				$elm$core$List$map,
+				function (r) {
+					return _Utils_Tuple2(x, r);
+				},
+				rest),
+			$author$project$MainComponents$Structs$allUniquePairs(rest));
+	} else {
+		return _List_Nil;
+	}
+};
+var $author$project$MainComponents$Structs$unionCheck = F3(
+	function (union, firstInt, secondInt) {
+		return A3($elm$core$Dict$insert, secondInt, firstInt, union);
+	});
+var $author$project$MainComponents$Structs$unionFind = F2(
+	function (union, node) {
+		unionFind:
+		while (true) {
+			var _v0 = A2($elm$core$Dict$get, node, union);
+			if (_v0.$ === 'Just') {
+				var parent = _v0.a;
+				if (_Utils_eq(parent, node)) {
+					return node;
+				} else {
+					var $temp$union = union,
+						$temp$node = parent;
+					union = $temp$union;
+					node = $temp$node;
+					continue unionFind;
+				}
+			} else {
+				return node;
+			}
+		}
+	});
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $author$project$MainComponents$Structs$unionInit = function (size) {
+	return $elm$core$Dict$fromList(
+		A2(
+			$elm$core$List$map,
+			function (value) {
+				return _Utils_Tuple2(value, value);
+			},
+			A2($elm$core$List$range, 1, size)));
+};
+var $author$project$MainComponents$Structs$kruskalMST = F2(
+	function (n, edges) {
+		var step = F2(
+			function (edge, _v1) {
+				var union = _v1.a;
+				var included = _v1.b;
+				var discarded = _v1.c;
+				var toRoot = A2($author$project$MainComponents$Structs$unionFind, union, edge.to);
+				var fromRoot = A2($author$project$MainComponents$Structs$unionFind, union, edge.from);
+				if (_Utils_eq(fromRoot, toRoot)) {
+					return _Utils_Tuple3(
+						union,
+						included,
+						A2($elm$core$List$cons, edge, discarded));
+				} else {
+					var updatedUnion = A3($author$project$MainComponents$Structs$unionCheck, union, fromRoot, toRoot);
+					return _Utils_Tuple3(
+						updatedUnion,
+						A2($elm$core$List$cons, edge, included),
+						discarded);
+				}
+			});
+		var sortedEdges = A2(
+			$elm$core$List$sortBy,
+			function ($) {
+				return $.weight;
+			},
+			edges);
+		var initialUnion = $author$project$MainComponents$Structs$unionInit(n);
+		var _v0 = A3(
+			$elm$core$List$foldl,
+			step,
+			_Utils_Tuple3(initialUnion, _List_Nil, _List_Nil),
+			sortedEdges);
+		var mst = _v0.b;
+		var leftover = _v0.c;
+		return _Utils_Tuple2(
+			$elm$core$List$reverse(mst),
+			leftover);
+	});
+var $elm$random$Random$constant = function (value) {
+	return $elm$random$Random$Generator(
+		function (seed) {
+			return _Utils_Tuple2(value, seed);
+		});
+};
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
+		} else {
+			return xs;
+		}
+	});
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
+	});
+var $elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
+};
+var $elm$random$Random$float = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var seed1 = $elm$random$Random$next(seed0);
+				var range = $elm$core$Basics$abs(b - a);
+				var n1 = $elm$random$Random$peel(seed1);
+				var n0 = $elm$random$Random$peel(seed0);
+				var lo = (134217727 & n1) * 1.0;
+				var hi = (67108863 & n0) * 1.0;
+				var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
+				var scaled = (val * range) + a;
+				return _Utils_Tuple2(
+					scaled,
+					$elm$random$Random$next(seed1));
+			});
+	});
+var $elm$random$Random$listHelp = F4(
+	function (revList, n, gen, seed) {
+		listHelp:
+		while (true) {
+			if (n < 1) {
+				return _Utils_Tuple2(revList, seed);
+			} else {
+				var _v0 = gen(seed);
+				var value = _v0.a;
+				var newSeed = _v0.b;
+				var $temp$revList = A2($elm$core$List$cons, value, revList),
+					$temp$n = n - 1,
+					$temp$gen = gen,
+					$temp$seed = newSeed;
+				revList = $temp$revList;
+				n = $temp$n;
+				gen = $temp$gen;
+				seed = $temp$seed;
+				continue listHelp;
+			}
+		}
+	});
+var $elm$random$Random$list = F2(
+	function (n, _v0) {
+		var gen = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed) {
+				return A4($elm$random$Random$listHelp, _List_Nil, n, gen, seed);
+			});
+	});
+var $elm$random$Random$map2 = F3(
+	function (func, _v0, _v1) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v2 = genA(seed0);
+				var a = _v2.a;
+				var seed1 = _v2.b;
+				var _v3 = genB(seed1);
+				var b = _v3.a;
+				var seed2 = _v3.b;
+				return _Utils_Tuple2(
+					A2(func, a, b),
+					seed2);
+			});
+	});
+var $author$project$MainComponents$Structs$randomSubset = F2(
+	function (probability, subset) {
+		var boolListGen = A2(
+			$elm$random$Random$list,
+			$elm$core$List$length(subset),
+			A2(
+				$elm$random$Random$map,
+				function (x) {
+					return _Utils_cmp(x, probability) < 0;
+				},
+				A2($elm$random$Random$float, 0, 1)));
+		return A3(
+			$elm$random$Random$map2,
+			F2(
+				function (bools, elements) {
+					return A2(
+						$elm$core$List$filterMap,
+						$elm$core$Basics$identity,
+						A3(
+							$elm$core$List$map2,
+							F2(
+								function (b, e) {
+									return b ? $elm$core$Maybe$Just(e) : $elm$core$Maybe$Nothing;
+								}),
+							bools,
+							elements));
+				}),
+			boolListGen,
+			$elm$random$Random$constant(subset));
+	});
+var $elm_community$random_extra$Random$Extra$sequence = A2(
+	$elm$core$List$foldr,
+	$elm$random$Random$map2($elm$core$List$cons),
+	$elm$random$Random$constant(_List_Nil));
+var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
+	var sizeGenerator = A2($elm$random$Random$int, 9, 9);
+	return A2(
+		$elm$random$Random$andThen,
+		function (n) {
+			var nodes = A2(
+				$elm$core$List$map,
+				function (id) {
+					return {id: id};
+				},
+				A2($elm$core$List$range, 1, n));
+			var allPairs = $author$project$MainComponents$Structs$allUniquePairs(
+				A2($elm$core$List$range, 1, n));
+			var edgeGenerators = A2(
+				$elm$core$List$map,
+				function (_v1) {
+					var a = _v1.a;
+					var b = _v1.b;
+					return A2(
+						$elm$random$Random$map,
+						function (w) {
+							return {from: a, to: b, weight: w};
+						},
+						A2($elm$random$Random$int, 15, 99));
+				},
+				allPairs);
+			var allEdgesGenerator = $elm_community$random_extra$Random$Extra$sequence(edgeGenerators);
+			return A2(
+				$elm$random$Random$andThen,
+				function (allEdges) {
+					var _v0 = A2($author$project$MainComponents$Structs$kruskalMST, n, allEdges);
+					var mstEdges = _v0.a;
+					var leftover = _v0.b;
+					var extraEdgesGenerator = A2($author$project$MainComponents$Structs$randomSubset, 0.1, leftover);
+					return A2(
+						$elm$random$Random$map,
+						function (extraEdges) {
+							return {
+								edges: _Utils_ap(mstEdges, extraEdges),
+								nodes: nodes
+							};
+						},
+						extraEdgesGenerator);
+				},
+				allEdgesGenerator);
+		},
+		sizeGenerator);
+}();
+var $author$project$Graphs$Dijkstra$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'GenerateGraph') {
+			return _Utils_Tuple2(
+				model,
+				A2($elm$random$Random$generate, $author$project$Graphs$Dijkstra$GotGraph, $author$project$MainComponents$Structs$randomGraphGenerator));
+		} else {
+			var newGraph = msg.a;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{currentIndex: 0, graph: newGraph, running: false}),
+				$elm$core$Platform$Cmd$none);
+		}
+	});
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -7880,7 +8191,7 @@ var $author$project$Heaps$HeapType$buildSubtree = F2(
 			if (_v0.$ === 'Just') {
 				var actualVal = _v0.a;
 				return A3(
-					$author$project$MainComponents$Structs$Node,
+					$author$project$MainComponents$Structs$TreeNode,
 					actualVal,
 					A2($author$project$Heaps$HeapType$buildSubtree, arr, (2 * index) + 1),
 					A2($author$project$Heaps$HeapType$buildSubtree, arr, (2 * index) + 2));
@@ -7975,7 +8286,7 @@ var $author$project$Heaps$HeapType$levelOrderHelper = F2(
 			if (queue.b) {
 				var tree = queue.a;
 				var rest = queue.b;
-				if (tree.$ === 'Node') {
+				if (tree.$ === 'TreeNode') {
 					var val = tree.a;
 					var left = tree.b;
 					var right = tree.c;
@@ -8274,23 +8585,6 @@ var $author$project$MainComponents$Home$IndexSwap = function (a) {
 	return {$: 'IndexSwap', a: a};
 };
 var $author$project$MainComponents$Home$Light = {$: 'Light'};
-var $elm$random$Random$map2 = F3(
-	function (func, _v0, _v1) {
-		var genA = _v0.a;
-		var genB = _v1.a;
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v2 = genA(seed0);
-				var a = _v2.a;
-				var seed1 = _v2.b;
-				var _v3 = genB(seed1);
-				var b = _v3.a;
-				var seed2 = _v3.b;
-				return _Utils_Tuple2(
-					A2(func, a, b),
-					seed2);
-			});
-	});
 var $elm$random$Random$pair = F2(
 	function (genA, genB) {
 		return A3(
@@ -8381,7 +8675,7 @@ var $author$project$Trees$TreeTraversal$TreeGenerated = function (a) {
 	return {$: 'TreeGenerated', a: a};
 };
 var $author$project$Trees$TreeTraversal$inorder = function (node) {
-	if (node.$ === 'Node') {
+	if (node.$ === 'TreeNode') {
 		var val = node.a;
 		var left = node.b;
 		var right = node.c;
@@ -8396,7 +8690,7 @@ var $author$project$Trees$TreeTraversal$inorder = function (node) {
 	}
 };
 var $author$project$Trees$TreeTraversal$postorder = function (node) {
-	if (node.$ === 'Node') {
+	if (node.$ === 'TreeNode') {
 		var val = node.a;
 		var left = node.b;
 		var right = node.c;
@@ -8411,7 +8705,7 @@ var $author$project$Trees$TreeTraversal$postorder = function (node) {
 	}
 };
 var $author$project$Trees$TreeTraversal$preorder = function (node) {
-	if (node.$ === 'Node') {
+	if (node.$ === 'TreeNode') {
 		var val = node.a;
 		var left = node.b;
 		var right = node.c;
@@ -8598,6 +8892,16 @@ var $author$project$Main$update = F2(
 						model,
 						{heapTypeModel: newHeapTypeModel}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$HeapTypeMsg, heapCmd));
+			case 'DijkstraMsg':
+				var dijkstraMsg = msg.a;
+				var _v4 = A2($author$project$Graphs$Dijkstra$update, dijkstraMsg, model.dijkstraModel);
+				var newDijkstraModel = _v4.a;
+				var dijkstraCmd = _v4.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dijkstraModel: newDijkstraModel}),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$DijkstraMsg, dijkstraCmd));
 			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
@@ -8711,6 +9015,16 @@ var $author$project$Main$update = F2(
 									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomTree, $author$project$MainComponents$Structs$randomTreeGenerator));
+					case 'Dijkstra':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$Dijkstra,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							$elm$core$Platform$Cmd$none);
 					default:
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -8739,8 +9053,8 @@ var $author$project$Main$update = F2(
 							$elm$core$Platform$Cmd$none);
 					case 'Reset':
 						var resetCmds = function () {
-							var _v6 = model.currentPage;
-							switch (_v6.$) {
+							var _v7 = model.currentPage;
+							switch (_v7.$) {
 								case 'LinearSearch':
 									return _List_fromArray(
 										[
@@ -8774,8 +9088,8 @@ var $author$project$Main$update = F2(
 								}),
 							$elm$core$Platform$Cmd$batch(resetCmds));
 					default:
-						var _v7 = model.currentPage;
-						switch (_v7.$) {
+						var _v8 = model.currentPage;
+						switch (_v8.$) {
 							case 'BubbleSort':
 								var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
@@ -8833,18 +9147,18 @@ var $author$project$Main$update = F2(
 										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
 							case 'TreeTraversal':
-								var _v8 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
-								var updatedTreeModel = _v8.a;
-								var treeCmd = _v8.b;
+								var _v9 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
+								var updatedTreeModel = _v9.a;
+								var treeCmd = _v9.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{treeTraversalModel: updatedTreeModel}),
 									A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
 							case 'HeapType':
-								var _v9 = A2($author$project$Heaps$HeapType$update, $author$project$Heaps$HeapType$HeapifyStep, model.heapTypeModel);
-								var updatedHeapModel = _v9.a;
-								var heapCmd = _v9.b;
+								var _v10 = A2($author$project$Heaps$HeapType$update, $author$project$Heaps$HeapType$HeapifyStep, model.heapTypeModel);
+								var updatedHeapModel = _v10.a;
+								var heapCmd = _v10.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
@@ -8856,8 +9170,8 @@ var $author$project$Main$update = F2(
 				}
 			case 'Tick':
 				if (model.running) {
-					var _v10 = model.currentPage;
-					switch (_v10.$) {
+					var _v11 = model.currentPage;
+					switch (_v11.$) {
 						case 'BubbleSort':
 							var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 							return _Utils_Tuple2(
@@ -8915,18 +9229,18 @@ var $author$project$Main$update = F2(
 									{sortingAlgorithm: updatedTrack}),
 								$elm$core$Platform$Cmd$none);
 						case 'TreeTraversal':
-							var _v11 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
-							var updatedTreeModel = _v11.a;
-							var treeCmd = _v11.b;
+							var _v12 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
+							var updatedTreeModel = _v12.a;
+							var treeCmd = _v12.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
 									{treeTraversalModel: updatedTreeModel}),
 								A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
 						case 'HeapType':
-							var _v12 = A2($author$project$Heaps$HeapType$update, $author$project$Heaps$HeapType$HeapifyStep, model.heapTypeModel);
-							var updatedHeapModel = _v12.a;
-							var heapCmd = _v12.b;
+							var _v13 = A2($author$project$Heaps$HeapType$update, $author$project$Heaps$HeapType$HeapifyStep, model.heapTypeModel);
+							var updatedHeapModel = _v13.a;
+							var heapCmd = _v13.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -8963,9 +9277,9 @@ var $author$project$Main$update = F2(
 				var updatedSortingAlgorithm = function () {
 					var array = currentSortingAlgorithm.array;
 					var targetValue = function () {
-						var _v13 = A2($elm$core$Array$get, newTarget, array);
-						if (_v13.$ === 'Just') {
-							var value = _v13.a;
+						var _v14 = A2($elm$core$Array$get, newTarget, array);
+						if (_v14.$ === 'Just') {
+							var value = _v14.a;
 							return value;
 						} else {
 							return 0;
@@ -8981,27 +9295,27 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(updatedModel, $elm$core$Platform$Cmd$none);
 			default:
 				var newTree = msg.a;
-				var _v14 = model.currentPage;
-				switch (_v14.$) {
+				var _v15 = model.currentPage;
+				switch (_v15.$) {
 					case 'TreeTraversal':
-						var _v15 = A2(
+						var _v16 = A2(
 							$author$project$Trees$TreeTraversal$update,
 							$author$project$Trees$TreeTraversal$SetTree(newTree),
 							model.treeTraversalModel);
-						var newTreeModel = _v15.a;
-						var treeCmd = _v15.b;
+						var newTreeModel = _v16.a;
+						var treeCmd = _v16.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
 								{treeTraversalModel: newTreeModel}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
 					case 'HeapType':
-						var _v16 = A2(
+						var _v17 = A2(
 							$author$project$Heaps$HeapType$update,
 							$author$project$Heaps$HeapType$SetTree(newTree),
 							model.heapTypeModel);
-						var newHeapTypeModel = _v16.a;
-						var heapCmd = _v16.b;
+						var newHeapTypeModel = _v17.a;
+						var heapCmd = _v17.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -9031,6 +9345,283 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $author$project$Graphs$Dijkstra$GenerateGraph = {$: 'GenerateGraph'};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Graphs$GraphVisualization$nudgePosition = F2(
+	function (nodeId, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		switch (nodeId) {
+			case 2:
+				return _Utils_Tuple2(x - 120, y - 60);
+			case 4:
+				return _Utils_Tuple2(x + 80, y + 60);
+			case 5:
+				return _Utils_Tuple2(x, y - 60);
+			case 6:
+				return _Utils_Tuple2(x - 80, y - 60);
+			case 8:
+				return _Utils_Tuple2(x + 120, y + 60);
+			default:
+				return _Utils_Tuple2(x, y);
+		}
+	});
+var $author$project$Graphs$GraphVisualization$buildPositionsDict = function (nodes) {
+	var sortedNodes = A2(
+		$elm$core$List$sortBy,
+		function ($) {
+			return $.id;
+		},
+		nodes);
+	var margin = 30;
+	var indexed = A2(
+		$elm$core$List$indexedMap,
+		F2(
+			function (index, node) {
+				return _Utils_Tuple2(index, node);
+			}),
+		sortedNodes);
+	var cellWidth = 1000 / 3;
+	var cellHeight = 400 / 3;
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var index = _v0.a;
+				var node = _v0.b;
+				var row = (index / 3) | 0;
+				var yPos = (margin + (cellHeight * row)) + (cellHeight / 2);
+				var col = A2($elm$core$Basics$modBy, 3, index);
+				var xPos = (margin + (cellWidth * col)) + (cellWidth / 2);
+				var _v1 = A2(
+					$author$project$Graphs$GraphVisualization$nudgePosition,
+					node.id,
+					_Utils_Tuple2(xPos, yPos));
+				var nx = _v1.a;
+				var ny = _v1.b;
+				return A3(
+					$elm$core$Dict$insert,
+					node.id,
+					_Utils_Tuple2(nx, ny),
+					dict);
+			}),
+		$elm$core$Dict$empty,
+		indexed);
+};
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
+var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
+var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var $author$project$Graphs$GraphVisualization$drawEdges = F3(
+	function (edges, positionsDict, highlightEdges) {
+		return A2(
+			$elm$core$List$map,
+			function (edge) {
+				var isHighlighted = A2(
+					$elm$core$List$member,
+					_Utils_Tuple2(edge.from, edge.to),
+					highlightEdges) || A2(
+					$elm$core$List$member,
+					_Utils_Tuple2(edge.to, edge.from),
+					highlightEdges);
+				var color = isHighlighted ? '#ff5722' : '#adb5bd';
+				var _v0 = A2(
+					$elm$core$Maybe$withDefault,
+					_Utils_Tuple2(0, 0),
+					A2($elm$core$Dict$get, edge.to, positionsDict));
+				var x2Pos = _v0.a;
+				var y2Pos = _v0.b;
+				var _v1 = A2(
+					$elm$core$Maybe$withDefault,
+					_Utils_Tuple2(0, 0),
+					A2($elm$core$Dict$get, edge.from, positionsDict));
+				var x1Pos = _v1.a;
+				var y1Pos = _v1.b;
+				var midX = (x1Pos + x2Pos) / 2;
+				var midY = (y1Pos + y2Pos) / 2;
+				var edgeLabel = A2(
+					$elm$svg$Svg$text_,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$x(
+							$elm$core$String$fromFloat(midX)),
+							$elm$svg$Svg$Attributes$y(
+							$elm$core$String$fromFloat(midY - 5)),
+							$elm$svg$Svg$Attributes$fill('#adb5bd'),
+							$elm$svg$Svg$Attributes$fontSize('12'),
+							$elm$svg$Svg$Attributes$textAnchor('middle')
+						]),
+					_List_fromArray(
+						[
+							$elm$svg$Svg$text(
+							$elm$core$String$fromInt(edge.weight))
+						]));
+				return A2(
+					$elm$svg$Svg$g,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$svg$Svg$line,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$x1(
+									$elm$core$String$fromFloat(x1Pos)),
+									$elm$svg$Svg$Attributes$y1(
+									$elm$core$String$fromFloat(y1Pos)),
+									$elm$svg$Svg$Attributes$x2(
+									$elm$core$String$fromFloat(x2Pos)),
+									$elm$svg$Svg$Attributes$y2(
+									$elm$core$String$fromFloat(y2Pos)),
+									$elm$svg$Svg$Attributes$stroke(color),
+									$elm$svg$Svg$Attributes$strokeWidth('2')
+								]),
+							_List_Nil),
+							edgeLabel
+						]));
+			},
+			edges);
+	});
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
+var $author$project$Graphs$GraphVisualization$drawNodes = F4(
+	function (nodes, positionsDict, maybeCurrentNode, visited) {
+		return $elm$core$List$concat(
+			A2(
+				$elm$core$List$map,
+				function (node) {
+					var isVisited = A2($elm$core$List$member, node.id, visited);
+					var isActive = function () {
+						if (maybeCurrentNode.$ === 'Just') {
+							var activeId = maybeCurrentNode.a;
+							return _Utils_eq(activeId, node.id);
+						} else {
+							return false;
+						}
+					}();
+					var circleColor = isActive ? '#ff5722' : (isVisited ? '#adb5bd' : '#64b5f6');
+					var _v0 = A2(
+						$elm$core$Maybe$withDefault,
+						_Utils_Tuple2(0, 0),
+						A2($elm$core$Dict$get, node.id, positionsDict));
+					var xPos = _v0.a;
+					var yPos = _v0.b;
+					var label = A2(
+						$elm$svg$Svg$text_,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$x(
+								$elm$core$String$fromFloat(xPos)),
+								$elm$svg$Svg$Attributes$y(
+								$elm$core$String$fromFloat(yPos + 5)),
+								$elm$svg$Svg$Attributes$fill('white'),
+								$elm$svg$Svg$Attributes$fontSize('14'),
+								$elm$svg$Svg$Attributes$textAnchor('middle')
+							]),
+						_List_fromArray(
+							[
+								$elm$svg$Svg$text(
+								$elm$core$String$fromInt(node.id))
+							]));
+					var myCircle = A2(
+						$elm$svg$Svg$circle,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$cx(
+								$elm$core$String$fromFloat(xPos)),
+								$elm$svg$Svg$Attributes$cy(
+								$elm$core$String$fromFloat(yPos)),
+								$elm$svg$Svg$Attributes$r('15'),
+								$elm$svg$Svg$Attributes$fill(circleColor),
+								$elm$svg$Svg$Attributes$style('transition: fill 0.5s ease')
+							]),
+						_List_Nil);
+					return _List_fromArray(
+						[myCircle, label]);
+				},
+				nodes));
+	});
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var $author$project$Graphs$GraphVisualization$view = F5(
+	function (graph, maybeCurrentNode, visited, highlightEdges, running) {
+		var positionsDict = $author$project$Graphs$GraphVisualization$buildPositionsDict(graph.nodes);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('graph-container')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$svg,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$width('1000'),
+							$elm$svg$Svg$Attributes$height('500')
+						]),
+					_Utils_ap(
+						A3($author$project$Graphs$GraphVisualization$drawEdges, graph.edges, positionsDict, highlightEdges),
+						A4($author$project$Graphs$GraphVisualization$drawNodes, graph.nodes, positionsDict, maybeCurrentNode, visited)))
+				]));
+	});
+var $author$project$Graphs$Dijkstra$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$Graphs$Dijkstra$GenerateGraph)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Generate Random Graph')
+					])),
+				A5($author$project$Graphs$GraphVisualization$view, model.graph, $elm$core$Maybe$Nothing, _List_Nil, _List_Nil, false)
+			]));
+};
 var $author$project$Heaps$HeapType$AddNode = {$: 'AddNode'};
 var $author$project$Heaps$HeapType$ChangeHeapType = function (a) {
 	return {$: 'ChangeHeapType', a: a};
@@ -9040,7 +9631,6 @@ var $author$project$Heaps$HeapType$MaxHeap = {$: 'MaxHeap'};
 var $author$project$Heaps$HeapType$UpdateNewValue = function (a) {
 	return {$: 'UpdateNewValue', a: a};
 };
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $author$project$Heaps$HeapType$ResetHeap = {$: 'ResetHeap'};
 var $author$project$Heaps$HeapType$StartHeapify = {$: 'StartHeapify'};
 var $author$project$Heaps$HeapType$StopHeapify = {$: 'StopHeapify'};
@@ -9072,23 +9662,6 @@ var $elm$core$List$isEmpty = function (xs) {
 	}
 };
 var $elm$html$Html$li = _VirtualDom_node('li');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -9123,8 +9696,6 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
@@ -9249,7 +9820,6 @@ var $author$project$Trees$TreeVisualization$currentIndexNode = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $author$project$Trees$TreeVisualization$PositionedNode = function (a) {
 	return {$: 'PositionedNode', a: a};
 };
@@ -9275,15 +9845,6 @@ var $author$project$Trees$TreeVisualization$layoutHelper = F5(
 				rightSubtreeWidth);
 		}
 	});
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
-var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
-var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
-var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
-var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
-var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
-var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
 var $author$project$Trees$TreeVisualization$lines = function (tree) {
 	var node = tree.a;
 	var parentToChild = function (childNode) {
@@ -9332,18 +9893,6 @@ var $author$project$Trees$TreeVisualization$lines = function (tree) {
 	}();
 	return _Utils_ap(leftLines, rightLines);
 };
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
-var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
-var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
-var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
-var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
-var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
 var $author$project$Trees$TreeVisualization$nodes = F3(
 	function (tree, maybeActive, maybeSwapIndex) {
 		var node = tree.a;
@@ -9433,8 +9982,6 @@ var $author$project$Trees$TreeVisualization$renderHighlighted = F2(
 			return 'No step';
 		}
 	});
-var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
-var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
 var $author$project$Trees$TreeVisualization$view = F5(
 	function (tree, maybeCurrentIndex, maybeSwapIndex, traversalResult, running) {
 		var totalNodes = $author$project$Trees$TreeVisualization$countNodes(tree);
@@ -12076,11 +12623,16 @@ var $author$project$Main$view = function (model) {
 											$elm$html$Html$map,
 											$author$project$Main$TreeTraversalMsg,
 											$author$project$Trees$TreeTraversal$view(model.treeTraversalModel));
-									default:
+									case 'HeapType':
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$HeapTypeMsg,
 											$author$project$Heaps$HeapType$view(model.heapTypeModel));
+									default:
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$DijkstraMsg,
+											$author$project$Graphs$Dijkstra$view(model.dijkstraModel));
 								}
 							}()
 							])),

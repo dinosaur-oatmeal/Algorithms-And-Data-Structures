@@ -301,7 +301,7 @@ preorder node =
     -- Don't update empty nodes
     case node of
         -- Recursively call parent, then left, then right
-        Node val left right ->
+        TreeNode val left right ->
             val :: (preorder left) ++ (preorder right)
 
         -- Base case that returns empty array for leaf nodes
@@ -312,7 +312,7 @@ preorder node =
 inorder : Tree -> List Int
 inorder node =
     case node of
-        Node val left right ->
+        TreeNode val left right ->
             (inorder left) ++ [ val ] ++ (inorder right)
 
         _ ->
@@ -322,7 +322,7 @@ inorder node =
 postorder : Tree -> List Int
 postorder node =
     case node of
-        Node val left right ->
+        TreeNode val left right ->
             (postorder left) ++ (postorder right) ++ [ val ]
 
         _ ->
