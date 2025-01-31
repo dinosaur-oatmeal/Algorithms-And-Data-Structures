@@ -79,14 +79,14 @@ type Tree
     | TreeNode Int Tree Tree
 
 -- Generates tree
-randomTreeGenerator : Generator Tree
-randomTreeGenerator =
-    -- Between 10 and 20 nodes in tree
-        -- Keep size down for smaller screens
+randomTreeGenerator : Int -> Int -> Generator Tree
+randomTreeGenerator intOne intTwo =
+    -- Generates a tree with random number of nodes between inputs
+        -- Allows 31 nodes for traversals and 30 for heaps
     let
         sizeGenerator : Generator Int
         sizeGenerator =
-            Random.int 9 30
+            Random.int intOne intTwo
     in
     Random.andThen
         (\n ->

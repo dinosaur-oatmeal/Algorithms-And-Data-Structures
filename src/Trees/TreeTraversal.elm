@@ -170,7 +170,7 @@ update msg model =
         ResetTraversal ->
             let
                 -- Call to generate new tree
-                cmd = Random.generate TreeGenerated randomTreeGenerator
+                cmd = Random.generate TreeGenerated (randomTreeGenerator 9 31)
             in
             ( { model
                 | running = False

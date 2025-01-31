@@ -1,4 +1,4 @@
-module Heaps.HeapType exposing (..)
+module Trees.HeapType exposing (..)
 
 -- HTML Imports
 import Html exposing (Html, div, button, text, input, ul, li)
@@ -427,7 +427,7 @@ resetAndGenerateTree : HeapType -> Model -> (Model, Cmd Msg)
 resetAndGenerateTree newHeapType model =
     let
         -- Command to generate a new random tree
-        cmd = Random.generate TreeGenerated randomTreeGenerator
+        cmd = Random.generate TreeGenerated (randomTreeGenerator 9 30)
     in
     ( { model
         | running = False

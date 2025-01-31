@@ -27,7 +27,7 @@ type Msg
     -- Generate a new graph
     = GenerateGraph
     -- Helper to set model's graph to new graph
-    | GotGraph Graph
+    | SetGraph Graph
 
 -- INIT
 initModel : Model
@@ -43,10 +43,10 @@ update msg model =
     case msg of
         -- Call to generate new graph
         GenerateGraph ->
-            ( model, Random.generate GotGraph randomGraphGenerator )
+            ( model, Random.generate SetGraph randomGraphGenerator )
 
         -- Update graph in model and reset model
-        GotGraph newGraph ->
+        SetGraph newGraph ->
             ( { model
                 | graph = newGraph
                 , currentIndex = 0

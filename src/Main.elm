@@ -41,12 +41,11 @@ import SortingAlgorithms.QuickSort as QuickSort
 import SearchAlgorithms.LinearSearch as LinearSearch
 import SearchAlgorithms.BinarySearch as BinarySearch
 
--- Tree Traversals page
+-- Tree pages that can be visited
 import Trees.TreeTraversal as TreeTraversal exposing (Msg(..))
+import Trees.HeapType as HeapType exposing (Msg(..))
 
--- Min/Max Heaps page
-import Heaps.HeapType as HeapType exposing (Msg(..))
-
+-- Graph pages that can be visited
 import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
 
 -- Model (info stored during interactions)
@@ -107,6 +106,7 @@ type Msg
     | TreeTraversalMsg TreeTraversal.Msg
     -- Update something on heap type page (type of heap/buttons)
     | HeapTypeMsg HeapType.Msg
+    -- Update something on Dijkstra page
     | DijkstraMsg Dijkstra.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
@@ -120,8 +120,10 @@ type Msg
     | GotOrderedArray (List Int)
     -- Initialize random target (searches)
     | GotRandomTarget Int
-    -- Initializes random tree (traversals)
+    -- Initializes random tree (traversals and heaps)
     | GotRandomTree (Tree)
+    -- Initializes random graph (Dijkstra, Prim, and Kruskal)
+    | GotRandomGraph (Graph)
 
 -- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
@@ -189,6 +191,7 @@ parseUrl url =
         Just HeapRoute ->
             HeapType
 
+        -- Dijkstra Page
         Just DijkstraRoute ->
             Dijkstra
 
@@ -258,6 +261,7 @@ update msg model =
             , Cmd.map HeapTypeMsg heapCmd
             )
 
+        -- Dijkstra updates point to Dijkstra.elm
         DijkstraMsg dijkstraMsg ->
             let
                 ( newDijkstraModel, dijkstraCmd ) =
@@ -351,7 +355,7 @@ update msg model =
                             , running = False
                     }
                     -- Generate a new tree when selected
-                    , Random.generate GotRandomTree randomTreeGenerator
+                    , Random.generate GotRandomTree (randomTreeGenerator 9 31)
                     )
 
                 "Heap Type" ->
@@ -360,7 +364,7 @@ update msg model =
                             , running = False
                     }
                     -- Generate a new tree when selected
-                    , Random.generate GotRandomTree randomTreeGenerator
+                    , Random.generate GotRandomTree (randomTreeGenerator 9 30)
                     )
 
                 "Dijkstra" ->
@@ -368,8 +372,7 @@ update msg model =
                             , sortingAlgorithm = defaultSortingTrack []
                             , running = False
                     }
-                    -- Generate a new tree when selected
-                    , Cmd.none
+                    , Random.generate GotRandomGraph randomGraphGenerator
                     )
 
                 -- Default to home for algorithms not yet added
@@ -409,7 +412,7 @@ update msg model =
 
                                 -- Regenerate a new tree for traversals
                                 TreeTraversal ->
-                                    [ Random.generate GotRandomTree randomTreeGenerator ]
+                                    [ Random.generate GotRandomTree (randomTreeGenerator 9 31) ]
 
                                 -- Only regenerate array for sorting
                                 _ ->
@@ -656,6 +659,24 @@ update msg model =
                 -- Default to not not updating anything
                 _ ->
                     ( model, Cmd.none )
+
+        -- Cmd.map to return a main model like other cases
+        GotRandomGraph newGraph ->
+            case model.currentPage of
+                -- Generate new graph in Dijkstra
+                Dijkstra ->
+                    let
+                        (newGraphModel, graphCmd) =
+                            Dijkstra.update (Dijkstra.SetGraph newGraph) model.dijkstraModel
+                    in
+                    ( { model | dijkstraModel = newGraphModel }
+                    , Cmd.map DijkstraMsg graphCmd
+                    )
+
+                -- Default to not not updating anything
+                _ ->
+                    ( model, Cmd.none )
+
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
