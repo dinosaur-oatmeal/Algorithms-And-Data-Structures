@@ -256,10 +256,6 @@ allUniquePairs ids =
 kruskalMST : Int -> List Edge -> ( List Edge, List Edge )
 kruskalMST n edges =
     let
-        -- Sort edges by weight and store in list
-        sortedEdges =
-            List.sortBy .weight edges
-
         -- Disjoint set to find cycles in MST (not allowed)
         initialUnion =
             unionInit n
@@ -269,11 +265,10 @@ kruskalMST n edges =
         step : Edge -> ( Union, List Edge, List Edge ) -> ( Union, List Edge, List Edge )
         step edge ( union, included, discarded ) =
             let
-                fromRoot =
-                    unionFind union edge.from
+                -- Find parent values for nodes
+                fromRoot = unionFind union edge.from
 
-                toRoot =
-                    unionFind union edge.to
+                toRoot = unionFind union edge.to
             in
             -- If node goes to itself, discard it (forms a cycle)
             if fromRoot == toRoot then
@@ -289,7 +284,7 @@ kruskalMST n edges =
 
         -- Fold over sorted edges applying step
         ( _, mst, leftover ) =
-            List.foldl step ( initialUnion, [], [] ) sortedEdges
+            List.foldl step ( initialUnion, [], [] ) edges
     in
     -- Reverse mst for included edges in MST and leftover edges not used
     ( List.reverse mst, leftover )

@@ -7564,7 +7564,6 @@ var $elm$random$Random$int = F2(
 				}
 			});
 	});
-var $elm$core$List$sortBy = _List_sortBy;
 var $author$project$MainComponents$Structs$unionCheck = F3(
 	function (union, firstInt, secondInt) {
 		return A3($elm$core$Dict$insert, secondInt, firstInt, union);
@@ -7633,18 +7632,12 @@ var $author$project$MainComponents$Structs$kruskalMST = F2(
 						discarded);
 				}
 			});
-		var sortedEdges = A2(
-			$elm$core$List$sortBy,
-			function ($) {
-				return $.weight;
-			},
-			edges);
 		var initialUnion = $author$project$MainComponents$Structs$unionInit(n);
 		var _v0 = A3(
 			$elm$core$List$foldl,
 			step,
 			_Utils_Tuple3(initialUnion, _List_Nil, _List_Nil),
-			sortedEdges);
+			edges);
 		var mst = _v0.b;
 		var leftover = _v0.c;
 		return _Utils_Tuple2(
@@ -7869,6 +7862,7 @@ var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
 };
+var $elm$core$List$sortBy = _List_sortBy;
 var $elm_community$random_extra$Random$List$shuffle = function (list) {
 	return A2(
 		$elm$random$Random$map,
