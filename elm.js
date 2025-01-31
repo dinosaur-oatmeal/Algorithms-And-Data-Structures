@@ -5317,8 +5317,9 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 	};
 };
 var $author$project$Graphs$Dijkstra$initModel = {
-	currentIndex: 0,
+	dijkstraSteps: _List_Nil,
 	graph: {edges: _List_Nil, nodes: _List_Nil},
+	index: 0,
 	running: false
 };
 var $author$project$MainComponents$Home$Dark = {$: 'Dark'};
@@ -7522,6 +7523,9 @@ var $elm$random$Random$andThen = F2(
 				return genB(newSeed);
 			});
 	});
+var $author$project$MainComponents$Structs$extraEdgeProbability = function (n) {
+	return (n < 5) ? 1 : ((n === 5) ? 0.8 : ((n === 6) ? 0.5 : ((n === 7) ? 0.4 : 0.3)));
+};
 var $elm$core$Bitwise$xor = _Bitwise_xor;
 var $elm$random$Random$peel = function (_v0) {
 	var state = _v0.a;
@@ -7773,7 +7777,7 @@ var $elm_community$random_extra$Random$Extra$sequence = A2(
 	$elm$random$Random$map2($elm$core$List$cons),
 	$elm$random$Random$constant(_List_Nil));
 var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
-	var sizeGenerator = A2($elm$random$Random$int, 9, 9);
+	var sizeGenerator = A2($elm$random$Random$int, 4, 8);
 	return A2(
 		$elm$random$Random$andThen,
 		function (n) {
@@ -7805,7 +7809,10 @@ var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
 					var _v0 = A2($author$project$MainComponents$Structs$kruskalMST, n, allEdges);
 					var mstEdges = _v0.a;
 					var leftover = _v0.b;
-					var extraEdgesGenerator = A2($author$project$MainComponents$Structs$randomSubset, 0.1, leftover);
+					var extraEdgesGenerator = A2(
+						$author$project$MainComponents$Structs$randomSubset,
+						$author$project$MainComponents$Structs$extraEdgeProbability(n),
+						leftover);
 					return A2(
 						$elm$random$Random$map,
 						function (extraEdges) {
@@ -8161,19 +8168,64 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 		}
 	}
 };
+var $author$project$Graphs$Dijkstra$buildDijkstraSteps = function (g) {
+	return _List_Nil;
+};
+var $author$project$Graphs$Dijkstra$resetAndGenerateGraph = function (model) {
+	var cmd = A2($elm$random$Random$generate, $author$project$Graphs$Dijkstra$SetGraph, $author$project$MainComponents$Structs$randomGraphGenerator);
+	return _Utils_Tuple2(
+		_Utils_update(
+			model,
+			{dijkstraSteps: _List_Nil, index: 0, running: false}),
+		cmd);
+};
 var $author$project$Graphs$Dijkstra$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'GenerateGraph') {
-			return _Utils_Tuple2(
-				model,
-				A2($elm$random$Random$generate, $author$project$Graphs$Dijkstra$SetGraph, $author$project$MainComponents$Structs$randomGraphGenerator));
-		} else {
-			var newGraph = msg.a;
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{currentIndex: 0, graph: newGraph, running: false}),
-				$elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'GenerateGraph':
+				return $author$project$Graphs$Dijkstra$resetAndGenerateGraph(model);
+			case 'SetGraph':
+				var newGraph = msg.a;
+				var steps = $author$project$Graphs$Dijkstra$buildDijkstraSteps(newGraph);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dijkstraSteps: steps, graph: newGraph, index: 0, running: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'DijkstraStep':
+				var totalSteps = $elm$core$List$length(model.dijkstraSteps);
+				var newIndex = model.index + 1;
+				return (_Utils_cmp(newIndex, totalSteps) < 0) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{index: newIndex}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			case 'Tick':
+				var totalSteps = $elm$core$List$length(model.dijkstraSteps);
+				var newIndex = model.index + 1;
+				return (_Utils_cmp(newIndex, totalSteps) < 0) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{index: newIndex}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{running: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'StartDijkstra':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{running: true}),
+					$elm$core$Platform$Cmd$none);
+			case 'StopDijkstra':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{running: false}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				return $author$project$Graphs$Dijkstra$resetAndGenerateGraph(model);
 		}
 	});
 var $author$project$MainComponents$Home$IndexSwap = function (a) {
@@ -9382,100 +9434,84 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $author$project$Graphs$Dijkstra$GenerateGraph = {$: 'GenerateGraph'};
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
+var $author$project$Graphs$Dijkstra$DijkstraStep = {$: 'DijkstraStep'};
+var $author$project$Graphs$Dijkstra$ResetGraph = {$: 'ResetGraph'};
+var $author$project$Graphs$Dijkstra$StartDijkstra = {$: 'StartDijkstra'};
+var $author$project$Graphs$Dijkstra$StopDijkstra = {$: 'StopDijkstra'};
+var $author$project$Graphs$Dijkstra$convertControlMsg = function (control) {
+	switch (control.$) {
+		case 'Run':
+			return $author$project$Graphs$Dijkstra$StartDijkstra;
+		case 'Pause':
+			return $author$project$Graphs$Dijkstra$StopDijkstra;
+		case 'Step':
+			return $author$project$Graphs$Dijkstra$DijkstraStep;
+		default:
+			return $author$project$Graphs$Dijkstra$ResetGraph;
+	}
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $author$project$Graphs$GraphVisualization$nudgePosition = F2(
-	function (nodeId, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		switch (nodeId) {
-			case 2:
-				return _Utils_Tuple2(x - 120, y - 60);
-			case 4:
-				return _Utils_Tuple2(x + 80, y + 60);
-			case 5:
-				return _Utils_Tuple2(x, y - 60);
-			case 6:
-				return _Utils_Tuple2(x - 80, y - 60);
-			case 8:
-				return _Utils_Tuple2(x + 120, y + 60);
-			default:
-				return _Utils_Tuple2(x, y);
-		}
-	});
+var $author$project$Graphs$GraphVisualization$nodePositions = $elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			1,
+			_Utils_Tuple2(200, 150)),
+			_Utils_Tuple2(
+			2,
+			_Utils_Tuple2(800, 150)),
+			_Utils_Tuple2(
+			3,
+			_Utils_Tuple2(200, 300)),
+			_Utils_Tuple2(
+			4,
+			_Utils_Tuple2(800, 300)),
+			_Utils_Tuple2(
+			5,
+			_Utils_Tuple2(500, 50)),
+			_Utils_Tuple2(
+			6,
+			_Utils_Tuple2(300, 400)),
+			_Utils_Tuple2(
+			7,
+			_Utils_Tuple2(700, 400)),
+			_Utils_Tuple2(
+			8,
+			_Utils_Tuple2(500, 250))
+		]));
 var $author$project$Graphs$GraphVisualization$buildPositionsDict = function (nodes) {
-	var sortedNodes = A2(
-		$elm$core$List$sortBy,
-		function ($) {
-			return $.id;
-		},
-		nodes);
-	var margin = 30;
-	var indexed = A2(
-		$elm$core$List$indexedMap,
-		F2(
-			function (index, node) {
-				return _Utils_Tuple2(index, node);
-			}),
-		sortedNodes);
-	var cellWidth = 1000 / 3;
-	var cellHeight = 400 / 3;
 	return A3(
 		$elm$core$List$foldl,
 		F2(
-			function (_v0, dict) {
-				var index = _v0.a;
-				var node = _v0.b;
-				var row = (index / 3) | 0;
-				var yPos = (margin + (cellHeight * row)) + (cellHeight / 2);
-				var col = A2($elm$core$Basics$modBy, 3, index);
-				var xPos = (margin + (cellWidth * col)) + (cellWidth / 2);
-				var _v1 = A2(
-					$author$project$Graphs$GraphVisualization$nudgePosition,
-					node.id,
-					_Utils_Tuple2(xPos, yPos));
-				var nx = _v1.a;
-				var ny = _v1.b;
+			function (node, dict) {
 				return A3(
 					$elm$core$Dict$insert,
 					node.id,
-					_Utils_Tuple2(nx, ny),
+					A2(
+						$elm$core$Maybe$withDefault,
+						_Utils_Tuple2(50, 50),
+						A2($elm$core$Dict$get, node.id, $author$project$Graphs$GraphVisualization$nodePositions)),
 					dict);
 			}),
 		$elm$core$Dict$empty,
-		indexed);
+		nodes);
 };
+var $elm$core$Basics$atan2 = _Basics_atan2;
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$Attributes$fontSize = _VirtualDom_attribute('font-size');
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
 var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$core$Basics$pi = _Basics_pi;
+var $elm$core$Basics$sqrt = _Basics_sqrt;
 var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
 var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$textAnchor = _VirtualDom_attribute('text-anchor');
 var $elm$svg$Svg$text_ = $elm$svg$Svg$trustedNode('text');
+var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
 var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
 var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
 var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
@@ -9487,6 +9523,7 @@ var $author$project$Graphs$GraphVisualization$drawEdges = F3(
 		return A2(
 			$elm$core$List$map,
 			function (edge) {
+				var labelBias = 0.75;
 				var isHighlighted = A2(
 					$elm$core$List$member,
 					_Utils_Tuple2(edge.from, edge.to),
@@ -9494,6 +9531,7 @@ var $author$project$Graphs$GraphVisualization$drawEdges = F3(
 					$elm$core$List$member,
 					_Utils_Tuple2(edge.to, edge.from),
 					highlightEdges);
+				var gapSize = 15;
 				var color = isHighlighted ? '#ff5722' : '#adb5bd';
 				var _v0 = A2(
 					$elm$core$Maybe$withDefault,
@@ -9507,25 +9545,43 @@ var $author$project$Graphs$GraphVisualization$drawEdges = F3(
 					A2($elm$core$Dict$get, edge.from, positionsDict));
 				var x1Pos = _v1.a;
 				var y1Pos = _v1.b;
-				var midX = (x1Pos + x2Pos) / 2;
-				var midY = (y1Pos + y2Pos) / 2;
+				var dx = x2Pos - x1Pos;
+				var gapX = x1Pos + (dx * labelBias);
+				var dy = y2Pos - y1Pos;
+				var angleRad = A2($elm$core$Basics$atan2, dy, dx);
+				var angleDeg = function () {
+					var rawAngle = (angleRad * 180) / $elm$core$Basics$pi;
+					return (rawAngle > 90) ? (rawAngle - 180) : ((_Utils_cmp(rawAngle, -90) < 0) ? (rawAngle + 180) : rawAngle);
+				}();
+				var dist = $elm$core$Basics$sqrt((dx * dx) + (dy * dy)) + 0.1;
+				var shortenX = (dx / dist) * gapSize;
+				var shortenY = (dy / dist) * gapSize;
+				var gapY = y1Pos + (dy * labelBias);
+				var _v2 = _Utils_Tuple2(gapX + shortenX, gapY + shortenY);
+				var x2New = _v2.a;
+				var y2New = _v2.b;
 				var edgeLabel = A2(
 					$elm$svg$Svg$text_,
 					_List_fromArray(
 						[
 							$elm$svg$Svg$Attributes$x(
-							$elm$core$String$fromFloat(midX)),
+							$elm$core$String$fromFloat(gapX)),
 							$elm$svg$Svg$Attributes$y(
-							$elm$core$String$fromFloat(midY - 5)),
+							$elm$core$String$fromFloat(gapY + 4)),
 							$elm$svg$Svg$Attributes$fill('#adb5bd'),
 							$elm$svg$Svg$Attributes$fontSize('12'),
-							$elm$svg$Svg$Attributes$textAnchor('middle')
+							$elm$svg$Svg$Attributes$textAnchor('middle'),
+							$elm$svg$Svg$Attributes$transform(
+							'rotate(' + ($elm$core$String$fromFloat(angleDeg) + (' ' + ($elm$core$String$fromFloat(gapX) + (' ' + ($elm$core$String$fromFloat(gapY) + ')'))))))
 						]),
 					_List_fromArray(
 						[
 							$elm$svg$Svg$text(
 							$elm$core$String$fromInt(edge.weight))
 						]));
+				var _v3 = _Utils_Tuple2(gapX - shortenX, gapY - shortenY);
+				var x1New = _v3.a;
+				var y1New = _v3.b;
 				return A2(
 					$elm$svg$Svg$g,
 					_List_Nil,
@@ -9539,6 +9595,22 @@ var $author$project$Graphs$GraphVisualization$drawEdges = F3(
 									$elm$core$String$fromFloat(x1Pos)),
 									$elm$svg$Svg$Attributes$y1(
 									$elm$core$String$fromFloat(y1Pos)),
+									$elm$svg$Svg$Attributes$x2(
+									$elm$core$String$fromFloat(x1New)),
+									$elm$svg$Svg$Attributes$y2(
+									$elm$core$String$fromFloat(y1New)),
+									$elm$svg$Svg$Attributes$stroke(color),
+									$elm$svg$Svg$Attributes$strokeWidth('2')
+								]),
+							_List_Nil),
+							A2(
+							$elm$svg$Svg$line,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$x1(
+									$elm$core$String$fromFloat(x2New)),
+									$elm$svg$Svg$Attributes$y1(
+									$elm$core$String$fromFloat(y2New)),
 									$elm$svg$Svg$Attributes$x2(
 									$elm$core$String$fromFloat(x2Pos)),
 									$elm$svg$Svg$Attributes$y2(
@@ -9624,7 +9696,7 @@ var $author$project$Graphs$GraphVisualization$view = F5(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('graph-container')
+					$elm$html$Html$Attributes$class('graph-page')
 				]),
 			_List_fromArray(
 				[
@@ -9633,30 +9705,277 @@ var $author$project$Graphs$GraphVisualization$view = F5(
 					_List_fromArray(
 						[
 							$elm$svg$Svg$Attributes$width('1000'),
-							$elm$svg$Svg$Attributes$height('500')
+							$elm$svg$Svg$Attributes$height('500'),
+							$elm$svg$Svg$Attributes$style('transition: fill 0.6s ease')
 						]),
 					_Utils_ap(
 						A3($author$project$Graphs$GraphVisualization$drawEdges, graph.edges, positionsDict, highlightEdges),
 						A4($author$project$Graphs$GraphVisualization$drawNodes, graph.nodes, positionsDict, maybeCurrentNode, visited)))
 				]));
 	});
+var $author$project$MainComponents$Controls$Pause = {$: 'Pause'};
+var $author$project$MainComponents$Controls$Reset = {$: 'Reset'};
+var $author$project$MainComponents$Controls$Run = {$: 'Run'};
+var $author$project$MainComponents$Controls$Step = {$: 'Step'};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $author$project$MainComponents$Controls$view = F2(
+	function (running, toMsg) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('control-buttons')
+				]),
+			_List_fromArray(
+				[
+					running ? A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$MainComponents$Controls$Pause))
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Pause')
+								]))
+						])) : A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$MainComponents$Controls$Run))
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Run')
+								]))
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$MainComponents$Controls$Step))
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Step')
+								]))
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('sorting-button'),
+							$elm$html$Html$Events$onClick(
+							toMsg($author$project$MainComponents$Controls$Reset))
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('button-text')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Reset')
+								]))
+						]))
+				]));
+	});
 var $author$project$Graphs$Dijkstra$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$button,
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Graphs$Dijkstra$GenerateGraph)
+						$elm$html$Html$Attributes$class('sort-title')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Generate Random Graph')
+						$elm$html$Html$text('Dijkstra\'s Algorithm')
 					])),
-				A5($author$project$Graphs$GraphVisualization$view, model.graph, $elm$core$Maybe$Nothing, _List_Nil, _List_Nil, false)
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Dijkstra\'s algorithm is a graph search algorithm used to find the shortest path between nodes in a weighted graph.')
+					])),
+				function () {
+				var maybeCurrentStep = $elm$core$List$head(
+					A2($elm$core$List$drop, model.index, model.dijkstraSteps));
+				var currentState = A2(
+					$elm$core$Maybe$withDefault,
+					{currentNode: $elm$core$Maybe$Nothing, graph: model.graph, visitedNodes: _List_Nil},
+					maybeCurrentStep);
+				return A5($author$project$Graphs$GraphVisualization$view, currentState.graph, currentState.currentNode, currentState.visitedNodes, _List_Nil, false);
+			}(),
+				A2($author$project$MainComponents$Controls$view, model.running, $author$project$Graphs$Dijkstra$convertControlMsg),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Step: ' + $elm$core$String$fromInt(model.index))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Big(O) Notation')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Best-Case')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O((V + E) log V)')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Average-Case')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O((V + E) log V)')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Worst-Case')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O(n²)')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('space-complexity')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Space Complexity: O(V) or O(V + E)')
+					]))
 			]));
 };
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -9838,106 +10157,6 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderComparison = F6
 				]));
 	});
 var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$MainComponents$Controls$Pause = {$: 'Pause'};
-var $author$project$MainComponents$Controls$Reset = {$: 'Reset'};
-var $author$project$MainComponents$Controls$Run = {$: 'Run'};
-var $author$project$MainComponents$Controls$Step = {$: 'Step'};
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $author$project$MainComponents$Controls$view = F2(
-	function (running, toMsg) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('control-buttons')
-				]),
-			_List_fromArray(
-				[
-					running ? A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$MainComponents$Controls$Pause))
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$span,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('button-text')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Pause')
-								]))
-						])) : A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$MainComponents$Controls$Run))
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$span,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('button-text')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Run')
-								]))
-						])),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$MainComponents$Controls$Step))
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$span,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('button-text')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Step')
-								]))
-						])),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('sorting-button'),
-							$elm$html$Html$Events$onClick(
-							toMsg($author$project$MainComponents$Controls$Reset))
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$span,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('button-text')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Reset')
-								]))
-						]))
-				]));
-	});
 var $author$project$SearchAlgorithms$BinarySearch$view = F3(
 	function (track, running, toMsg) {
 		return A2(

@@ -155,9 +155,9 @@ type alias Graph =
 randomGraphGenerator : Random.Generator Graph
 randomGraphGenerator =
     let
-        -- Between 5 and 7 nodes in graph
+        -- Between 4 and 8 nodes in graph
         sizeGenerator =
-            Random.int 9 9
+            Random.int 4 8
     in
     Random.andThen
         (\n ->
@@ -192,7 +192,7 @@ randomGraphGenerator =
 
                         -- Add random extra edges so graph isn't an MST
                         extraEdgesGenerator =
-                            randomSubset 0.1 leftover
+                            randomSubset (extraEdgeProbability n) leftover
                     in
                     Random.map
                         (\extraEdges ->
@@ -206,6 +206,20 @@ randomGraphGenerator =
                 allEdgesGenerator
         )
         sizeGenerator
+
+-- Determine probability of adding extra edges to graph depending on how many nodes are in it
+extraEdgeProbability : Int -> Float
+extraEdgeProbability n =
+    if n < 5 then
+        1
+    else if n == 5 then
+        0.8
+    else if n == 6 then
+        0.5
+    else if n == 7 then
+        0.4
+    else
+        0.3
 
 -- Pick a random subset from a list
     -- Each eleemnt has probability to be in the subset
@@ -280,15 +294,12 @@ kruskalMST n edges =
     -- Reverse mst for included edges in MST and leftover edges not used
     ( List.reverse mst, leftover )
 
-
-
-{- UNION FIND (DISJOINT SET) HELPERS -}
+-- Unions needed for Krukal's
 
 -- Keep a dictionary mapping of each node to its parent in MST
     -- If a node is its own parent, it's the root
 type alias Union =
     Dict.Dict Int Int
-
 
 -- Initialize each node to map to itself (all roots)
 unionInit : Int -> Union
@@ -298,7 +309,6 @@ unionInit size =
         |> List.map (\value -> ( value, value ))
         -- Convert to dictionary
         |> Dict.fromList
-
 
 -- Find the root of a specific node
 unionFind : Union -> Int -> Int
@@ -315,7 +325,6 @@ unionFind union node =
         -- Default to return itself
         _ ->
             node
-
 
 -- Union two sets together to merge disjoint trees
 unionCheck : Union -> Int -> Int -> Union

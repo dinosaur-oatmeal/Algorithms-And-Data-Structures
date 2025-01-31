@@ -27,11 +27,13 @@ view graph maybeCurrentNode visited highlightEdges running =
         positionsDict =
             buildPositionsDict graph.nodes
     in
-    div [ class "graph-container" ]
+    div [ class "graph-page" ]
         [ svg
             -- Width and height for SVG frame
             [ width "1000"
             , height "500"
+            -- Ease into new colors
+            , Svg.Attributes.style "transition: fill 0.6s ease"
             ]
             -- Call functions to draw edges and nodes in the SVG frame
             ( drawEdges graph.edges positionsDict highlightEdges
@@ -39,76 +41,34 @@ view graph maybeCurrentNode visited highlightEdges running =
             )
         ]
 
+-- Put positions for each node in a dictionary
+nodePositions : Dict Int (Float, Float)
+nodePositions =
+    Dict.fromList
+        [ (1, (200, 150))
+        , (2, (800, 150))
+        , (3, (200, 300))
+        , (4, (800, 300))
+        , (5, (500, 50))
+        , (6, (300, 400))
+        , (7, (700, 400))
+        , (8, (500, 250))
+        ]
 
 -- Builds a dictionary that stores node positions in the SVG frame
 buildPositionsDict : List GraphNode -> Dict Int (Float, Float)
 buildPositionsDict nodes =
-    let
-        -- Sort by ID so 1 always top left, 2 top middle, 3 top right, etc
-        sortedNodes =
-            List.sortBy .id nodes
+    List.foldl
+        (\node dict ->
+            Dict.insert node.id
+                (Dict.get node.id nodePositions
+                    |> Maybe.withDefault (50, 50)
+                )
+                dict
+        )
+        Dict.empty
+        nodes
 
-        -- Pair each node with indices starting at 0 and store in a map
-        indexed =
-            List.indexedMap (\index node -> ( index, node )) sortedNodes
-
-        -- 3 columns and 3 rows for a max of 9 nodes
-        cellWidth = 1000 / 3
-        cellHeight = 400 / 3
-        -- Margin to ensure a bit of extra spacing
-        margin = 30
-    in
-    indexed
-        |> List.foldl
-            (\( index, node ) dict ->
-                let
-                    -- Determine row and column for each node depending on index in map
-                    row = index // 3
-                    col = modBy 3 index
-
-                    -- Base grid position for starting node (1 in top left)
-                    xPos =
-                        margin + (cellWidth * toFloat col) + (cellWidth / 2)
-
-                    yPos =
-                        margin + (cellHeight * toFloat row) + (cellHeight / 2)
-
-                    -- Nudge specific nodes to avoid overlapping lines
-                    ( nx, ny ) =
-                        nudgePosition node.id ( xPos, yPos )
-                in
-                -- Add node locations to dictionary
-                Dict.insert node.id ( nx, ny ) dict
-            )
-            Dict.empty
-
-
--- Shifts nodes accordingly to avoid overlap depending on ID
-nudgePosition : Int -> (Float, Float) -> (Float, Float)
-nudgePosition nodeId (x, y) =
-    case nodeId of
-        2 ->
-            -- Move up and left
-            ( x - 120, y - 60 )
-
-        4 ->
-            -- Move down and right
-            ( x + 80, y + 60 )
-
-        5 ->
-            -- Move up
-            (x, y - 60)
-
-        6 ->
-            -- Move up and left
-            ( x - 80, y - 60 )
-
-        8 ->
-            -- Move down and right
-            ( x + 120, y + 60 )
-
-        _ ->
-            ( x, y )
 
 -- Draws all edges on graph
     -- List of edges, dictionary for each ID of node, and list of edges to highlight
@@ -121,50 +81,90 @@ drawEdges edges positionsDict highlightEdges =
                     -- Find first position of edge in dictionary
                     ( x1Pos, y1Pos ) =
                         Dict.get edge.from positionsDict
-                            -- Default never used
                             |> Maybe.withDefault (0, 0)
 
-                    -- Find second position of edge in dictionary
+                    -- Find second position of edge in dectionary
                     ( x2Pos, y2Pos ) =
                         Dict.get edge.to positionsDict
-                            -- Default never used
                             |> Maybe.withDefault (0, 0)
 
-                    -- See if edge is in list to be highlighted
+                    -- Check if the edge is highlighted
                     isHighlighted =
-                        -- Bi-directional checking to ensure highlights
                         List.member (edge.from, edge.to) highlightEdges
                             || List.member (edge.to, edge.from) highlightEdges
 
                     color =
                         if isHighlighted then
-                            "#ff5722" -- Red if active
+                            "#ff5722" -- Red for active edges
                         else
                             "#adb5bd" -- Gray by default
 
-                    -- Midpoint of line to print weight
-                    midX =
-                        (x1Pos + x2Pos) / 2
+                    -- Find distance and direction of the edge
+                    dx = x2Pos - x1Pos
+                    dy = y2Pos - y1Pos
+                    dist = sqrt (dx * dx + dy * dy) + 0.1
 
-                    midY =
-                        (y1Pos + y2Pos) / 2
+                    -- Determine where text should be written on edge
+                    labelBias = 0.75
+                    gapSize = 15
 
+                    -- Gap position for text on edge
+                    gapX = x1Pos + dx * labelBias
+                    gapY = y1Pos + dy * labelBias
+
+                    -- Shorten values for edge
+                    shortenX = (dx / dist) * gapSize
+                    shortenY = (dy / dist) * gapSize
+
+                    -- 2 lines to represent edge with gap in-between them
+                    (x1New, y1New) = (gapX - shortenX, gapY - shortenY)
+                    (x2New, y2New) = (gapX + shortenX, gapY + shortenY)
+
+                    -- Angle of edge (write text in-line with edge)
+                    angleRad = atan2 dy dx
+
+                    -- Angle in degrees
+                    angleDeg =
+                        let
+                            rawAngle = angleRad * 180 / pi
+                        in
+
+                        -- Ensure no text is upside-down
+                        if rawAngle > 90 then
+                            rawAngle - 180
+                        else if rawAngle < -90 then
+                            rawAngle + 180
+                        else
+                            rawAngle
+
+                    -- Text for edge
                     edgeLabel =
                         Svg.text_
-                            [ x (String.fromFloat midX)
-                            , y (String.fromFloat (midY - 5))
+                            [ x (String.fromFloat gapX)
+                            -- Perfectly in-line with edge
+                            , y (String.fromFloat (gapY + 4))
                             , fill "#adb5bd"
                             , fontSize "12"
                             , textAnchor "middle"
+                            -- Rotate text to be in-line with edge line
+                            , Svg.Attributes.transform ("rotate(" ++ String.fromFloat angleDeg ++ " " ++ String.fromFloat gapX ++ " " ++ String.fromFloat gapY ++ ")")
                             ]
                             [ Svg.text (String.fromInt edge.weight) ]
                 in
-                -- Group line and text together as one element
-                    -- Add edges to g element for SVG to render
+                -- Render two solid lines with gap
                 Svg.g []
                     [ Svg.line
                         [ x1 (String.fromFloat x1Pos)
                         , y1 (String.fromFloat y1Pos)
+                        , x2 (String.fromFloat x1New)  -- First segment
+                        , y2 (String.fromFloat y1New)
+                        , stroke color
+                        , strokeWidth "2"
+                        ]
+                        []
+                    , Svg.line
+                        [ x1 (String.fromFloat x2New)  -- Second segment
+                        , y1 (String.fromFloat y2New)
                         , x2 (String.fromFloat x2Pos)
                         , y2 (String.fromFloat y2Pos)
                         , stroke color

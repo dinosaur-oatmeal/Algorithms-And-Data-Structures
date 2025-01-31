@@ -415,6 +415,16 @@ body {
 .insert-delete-row button:hover {
   background-color: #1769aa;
 }
+
+/* =========================================
+   Graph Styling
+   ========================================= */
+
+   .graph-page {
+    text-align: center;
+    margin: 20px auto;
+    width: 80%;
+  }
     
 /* =========================================
    SMALLER MEDIA
