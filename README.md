@@ -60,26 +60,28 @@ The following sorting algorithms are included:
 - **Space Complexity**: $O(1)$ for iterative implementation, $O(\log n)$ for recursive implementation.
 
 ### **Trees**
-#### **Tree Traversals**
+
+#### **1. Tree Traversals**
 - **In-order Traversal**: Visits nodes in ascending order.
 - **Pre-order Traversal**: Visits the root node first, then the left subtree, and finally the right subtree.
 - **Post-order Traversal**: Visits the left subtree, the right subtree, and then the root node.
-  
+
+#### **2. Heaps**:
+- **Min-Heaps**: supports insertion of new nodes, deletion of the root node, and step-by-step heapify.
+- **Max-Heaps**: supports insertion of new nodes, deletion of the root node, and step-by-step heapify.
 ---
 
-## Upcoming Features
+## Work In Progress (WIP)
 
-### **Heaps**
-#### **Heap Data Structure** (Planned)
-- Visualizations for min-heaps and max-heaps, with heapify.
+#### **Shortest Path Algorithms**
+- **Dijkstra’s Algorithm**: Finds the shortest path from a source node to all other nodes in a weighted graph.
+
+## Upcoming Features
 
 ### **Graph Algorithms**
 #### **Graph Traversals** (Planned)
 - **Depth-First Search (DFS)**: Explores as far as possible along each branch before backtracking.
 - **Breadth-First Search (BFS)**: Explores all neighbors of a node before moving on to the next level.
-
-#### **Shortest Path Algorithms** (Planned)
-- **Dijkstra’s Algorithm**: Finds the shortest path from a source node to all other nodes in a weighted graph.
 
 #### **Minimum Spanning Tree** (Planned)
 - **Kruskal’s Algorithm**: Finds a minimum spanning tree using edge sorting.
