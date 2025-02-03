@@ -150,7 +150,7 @@ view model =
 
           -- Description text
         , div [ class "home-text" ]
-            [ text "Select and algorithm to learn about from the dropdown above." ]
+            [ text "Select an algorithm to walkthrough from the dropdowns above." ]
         ]
 
 -- HELPER to swap array elements
