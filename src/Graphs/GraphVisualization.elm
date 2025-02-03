@@ -31,7 +31,7 @@ view graph maybeCurrentNode visited traversedEdges finalRouteEdges running =
         [ svg
             -- Width and height for SVG frame
             [ width "1000"
-            , height "500"
+            , height "400"
             -- Ease into new colors
             , Svg.Attributes.style "transition: fill 0.6s ease"
             ]
@@ -45,14 +45,14 @@ view graph maybeCurrentNode visited traversedEdges finalRouteEdges running =
 nodePositions : Dict Int (Float, Float)
 nodePositions =
     Dict.fromList
-        [ (1, (200, 150))
-        , (2, (800, 150))
-        , (3, (200, 300))
-        , (4, (800, 300))
-        , (5, (500, 50))
-        , (6, (300, 400))
-        , (7, (700, 400))
-        , (8, (500, 250))
+        [ (1, (200, 125))
+        , (2, (800, 125))
+        , (3, (200, 275))
+        , (4, (800, 275))
+        , (5, (500, 25))
+        , (6, (300, 375))
+        , (7, (700, 375))
+        , (8, (500, 225))
         ]
 
 -- Builds a dictionary that stores node positions in the SVG frame

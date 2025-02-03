@@ -59,6 +59,7 @@ type alias Model =
     , treeTraversalModel : TreeTraversal.Model
     -- Call HeapType.elm model
     , heapTypeModel : HeapType.Model
+    -- Call Dijkstra.elm model
     , dijkstraModel : Dijkstra.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
@@ -696,6 +697,10 @@ subscriptions model =
         HeapType ->
             HeapType.subscriptions model.heapTypeModel
                 |> Sub.map HeapTypeMsg
+
+        Dijkstra ->
+            Dijkstra.subscriptions model.dijkstraModel
+                |> Sub.map DijkstraMsg
 
         -- Default to every 0.5 seconds if running flag True
             -- Used for running algorithms

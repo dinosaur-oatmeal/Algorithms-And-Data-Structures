@@ -6208,6 +6208,9 @@ var $author$project$Main$init = F3(
 		};
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
+var $author$project$Main$DijkstraMsg = function (a) {
+	return {$: 'DijkstraMsg', a: a};
+};
 var $author$project$Main$HeapTypeMsg = function (a) {
 	return {$: 'HeapTypeMsg', a: a};
 };
@@ -6496,6 +6499,12 @@ var $elm$time$Time$every = F2(
 var $elm$core$Platform$Sub$map = _Platform_map;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$Graphs$Dijkstra$Tick = function (a) {
+	return {$: 'Tick', a: a};
+};
+var $author$project$Graphs$Dijkstra$subscriptions = function (model) {
+	return model.running ? A2($elm$time$Time$every, 2000, $author$project$Graphs$Dijkstra$Tick) : $elm$core$Platform$Sub$none;
+};
 var $author$project$MainComponents$Home$SwapNeeded = {$: 'SwapNeeded'};
 var $author$project$MainComponents$Home$TypingSimulation = {$: 'TypingSimulation'};
 var $elm$core$Basics$always = F2(
@@ -6546,12 +6555,14 @@ var $author$project$Main$subscriptions = function (model) {
 				$elm$core$Platform$Sub$map,
 				$author$project$Main$HeapTypeMsg,
 				$author$project$Trees$HeapType$subscriptions(model.heapTypeModel));
+		case 'Dijkstra':
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$DijkstraMsg,
+				$author$project$Graphs$Dijkstra$subscriptions(model.dijkstraModel));
 		default:
 			return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
-};
-var $author$project$Main$DijkstraMsg = function (a) {
-	return {$: 'DijkstraMsg', a: a};
 };
 var $author$project$Main$GotOrderedArray = function (a) {
 	return {$: 'GotOrderedArray', a: a};
@@ -9712,6 +9723,7 @@ var $author$project$Graphs$Dijkstra$getPath = F3(
 			}
 		}
 	});
+var $elm$html$Html$li = _VirtualDom_node('li');
 var $author$project$Graphs$Dijkstra$pairs = function (list) {
 	if (list.b && list.b.b) {
 		var a = list.a;
@@ -9729,33 +9741,34 @@ var $author$project$Graphs$Dijkstra$pairs = function (list) {
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Graphs$GraphVisualization$nodePositions = $elm$core$Dict$fromList(
 	_List_fromArray(
 		[
 			_Utils_Tuple2(
 			1,
-			_Utils_Tuple2(200, 150)),
+			_Utils_Tuple2(200, 125)),
 			_Utils_Tuple2(
 			2,
-			_Utils_Tuple2(800, 150)),
+			_Utils_Tuple2(800, 125)),
 			_Utils_Tuple2(
 			3,
-			_Utils_Tuple2(200, 300)),
+			_Utils_Tuple2(200, 275)),
 			_Utils_Tuple2(
 			4,
-			_Utils_Tuple2(800, 300)),
+			_Utils_Tuple2(800, 275)),
 			_Utils_Tuple2(
 			5,
-			_Utils_Tuple2(500, 50)),
+			_Utils_Tuple2(500, 25)),
 			_Utils_Tuple2(
 			6,
-			_Utils_Tuple2(300, 400)),
+			_Utils_Tuple2(300, 375)),
 			_Utils_Tuple2(
 			7,
-			_Utils_Tuple2(700, 400)),
+			_Utils_Tuple2(700, 375)),
 			_Utils_Tuple2(
 			8,
-			_Utils_Tuple2(500, 250))
+			_Utils_Tuple2(500, 225))
 		]));
 var $author$project$Graphs$GraphVisualization$buildPositionsDict = function (nodes) {
 	return A3(
@@ -9989,7 +10002,7 @@ var $author$project$Graphs$GraphVisualization$view = F6(
 					_List_fromArray(
 						[
 							$elm$svg$Svg$Attributes$width('1000'),
-							$elm$svg$Svg$Attributes$height('500'),
+							$elm$svg$Svg$Attributes$height('400'),
 							$elm$svg$Svg$Attributes$style('transition: fill 0.6s ease')
 						]),
 					_Utils_ap(
@@ -10180,29 +10193,21 @@ var $author$project$Graphs$Dijkstra$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						'Step: ' + $elm$core$String$fromInt(model.index))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Source: ' + A2(
+						'Current Step: ' + ($elm$core$String$fromInt(model.index) + (' | Source: ' + (A2(
 							$elm$core$Maybe$withDefault,
 							'None',
-							A2($elm$core$Maybe$map, $elm$core$String$fromInt, model.source)))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Target: ' + A2(
+							A2($elm$core$Maybe$map, $elm$core$String$fromInt, model.source)) + (' | Target: ' + (A2(
 							$elm$core$Maybe$withDefault,
 							'None',
-							A2($elm$core$Maybe$map, $elm$core$String$fromInt, model.target)))
+							A2($elm$core$Maybe$map, $elm$core$String$fromInt, model.target)) + function () {
+							var _v0 = currentState.finalCost;
+							if (_v0.$ === 'Just') {
+								var cost = _v0.a;
+								return ' | Total Cost: ' + $elm$core$String$fromInt(cost);
+							} else {
+								return '';
+							}
+						}()))))))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -10213,19 +10218,59 @@ var $author$project$Graphs$Dijkstra$view = function (model) {
 					])),
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
 				_List_fromArray(
 					[
-						function () {
-						var _v0 = currentState.finalCost;
-						if (_v0.$ === 'Just') {
-							var cost = _v0.a;
-							return $elm$html$Html$text(
-								'Total Cost: ' + $elm$core$String$fromInt(cost));
-						} else {
-							return $elm$html$Html$text('');
-						}
-					}()
+						$elm$html$Html$Attributes$class('variable-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Current Step: number of steps taken in the traversal.')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Source: the starting node in the graph for the search.')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Target: the node we\'re trying to find the optimal path to from the source node.')
+									])),
+								A2(
+								$elm$html$Html$ul,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$li,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Total Cost: final cost to get from source node to the target node.')
+											]))
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Queue: list in ascending order of weights of next edges to search.')
+									]))
+							]))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -10405,7 +10450,6 @@ var $author$project$MainComponents$Home$view = function (model) {
 					]))
 			]));
 };
-var $elm$html$Html$li = _VirtualDom_node('li');
 var $author$project$SortingAlgorithms$SortingVisualization$renderBar = F6(
 	function (sorted, outerIndex, currentIndex, maybeMinIndex, position, value) {
 		var isOuter = _Utils_eq(position, outerIndex);
@@ -10505,7 +10549,6 @@ var $author$project$SortingAlgorithms$SortingVisualization$renderComparison = F6
 						$elm$core$Array$toList(array)))
 				]));
 	});
-var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$SearchAlgorithms$BinarySearch$view = F3(
 	function (track, running, toMsg) {
 		return A2(

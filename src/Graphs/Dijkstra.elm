@@ -1,7 +1,7 @@
 module Graphs.Dijkstra exposing (..)
 
 -- HTML Imports
-import Html exposing (Html, div, button, text)
+import Html exposing (Html, div, button, text, ul, li)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 
@@ -237,19 +237,31 @@ view model =
         , Controls.view model.running convertControlMsg
 
         -- Variables
-        , div [] [ text ("Step: " ++ String.fromInt model.index) ]
-        , div [] [ text ("Source: " ++ (Maybe.withDefault "None" (Maybe.map String.fromInt model.source))) ]
-        , div [] [ text ("Target: " ++ (Maybe.withDefault "None" (Maybe.map String.fromInt model.target))) ]
-        , div [] [ text ("Queue: " ++ queueText) ]
-        -- Track total cost from source -> target once target is found
-        , div []
-            [ case currentState.finalCost of
-                Just cost ->
-                    text ("Total Cost: " ++ String.fromInt cost)
+        , div [] [ text ("Current Step: " ++ String.fromInt model.index
+                        ++ " | Source: " ++ (Maybe.withDefault "None" (Maybe.map String.fromInt model.source))
+                        ++ " | Target: " ++ (Maybe.withDefault "None" (Maybe.map String.fromInt model.target))
+                        -- Track total cost from source -> target once target is found
+                        ++ case currentState.finalCost of
+                            Just cost ->
+                                " | Total Cost: " ++ String.fromInt cost
 
-                Nothing ->
-                    text ""
-            ]
+                            _ ->
+                                ""
+                    )
+                ]
+        , div [] [ text ("Queue: " ++ queueText) ]
+        
+        -- Breakdown
+        , div [ class "variable-list" ]
+              [ ul []
+                  [ li [] [ text "Current Step: number of steps taken in the traversal." ]
+                  , li [] [ text "Source: the starting node in the graph for the search." ]
+                  , li [] [ text "Target: the node we're trying to find the optimal path to from the source node." ]
+                  , ul []
+                          [ li [] [ text "Total Cost: final cost to get from source node to the target node." ] ]
+                  , li [] [ text "Queue: list in ascending order of weights of next edges to search." ]
+                  ]
+              ]
 
         -- Big-O Notation
         , div [ class "big-o-title" ] [ text "Big(O) Notation" ]
