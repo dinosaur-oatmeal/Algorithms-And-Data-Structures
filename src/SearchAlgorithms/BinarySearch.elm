@@ -97,8 +97,10 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Binary Search efficiently finds a target value within a sorted array by repeatedly dividing the search interval in half.
-              If the value of the midpoint is less than the target, it searches the right half; otherwise, it searches the left half.""" ]
+              [ text """Binary Search is more efficient than linear search but requires the array to be sorted.
+                The algorithm functions by repeatedly dividing the search range in half,
+                comparing whether the target value is less than or greater than the current pointer value.
+                If the current pointer value is less than the target, it searches the right half; otherwise, it searches the left half.""" ]
 
         -- Graph
         , Visualization.renderComparison

@@ -114,11 +114,12 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Quick Sort follows a divide and conquer approach.
-              It selects an element of the array to be a pivot. In this example, it's the rightmost element.
-              Then, the algorithm partitions the array and rearranges around the pivot.
-              At the end of this step, all elements smaller than the pivot are to the left of it and larger are to the right.
-              Finally, the sort is recursively called while reducing the size of the subarrays until there is only one element in the left subarray.""" ]
+              [ text """Quick Sort selects a pivot element and partitions the array around it
+                (Rightmost element in this example).
+                During partitioning, elements that are smaller than the pivot are to the left
+                and elements larger than the pivot are to the right.
+                The algorithm recursively applies the partitioning to the left and right subarrays
+                until the greater array is fully sorted (one element in left subarray).""" ]
 
           -- Graph
         , renderComparison

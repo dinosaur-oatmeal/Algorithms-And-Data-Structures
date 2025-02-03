@@ -444,10 +444,14 @@ getDescription : HeapType -> String
 getDescription heapType =
     case heapType of
         MinHeap ->
-            "Min Heap: The root is always the smallest element. Elements get larger as the tree levels get deeper."
+            """Min Heap: A binary tree where the smallest element is always the root.
+                Elements get larger as the tree levels get deeper,
+                ensuring parent nodes are smaller than their children."""
 
         MaxHeap ->
-            "Max Heap: The root is always the largest element. Elements get smaller as the tree levels get deeper."
+            """Max Heap: A binary tree where the largest element is always the root.
+                Elements get smaller as the tree levels get deeper,
+                ensuring parent nodes are larger than their children."""
 
 
 -- Converts tree to an array (breadth-first)

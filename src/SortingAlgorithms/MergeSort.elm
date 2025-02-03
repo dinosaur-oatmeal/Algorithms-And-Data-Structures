@@ -127,10 +127,12 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Merge Sort is a divide and conquer sorting algorithm.
-              First, it divides the array into subarrays until it can no longer be divided.
-              Then, it conquers by sorting each subarray individually.
-              Finally, it merges the subarray together until the array is sorted.""" ]
+              [ text """Merge Sort is a divide and conquer sorting algorithm
+                that recursively splits an array into smaller subarrays.
+                This splitting occurs until each subarray contains one element.
+                Then, it merges these subarrays together in sorted order.
+                Every merge step ensures that the combined subarrays are sorted,
+                resulting in the larger array being fully sorted.""" ]
 
           -- Graph
         , renderComparison

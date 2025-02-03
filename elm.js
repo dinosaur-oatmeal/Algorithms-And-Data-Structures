@@ -10170,7 +10170,7 @@ var $author$project$Graphs$Dijkstra$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Dijkstra\'s algorithm is a graph search algorithm used to find the shortest path between nodes in a weighted graph.')
+						$elm$html$Html$text('Dijkstra\'s algorithm traverses weighted graphs, finding the shortest path between a source node and target node.\r\n                This algorithm implements a priority queue, selecting the closest unvisited node until the target node is found.\r\n                By utilizing a priority queue, the most optimal path between the source node and target node is always found first.')
 					])),
 				A6($author$project$Graphs$GraphVisualization$view, currentState.graph, currentState.currentNode, currentState.visitedNodes, currentState.traversedEdges, finalRouteEdges, false),
 				A2($author$project$MainComponents$Controls$view, model.running, $author$project$Graphs$Dijkstra$convertControlMsg),
@@ -10401,7 +10401,7 @@ var $author$project$MainComponents$Home$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Select and algorithm to learn about from the dropdown above.')
+						$elm$html$Html$text('Select an algorithm to walkthrough from the dropdowns above.')
 					]))
 			]));
 };
@@ -10534,7 +10534,7 @@ var $author$project$SearchAlgorithms$BinarySearch$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Binary Search efficiently finds a target value within a sorted array by repeatedly dividing the search interval in half.\r\n              If the value of the midpoint is less than the target, it searches the right half; otherwise, it searches the left half.')
+							$elm$html$Html$text('Binary Search is more efficient than linear search but requires the array to be sorted.\r\n                The algorithm functions by repeatedly dividing the search range in half,\r\n                comparing whether the target value is less than or greater than the current pointer value.\r\n                If the current pointer value is less than the target, it searches the right half; otherwise, it searches the left half.')
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
@@ -10723,7 +10723,7 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Linear Search is the easiest searching algorithm.\r\n              It starts at the first element in the list and searches the list until it finds the target element or hits the end of the list.\r\n              If the target element in found, the searching stops and sees that the element is in the list.')
+							$elm$html$Html$text('As the easiest searching algorithm to implement,\r\n              linear search starts at the first element in the array and searches until it finds the target element or hits the end of the array.\r\n              If the target element in found, the algorithm stops and returns the index of the element.\r\n              If the element isn\'t found, the algorithm returns -1 indicating it\'s not in the array.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -10896,7 +10896,7 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort is a simple algorithm that steps through an array one element at a time.\r\n                  It compares adjacent elements and swaps them if the right one is less than the left one.\r\n                  It does this repeatedly until the array is sorted.')
+							$elm$html$Html$text('Bubble Sort is one of the simplest sorting algorithms. It steps through the array one element at a time,\r\n                comparing and swapping adjacent elements if the right one is less than the left one.\r\n                It does this repeatedly until the array is sorted.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11101,7 +11101,7 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.\r\n              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
+							$elm$html$Html$text('Insertion Sort moves elements from their current locations toward the beginning of the array.\r\n                An element is moved until a smaller element is found in the sorted section of the array.\r\n                This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11284,7 +11284,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Merge Sort is a divide and conquer sorting algorithm.\r\n              First, it divides the array into subarrays until it can no longer be divided.\r\n              Then, it conquers by sorting each subarray individually.\r\n              Finally, it merges the subarray together until the array is sorted.')
+							$elm$html$Html$text('Merge Sort is a divide and conquer sorting algorithm\r\n                that recursively splits an array into smaller subarrays.\r\n                This splitting occurs until each subarray contains one element.\r\n                Then, it merges these subarrays together in sorted order.\r\n                Every merge step ensures that the combined subarrays are sorted,\r\n                resulting in the larger array being fully sorted.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11467,7 +11467,7 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Quick Sort follows a divide and conquer approach.\r\n              It selects an element of the array to be a pivot. In this example, it\'s the rightmost element.\r\n              Then, the algorithm partitions the array and rearranges around the pivot.\r\n              At the end of this step, all elements smaller than the pivot are to the left of it and larger are to the right.\r\n              Finally, the sort is recursively called while reducing the size of the subarrays until there is only one element in the left subarray.')
+							$elm$html$Html$text('Quick Sort selects a pivot element and partitions the array around it\r\n                (Rightmost element in this example).\r\n                During partitioning, elements that are smaller than the pivot are to the left\r\n                and elements larger than the pivot are to the right.\r\n                The algorithm recursively applies the partitioning to the left and right subarrays\r\n                until the greater array is fully sorted (one element in left subarray).')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11650,7 +11650,7 @@ var $author$project$SortingAlgorithms$SelectionSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.\r\n                  Once the smallest element is found, it swaps with the current element before moving on.\r\n                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.')
+							$elm$html$Html$text('Selection Sort loops through the entire array, tracking the location of the smallest found element.\r\n                Once the pass over the array is complete, the smallest element is swapped with the current location being looked at.\r\n                As a result, there is always a sorted and unsorted section of the array on either side of the current index.')
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
@@ -11851,7 +11851,7 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Shell Sort is an optimization of Insertion Sort.\r\n              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.\r\n              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.\r\n              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).')
+							$elm$html$Html$text('Shell Sort is an optimized version of insertion sort,\r\n                and works by sorting elements that are far apart in the array first.\r\n                As the algorithm runs, the gap between elements being compared reduces,\r\n                resulting in elements moving toward their correct positions more quickly than insertion sort.')
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
@@ -12048,9 +12048,9 @@ var $author$project$Trees$HeapType$convertMsg = function (control) {
 };
 var $author$project$Trees$HeapType$getDescription = function (heapType) {
 	if (heapType.$ === 'MinHeap') {
-		return 'Min Heap: The root is always the smallest element. Elements get larger as the tree levels get deeper.';
+		return 'Min Heap: A binary tree where the smallest element is always the root.\r\n                Elements get larger as the tree levels get deeper,\r\n                ensuring parent nodes are smaller than their children.';
 	} else {
-		return 'Max Heap: The root is always the largest element. Elements get smaller as the tree levels get deeper.';
+		return 'Max Heap: A binary tree where the largest element is always the root.\r\n                Elements get smaller as the tree levels get deeper,\r\n                ensuring parent nodes are larger than their children.';
 	}
 };
 var $elm$html$Html$input = _VirtualDom_node('input');
@@ -12612,11 +12612,11 @@ var $author$project$Trees$TreeTraversal$convertMsg = function (msg) {
 var $author$project$Trees$TreeTraversal$getDescription = function (traversal) {
 	switch (traversal.$) {
 		case 'Preorder':
-			return 'Preorder Traversal visits nodes in the order: Root, Left Subtree, Right Subtree. It\'s useful for creating a copy of the tree.';
+			return 'Preorder Traversals visit the nodes in the order: Root, Left Child, Right Child.\r\n                This type of traversal is useful for creating a copy of the tree\r\n                because it starts at the topmost root node and works toward the leaf nodes.';
 		case 'Inorder':
-			return 'Inorder Traversal visits nodes in the order: Left Subtree, Root, Right Subtree. It\'s useful for binary search trees.';
+			return 'Inorder Traversal visit the nodes in the order: Left Child, Root, Right Child.\r\n                This type of traversal is useful for binary search trees\r\n                because it traverses the tree in ascending/descending for sorted trees.';
 		default:
-			return 'Postorder Traversal visits nodes in the order: Left Subtree, Right Subtree, Root. It\'s useful for deleting trees.';
+			return 'Postorder Traversal visits nodes in the order: Left Child, Right Child, Root.\r\n                This type of traversal is useful for deleting trees\r\n                because it starts at the leaf nodes and works toward the root of the tree.';
 	}
 };
 var $author$project$Trees$TreeTraversal$view = function (model) {

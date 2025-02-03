@@ -100,10 +100,10 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Shell Sort is an optimization of Insertion Sort.
-              It utilizes a gap variable to move element larger than the gap to the right side of if and elements less than the gap to the left side.
-              Once the gap is decremented to 1, a final pass is done to move every element into the correct position.
-              This is optimal over Insertion Sort because elements far apart in the array can be swapped in O(1) time rather than O(n).""" ]
+              [ text """Shell Sort is an optimized version of insertion sort,
+                and works by sorting elements that are far apart in the array first.
+                As the algorithm runs, the gap between elements being compared reduces,
+                resulting in elements moving toward their correct positions more quickly than insertion sort.""" ]
 
           -- Graph
         , renderComparison

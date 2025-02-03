@@ -220,7 +220,9 @@ view model =
 
         -- Description
         , div [ class "description" ]
-            [ text "Dijkstra's algorithm is a graph search algorithm used to find the shortest path between nodes in a weighted graph." ]
+            [ text """Dijkstra's algorithm traverses weighted graphs, finding the shortest path between a source node and target node.
+                This algorithm implements a priority queue, selecting the closest unvisited node until the target node is found.
+                By utilizing a priority queue, the most optimal path between the source node and target node is always found first.""" ]
         
         -- Pass data needed to render SVG
         , Visualization.view

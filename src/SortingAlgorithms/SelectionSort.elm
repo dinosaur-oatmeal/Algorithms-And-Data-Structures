@@ -88,9 +88,9 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Selection Sort starts at the first element in the array and looks through the entire array to find the smallest element.
-                  Once the smallest element is found, it swaps with the current element before moving on.
-                  This type of algorithnm allows there to be a sorted section of the array and unsorted section of the array.""" ]
+              [ text """Selection Sort loops through the entire array, tracking the location of the smallest found element.
+                Once the pass over the array is complete, the smallest element is swapped with the current location being looked at.
+                As a result, there is always a sorted and unsorted section of the array on either side of the current index.""" ]
 
           -- Graph
         , renderComparison

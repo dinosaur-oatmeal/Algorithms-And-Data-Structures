@@ -333,13 +333,19 @@ getDescription : TraversalType -> String
 getDescription traversal =
     case traversal of
         Preorder ->
-            "Preorder Traversal visits nodes in the order: Root, Left Subtree, Right Subtree. It's useful for creating a copy of the tree."
+            """Preorder Traversals visit the nodes in the order: Root, Left Child, Right Child.
+                This type of traversal is useful for creating a copy of the tree
+                because it starts at the topmost root node and works toward the leaf nodes."""
 
         Inorder ->
-            "Inorder Traversal visits nodes in the order: Left Subtree, Root, Right Subtree. It's useful for binary search trees."
+            """Inorder Traversal visit the nodes in the order: Left Child, Root, Right Child.
+                This type of traversal is useful for binary search trees
+                because it traverses the tree in ascending/descending for sorted trees."""
 
         Postorder ->
-            "Postorder Traversal visits nodes in the order: Left Subtree, Right Subtree, Root. It's useful for deleting trees."
+            """Postorder Traversal visits nodes in the order: Left Child, Right Child, Root.
+                This type of traversal is useful for deleting trees
+                because it starts at the leaf nodes and works toward the root of the tree."""
 
 -- Convert messages from Controls.elm to local messages
 convertMsg : ControlMsg -> Msg

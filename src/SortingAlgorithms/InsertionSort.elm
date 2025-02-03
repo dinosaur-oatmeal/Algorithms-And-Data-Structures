@@ -76,8 +76,9 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Insertion Sort moves an element toward the beginning of the array until a smaller element is found in the sorted section of the array.
-              This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.""" ]
+              [ text """Insertion Sort moves elements from their current locations toward the beginning of the array.
+                An element is moved until a smaller element is found in the sorted section of the array.
+                This allows the algorithm to move elements into their correct relative positions one at a time until the array is sorted.""" ]
 
           -- Graph
         , renderComparison
