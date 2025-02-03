@@ -20,8 +20,8 @@ import Dict exposing (Dict)
 import MainComponents.Structs exposing (Graph, GraphNode, Edge)
 
 -- VIEW
-view : Graph -> Maybe Int -> List Int -> List (Int, Int) -> Bool -> Html msg
-view graph maybeCurrentNode visited highlightEdges running =
+view : Graph -> Maybe Int -> List Int -> List (Int, Int) -> List (Int, Int) -> Bool -> Html msg
+view graph maybeCurrentNode visited traversedEdges finalRouteEdges running =
     let
         -- Build dictionary for each node that stores (x, y) position in SVG frame
         positionsDict =
@@ -36,7 +36,7 @@ view graph maybeCurrentNode visited highlightEdges running =
             , Svg.Attributes.style "transition: fill 0.6s ease"
             ]
             -- Call functions to draw edges and nodes in the SVG frame
-            ( drawEdges graph.edges positionsDict highlightEdges
+            ( drawEdges graph.edges positionsDict traversedEdges finalRouteEdges
                 ++ drawNodes graph.nodes positionsDict maybeCurrentNode visited
             )
         ]
@@ -72,8 +72,8 @@ buildPositionsDict nodes =
 
 -- Draws all edges on graph
     -- List of edges, dictionary for each ID of node, and list of edges to highlight
-drawEdges : List Edge -> Dict Int (Float, Float) -> List (Int, Int) -> List (Svg msg)
-drawEdges edges positionsDict highlightEdges =
+drawEdges : List Edge -> Dict Int (Float, Float) -> List (Int, Int) -> List (Int, Int) -> List (Svg msg)
+drawEdges edges positionsDict traversedEdges finalRouteEdges =
     edges
         |> List.map
             (\edge ->
@@ -87,17 +87,24 @@ drawEdges edges positionsDict highlightEdges =
                     ( x2Pos, y2Pos ) =
                         Dict.get edge.to positionsDict
                             |> Maybe.withDefault (0, 0)
+                            
+                    -- Check if the edge is in the final route.
+                    isFinalRoute =
+                        List.member (edge.from, edge.to) finalRouteEdges
+                            || List.member (edge.to, edge.from) finalRouteEdges
 
-                    -- Check if the edge is highlighted
-                    isHighlighted =
-                        List.member (edge.from, edge.to) highlightEdges
-                            || List.member (edge.to, edge.from) highlightEdges
+                     -- Otherwise, check if the edge was traversed.
+                    isTraversed =
+                        List.member (edge.from, edge.to) traversedEdges
+                            || List.member (edge.to, edge.from) traversedEdges
 
                     color =
-                        if isHighlighted then
-                            "#ff5722" -- Red for active edges
+                        if isFinalRoute then
+                            "#81C784"  -- Final route highlighted in green.
+                        else if isTraversed then
+                            "#ff5722"  -- Traversed edges (but not in final route) in red.
                         else
-                            "#adb5bd" -- Gray by default
+                            "#adb5bd"  -- All others in gray.
 
                     -- Find distance and direction of the edge
                     dx = x2Pos - x1Pos

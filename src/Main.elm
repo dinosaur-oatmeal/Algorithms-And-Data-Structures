@@ -122,8 +122,8 @@ type Msg
     | GotRandomTarget Int
     -- Initializes random tree (traversals and heaps)
     | GotRandomTree (Tree)
-    -- Initializes random graph (Dijkstra, Prim, and Kruskal)
-    | GotRandomGraph (Graph)
+    -- Initializes random graph with source and goal int (Dijkstra, Prim, and Kruskal)
+    | GotRandomGraph (Graph, Int, Int)
 
 -- PARSER (define mapping between URL and Route types)
 routeParser : Parser.Parser (Route -> a) a
@@ -661,16 +661,17 @@ update msg model =
                     ( model, Cmd.none )
 
         -- Cmd.map to return a main model like other cases
-        GotRandomGraph newGraph ->
+        GotRandomGraph triplet ->
             case model.currentPage of
-                -- Generate new graph in Dijkstra
                 Dijkstra ->
                     let
-                        (newGraphModel, graphCmd) =
-                            Dijkstra.update (Dijkstra.SetGraph newGraph) model.dijkstraModel
+                        ( newDijkstraModel, cmd ) =
+                            -- Triplet is a (Graph, Int, Int) to be passed to SetGraph
+                            Dijkstra.update (Dijkstra.SetGraph triplet) model.dijkstraModel
                     in
-                    ( { model | dijkstraModel = newGraphModel }
-                    , Cmd.map DijkstraMsg graphCmd
+                    -- Update local model
+                    ( { model | dijkstraModel = newDijkstraModel }
+                    , Cmd.map DijkstraMsg cmd
                     )
 
                 -- Default to not not updating anything
@@ -836,7 +837,7 @@ viewHeader =
 
             -- DIJKSTRA WIP
 
-            {-
+            
             -- Graphs
             , div [ class "dropdown-group" ]
                 [ div [ class "dropdown-label" ] [ text "Graphs" ]
@@ -845,7 +846,7 @@ viewHeader =
                         [ button [ onClick (SelectAlgorithm "Dijkstra") ] [ text "Dijkstra's" ] ]
                     ]
                 ]
-            -}
+            
             ]
         ]
 

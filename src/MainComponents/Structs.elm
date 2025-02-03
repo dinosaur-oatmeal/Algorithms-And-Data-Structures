@@ -152,12 +152,12 @@ type alias Graph =
     }
 
 -- Graph generator
-randomGraphGenerator : Random.Generator Graph
+randomGraphGenerator : Random.Generator (Graph, Int, Int)
 randomGraphGenerator =
     let
-        -- Between 4 and 8 nodes in graph
+        -- Between 5 and 8 nodes in graph
         sizeGenerator =
-            Random.int 4 8
+            Random.int 5 8
     in
     Random.andThen
         (\n ->
@@ -173,7 +173,7 @@ randomGraphGenerator =
                 -- Generate a random weight for each pair (edges)
                 edgeGenerators =
                     List.map
-                        (\(a, b) ->
+                        (\( a, b ) ->
                             Random.int 15 99
                                 |> Random.map (\w -> { from = a, to = b, weight = w })
                         )
@@ -194,12 +194,48 @@ randomGraphGenerator =
                         extraEdgesGenerator =
                             randomSubset (extraEdgeProbability n) leftover
                     in
-                    Random.map
+                    Random.andThen
                         (\extraEdges ->
-                            { nodes = nodes
-                            -- Add required (mstEdges) with random (extraEdges) for all edges in final graph
-                            , edges = mstEdges ++ extraEdges
-                            }
+                            let
+                                graph =
+                                    { nodes = nodes
+                                    -- Add required (mstEdges) with random (extraEdges) for all edges in final graph
+                                    , edges = mstEdges ++ extraEdges
+                                    }
+
+                                -- Store the number of nodes in the graph
+                                nNodes = List.length nodes
+                            in
+                            -- Ensure there are nodes (always should be)
+                            if nNodes > 0 then
+                                Random.andThen
+                                    -- Grab a random index to start at (5 through 8)
+                                    (\sourceIndex ->
+                                        Random.int 1 (nNodes - 1)
+                                            |> Random.map
+                                                (\offset ->
+                                                    let
+                                                        -- Grab a target index that is non-zero
+                                                        targetIndex =
+                                                            modBy nNodes (sourceIndex + offset)
+
+                                                        sourceId =
+                                                            (List.head (List.drop sourceIndex nodes))
+                                                                |> Maybe.map .id
+                                                                |> Maybe.withDefault 1
+
+                                                        targetId =
+                                                            (List.head (List.drop targetIndex nodes))
+                                                                |> Maybe.map .id
+                                                                |> Maybe.withDefault 1
+                                                    in
+                                                    ( graph, sourceId, targetId )
+                                                )
+                                    )
+                                    (Random.int 0 (nNodes - 1))
+                            -- In the graph is empty (never happens)
+                            else
+                                Random.constant ( graph, 1, 1 )
                         )
                         extraEdgesGenerator
                 )
@@ -215,9 +251,9 @@ extraEdgeProbability n =
     else if n == 5 then
         0.8
     else if n == 6 then
-        0.5
+        0.7
     else if n == 7 then
-        0.4
+        0.5
     else
         0.3
 

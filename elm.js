@@ -5320,7 +5320,9 @@ var $author$project$Graphs$Dijkstra$initModel = {
 	dijkstraSteps: _List_Nil,
 	graph: {edges: _List_Nil, nodes: _List_Nil},
 	index: 0,
-	running: false
+	running: false,
+	source: $elm$core$Maybe$Nothing,
+	target: $elm$core$Maybe$Nothing
 };
 var $author$project$MainComponents$Home$Dark = {$: 'Dark'};
 var $author$project$MainComponents$Home$initModel = {
@@ -7523,8 +7525,23 @@ var $elm$random$Random$andThen = F2(
 				return genB(newSeed);
 			});
 	});
+var $elm$random$Random$constant = function (value) {
+	return $elm$random$Random$Generator(
+		function (seed) {
+			return _Utils_Tuple2(value, seed);
+		});
+};
 var $author$project$MainComponents$Structs$extraEdgeProbability = function (n) {
-	return (n < 5) ? 1 : ((n === 5) ? 0.8 : ((n === 6) ? 0.5 : ((n === 7) ? 0.4 : 0.3)));
+	return (n < 5) ? 1 : ((n === 5) ? 0.8 : ((n === 6) ? 0.7 : ((n === 7) ? 0.5 : 0.3)));
+};
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
 };
 var $elm$core$Bitwise$xor = _Bitwise_xor;
 var $elm$random$Random$peel = function (_v0) {
@@ -7644,12 +7661,17 @@ var $author$project$MainComponents$Structs$kruskalMST = F2(
 			$elm$core$List$reverse(mst),
 			leftover);
 	});
-var $elm$random$Random$constant = function (value) {
-	return $elm$random$Random$Generator(
-		function (seed) {
-			return _Utils_Tuple2(value, seed);
-		});
-};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -7770,7 +7792,7 @@ var $elm_community$random_extra$Random$Extra$sequence = A2(
 	$elm$random$Random$map2($elm$core$List$cons),
 	$elm$random$Random$constant(_List_Nil));
 var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
-	var sizeGenerator = A2($elm$random$Random$int, 4, 8);
+	var sizeGenerator = A2($elm$random$Random$int, 5, 8);
 	return A2(
 		$elm$random$Random$andThen,
 		function (n) {
@@ -7807,12 +7829,46 @@ var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
 						$author$project$MainComponents$Structs$extraEdgeProbability(n),
 						leftover);
 					return A2(
-						$elm$random$Random$map,
+						$elm$random$Random$andThen,
 						function (extraEdges) {
-							return {
+							var nNodes = $elm$core$List$length(nodes);
+							var graph = {
 								edges: _Utils_ap(mstEdges, extraEdges),
 								nodes: nodes
 							};
+							return (nNodes > 0) ? A2(
+								$elm$random$Random$andThen,
+								function (sourceIndex) {
+									return A2(
+										$elm$random$Random$map,
+										function (offset) {
+											var targetIndex = A2($elm$core$Basics$modBy, nNodes, sourceIndex + offset);
+											var targetId = A2(
+												$elm$core$Maybe$withDefault,
+												1,
+												A2(
+													$elm$core$Maybe$map,
+													function ($) {
+														return $.id;
+													},
+													$elm$core$List$head(
+														A2($elm$core$List$drop, targetIndex, nodes))));
+											var sourceId = A2(
+												$elm$core$Maybe$withDefault,
+												1,
+												A2(
+													$elm$core$Maybe$map,
+													function ($) {
+														return $.id;
+													},
+													$elm$core$List$head(
+														A2($elm$core$List$drop, sourceIndex, nodes))));
+											return _Utils_Tuple3(graph, sourceId, targetId);
+										},
+										A2($elm$random$Random$int, 1, nNodes - 1));
+								},
+								A2($elm$random$Random$int, 0, nNodes - 1)) : $elm$random$Random$constant(
+								_Utils_Tuple3(graph, 1, 1));
 						},
 						extraEdgesGenerator);
 				},
@@ -8162,9 +8218,6 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 		}
 	}
 };
-var $author$project$Graphs$Dijkstra$buildDijkstraSteps = function (g) {
-	return _List_Nil;
-};
 var $author$project$Graphs$Dijkstra$resetAndGenerateGraph = function (model) {
 	var cmd = A2($elm$random$Random$generate, $author$project$Graphs$Dijkstra$SetGraph, $author$project$MainComponents$Structs$randomGraphGenerator);
 	return _Utils_Tuple2(
@@ -8173,18 +8226,224 @@ var $author$project$Graphs$Dijkstra$resetAndGenerateGraph = function (model) {
 			{dijkstraSteps: _List_Nil, index: 0, running: false}),
 		cmd);
 };
+var $elm$core$Set$Set_elm_builtin = function (a) {
+	return {$: 'Set_elm_builtin', a: a};
+};
+var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $author$project$Graphs$Dijkstra$getNeighbors = F2(
+	function (graph, node) {
+		return A2(
+			$elm$core$List$map,
+			function (edge) {
+				return _Utils_eq(edge.from, node) ? _Utils_Tuple2(edge.to, edge.weight) : _Utils_Tuple2(edge.from, edge.weight);
+			},
+			A2(
+				$elm$core$List$filter,
+				function (edge) {
+					return _Utils_eq(edge.from, node) || _Utils_eq(edge.to, node);
+				},
+				graph.edges));
+	});
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var $elm$core$Dict$member = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$get, key, dict);
+		if (_v0.$ === 'Just') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+var $elm$core$Set$member = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return A2($elm$core$Dict$member, key, dict);
+	});
+var $author$project$Graphs$Dijkstra$simulate = F9(
+	function (graph, distances, previous, queue, visited, steps, traversedEdges, target, source) {
+		simulate:
+		while (true) {
+			if (!queue.b) {
+				return $elm$core$List$reverse(steps);
+			} else {
+				var sortedQueue = A2(
+					$elm$core$List$sortBy,
+					function (_v7) {
+						var dist = _v7.b;
+						return dist;
+					},
+					queue);
+				if (sortedQueue.b) {
+					var _v2 = sortedQueue.a;
+					var node = _v2.a;
+					var distance = _v2.b;
+					var rest = sortedQueue.b;
+					if (A2($elm$core$Set$member, node, visited)) {
+						var $temp$graph = graph,
+							$temp$distances = distances,
+							$temp$previous = previous,
+							$temp$queue = rest,
+							$temp$visited = visited,
+							$temp$steps = steps,
+							$temp$traversedEdges = traversedEdges,
+							$temp$target = target,
+							$temp$source = source;
+						graph = $temp$graph;
+						distances = $temp$distances;
+						previous = $temp$previous;
+						queue = $temp$queue;
+						visited = $temp$visited;
+						steps = $temp$steps;
+						traversedEdges = $temp$traversedEdges;
+						target = $temp$target;
+						source = $temp$source;
+						continue simulate;
+					} else {
+						var updateNeighbor = F2(
+							function (_v5, _v6) {
+								var neighbor = _v5.a;
+								var edgeWeight = _v5.b;
+								var upDist = _v6.a;
+								var upPrev = _v6.b;
+								var upQueue = _v6.c;
+								var oldDist = A2(
+									$elm$core$Maybe$withDefault,
+									10000,
+									A2($elm$core$Dict$get, neighbor, upDist));
+								var newDist = distance + edgeWeight;
+								return (_Utils_cmp(newDist, oldDist) < 0) ? _Utils_Tuple3(
+									A3($elm$core$Dict$insert, neighbor, newDist, upDist),
+									A3($elm$core$Dict$insert, neighbor, node, upPrev),
+									A2(
+										$elm$core$List$cons,
+										_Utils_Tuple2(neighbor, newDist),
+										upQueue)) : _Utils_Tuple3(upDist, upPrev, upQueue);
+							});
+						var newVisited = A2($elm$core$Set$insert, node, visited);
+						var neighbors = A2($author$project$Graphs$Dijkstra$getNeighbors, graph, node);
+						var maybeEdge = _Utils_eq(node, source) ? $elm$core$Maybe$Nothing : A2($elm$core$Dict$get, node, previous);
+						var newTraversedEdges = function () {
+							if (maybeEdge.$ === 'Just') {
+								var parent = maybeEdge.a;
+								return _Utils_ap(
+									traversedEdges,
+									_List_fromArray(
+										[
+											_Utils_Tuple2(parent, node)
+										]));
+							} else {
+								return traversedEdges;
+							}
+						}();
+						var _v3 = A3(
+							$elm$core$List$foldl,
+							updateNeighbor,
+							_Utils_Tuple3(distances, previous, _List_Nil),
+							neighbors);
+						var newDistances = _v3.a;
+						var newPrevious = _v3.b;
+						var newQueueEntries = _v3.c;
+						var newStep = {
+							currentNode: $elm$core$Maybe$Just(node),
+							distances: newDistances,
+							finalCost: _Utils_eq(node, target) ? $elm$core$Maybe$Just(distance) : $elm$core$Maybe$Nothing,
+							graph: graph,
+							options: sortedQueue,
+							previous: newPrevious,
+							traversedEdges: newTraversedEdges,
+							visitedNodes: $elm$core$Set$toList(newVisited)
+						};
+						var updatedQueue = _Utils_ap(rest, newQueueEntries);
+						if (_Utils_eq(node, target)) {
+							return $elm$core$List$reverse(
+								A2($elm$core$List$cons, newStep, steps));
+						} else {
+							var $temp$graph = graph,
+								$temp$distances = newDistances,
+								$temp$previous = newPrevious,
+								$temp$queue = updatedQueue,
+								$temp$visited = newVisited,
+								$temp$steps = A2($elm$core$List$cons, newStep, steps),
+								$temp$traversedEdges = newTraversedEdges,
+								$temp$target = target,
+								$temp$source = source;
+							graph = $temp$graph;
+							distances = $temp$distances;
+							previous = $temp$previous;
+							queue = $temp$queue;
+							visited = $temp$visited;
+							steps = $temp$steps;
+							traversedEdges = $temp$traversedEdges;
+							target = $temp$target;
+							source = $temp$source;
+							continue simulate;
+						}
+					}
+				} else {
+					return $elm$core$List$reverse(steps);
+				}
+			}
+		}
+	});
+var $author$project$Graphs$Dijkstra$simulateDijkstra = F3(
+	function (graph, source, target) {
+		var initialVisited = $elm$core$Set$empty;
+		var initialQueue = _List_fromArray(
+			[
+				_Utils_Tuple2(source, 0)
+			]);
+		var initialPrevious = $elm$core$Dict$empty;
+		var initialDistances = A3(
+			$elm$core$List$foldl,
+			F2(
+				function (node, dict) {
+					return A3(
+						$elm$core$Dict$insert,
+						node.id,
+						_Utils_eq(node.id, source) ? 0 : 10000,
+						dict);
+				}),
+			$elm$core$Dict$empty,
+			graph.nodes);
+		return A9($author$project$Graphs$Dijkstra$simulate, graph, initialDistances, initialPrevious, initialQueue, initialVisited, _List_Nil, _List_Nil, target, source);
+	});
 var $author$project$Graphs$Dijkstra$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'GenerateGraph':
 				return $author$project$Graphs$Dijkstra$resetAndGenerateGraph(model);
 			case 'SetGraph':
-				var newGraph = msg.a;
-				var steps = $author$project$Graphs$Dijkstra$buildDijkstraSteps(newGraph);
+				var _v1 = msg.a;
+				var newGraph = _v1.a;
+				var sourceId = _v1.b;
+				var targetId = _v1.c;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{dijkstraSteps: steps, graph: newGraph, index: 0, running: false}),
+						{
+							dijkstraSteps: A3($author$project$Graphs$Dijkstra$simulateDijkstra, newGraph, sourceId, targetId),
+							graph: newGraph,
+							index: 0,
+							running: false,
+							source: $elm$core$Maybe$Just(sourceId),
+							target: $elm$core$Maybe$Just(targetId)
+						}),
 					$elm$core$Platform$Cmd$none);
 			case 'DijkstraStep':
 				var totalSteps = $elm$core$List$length(model.dijkstraSteps);
@@ -8312,15 +8571,6 @@ var $author$project$MainComponents$Home$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
 var $author$project$Trees$HeapType$buildSubtree = F2(
 	function (arr, index) {
 		if (_Utils_cmp(
@@ -9390,20 +9640,20 @@ var $author$project$Main$update = F2(
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			default:
-				var newGraph = msg.a;
+				var triplet = msg.a;
 				var _v18 = model.currentPage;
 				if (_v18.$ === 'Dijkstra') {
 					var _v19 = A2(
 						$author$project$Graphs$Dijkstra$update,
-						$author$project$Graphs$Dijkstra$SetGraph(newGraph),
+						$author$project$Graphs$Dijkstra$SetGraph(triplet),
 						model.dijkstraModel);
-					var newGraphModel = _v19.a;
-					var graphCmd = _v19.b;
+					var newDijkstraModel = _v19.a;
+					var cmd = _v19.b;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{dijkstraModel: newGraphModel}),
-						A2($elm$core$Platform$Cmd$map, $author$project$Main$DijkstraMsg, graphCmd));
+							{dijkstraModel: newDijkstraModel}),
+						A2($elm$core$Platform$Cmd$map, $author$project$Main$DijkstraMsg, cmd));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
@@ -9442,6 +9692,39 @@ var $author$project$Graphs$Dijkstra$convertControlMsg = function (control) {
 			return $author$project$Graphs$Dijkstra$DijkstraStep;
 		default:
 			return $author$project$Graphs$Dijkstra$ResetGraph;
+	}
+};
+var $author$project$Graphs$Dijkstra$getPath = F3(
+	function (previous, source, target) {
+		if (_Utils_eq(source, target)) {
+			return _List_fromArray(
+				[source]);
+		} else {
+			var _v0 = A2($elm$core$Dict$get, target, previous);
+			if (_v0.$ === 'Just') {
+				var parent = _v0.a;
+				return _Utils_ap(
+					A3($author$project$Graphs$Dijkstra$getPath, previous, source, parent),
+					_List_fromArray(
+						[target]));
+			} else {
+				return _List_Nil;
+			}
+		}
+	});
+var $author$project$Graphs$Dijkstra$pairs = function (list) {
+	if (list.b && list.b.b) {
+		var a = list.a;
+		var _v1 = list.b;
+		var b = _v1.a;
+		var rest = _v1.b;
+		return A2(
+			$elm$core$List$cons,
+			_Utils_Tuple2(a, b),
+			$author$project$Graphs$Dijkstra$pairs(
+				A2($elm$core$List$cons, b, rest)));
+	} else {
+		return _List_Nil;
 	}
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -9512,21 +9795,28 @@ var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
 var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
 var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
 var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
-var $author$project$Graphs$GraphVisualization$drawEdges = F3(
-	function (edges, positionsDict, highlightEdges) {
+var $author$project$Graphs$GraphVisualization$drawEdges = F4(
+	function (edges, positionsDict, traversedEdges, finalRouteEdges) {
 		return A2(
 			$elm$core$List$map,
 			function (edge) {
 				var labelBias = 0.75;
-				var isHighlighted = A2(
+				var isTraversed = A2(
 					$elm$core$List$member,
 					_Utils_Tuple2(edge.from, edge.to),
-					highlightEdges) || A2(
+					traversedEdges) || A2(
 					$elm$core$List$member,
 					_Utils_Tuple2(edge.to, edge.from),
-					highlightEdges);
+					traversedEdges);
+				var isFinalRoute = A2(
+					$elm$core$List$member,
+					_Utils_Tuple2(edge.from, edge.to),
+					finalRouteEdges) || A2(
+					$elm$core$List$member,
+					_Utils_Tuple2(edge.to, edge.from),
+					finalRouteEdges);
 				var gapSize = 15;
-				var color = isHighlighted ? '#ff5722' : '#adb5bd';
+				var color = isFinalRoute ? '#81C784' : (isTraversed ? '#ff5722' : '#adb5bd');
 				var _v0 = A2(
 					$elm$core$Maybe$withDefault,
 					_Utils_Tuple2(0, 0),
@@ -9683,8 +9973,8 @@ var $author$project$Graphs$GraphVisualization$drawNodes = F4(
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
-var $author$project$Graphs$GraphVisualization$view = F5(
-	function (graph, maybeCurrentNode, visited, highlightEdges, running) {
+var $author$project$Graphs$GraphVisualization$view = F6(
+	function (graph, maybeCurrentNode, visited, traversedEdges, finalRouteEdges, running) {
 		var positionsDict = $author$project$Graphs$GraphVisualization$buildPositionsDict(graph.nodes);
 		return A2(
 			$elm$html$Html$div,
@@ -9703,7 +9993,7 @@ var $author$project$Graphs$GraphVisualization$view = F5(
 							$elm$svg$Svg$Attributes$style('transition: fill 0.6s ease')
 						]),
 					_Utils_ap(
-						A3($author$project$Graphs$GraphVisualization$drawEdges, graph.edges, positionsDict, highlightEdges),
+						A4($author$project$Graphs$GraphVisualization$drawEdges, graph.edges, positionsDict, traversedEdges, finalRouteEdges),
 						A4($author$project$Graphs$GraphVisualization$drawNodes, graph.nodes, positionsDict, maybeCurrentNode, visited)))
 				]));
 	});
@@ -9826,6 +10116,34 @@ var $author$project$MainComponents$Controls$view = F2(
 				]));
 	});
 var $author$project$Graphs$Dijkstra$view = function (model) {
+	var maybeCurrentStep = $elm$core$List$head(
+		A2($elm$core$List$drop, model.index, model.dijkstraSteps));
+	var currentState = A2(
+		$elm$core$Maybe$withDefault,
+		{currentNode: $elm$core$Maybe$Nothing, distances: $elm$core$Dict$empty, finalCost: $elm$core$Maybe$Nothing, graph: model.graph, options: _List_Nil, previous: $elm$core$Dict$empty, traversedEdges: _List_Nil, visitedNodes: _List_Nil},
+		maybeCurrentStep);
+	var finalRouteEdges = function () {
+		var _v2 = _Utils_Tuple3(currentState.finalCost, model.source, model.target);
+		if (((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) && (_v2.c.$ === 'Just')) {
+			var src = _v2.b.a;
+			var tgt = _v2.c.a;
+			var nodePath = A3($author$project$Graphs$Dijkstra$getPath, currentState.previous, src, tgt);
+			return $author$project$Graphs$Dijkstra$pairs(nodePath);
+		} else {
+			return _List_Nil;
+		}
+	}();
+	var queueText = A2(
+		$elm$core$String$join,
+		', ',
+		A2(
+			$elm$core$List$map,
+			function (_v1) {
+				var node = _v1.a;
+				var cost = _v1.b;
+				return '(' + ($elm$core$String$fromInt(node) + (', ' + ($elm$core$String$fromInt(cost) + ')')));
+			},
+			currentState.options));
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -9854,15 +10172,7 @@ var $author$project$Graphs$Dijkstra$view = function (model) {
 					[
 						$elm$html$Html$text('Dijkstra\'s algorithm is a graph search algorithm used to find the shortest path between nodes in a weighted graph.')
 					])),
-				function () {
-				var maybeCurrentStep = $elm$core$List$head(
-					A2($elm$core$List$drop, model.index, model.dijkstraSteps));
-				var currentState = A2(
-					$elm$core$Maybe$withDefault,
-					{currentNode: $elm$core$Maybe$Nothing, graph: model.graph, visitedNodes: _List_Nil},
-					maybeCurrentStep);
-				return A5($author$project$Graphs$GraphVisualization$view, currentState.graph, currentState.currentNode, currentState.visitedNodes, _List_Nil, false);
-			}(),
+				A6($author$project$Graphs$GraphVisualization$view, currentState.graph, currentState.currentNode, currentState.visitedNodes, currentState.traversedEdges, finalRouteEdges, false),
 				A2($author$project$MainComponents$Controls$view, model.running, $author$project$Graphs$Dijkstra$convertControlMsg),
 				A2(
 				$elm$html$Html$div,
@@ -9871,6 +10181,51 @@ var $author$project$Graphs$Dijkstra$view = function (model) {
 					[
 						$elm$html$Html$text(
 						'Step: ' + $elm$core$String$fromInt(model.index))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Source: ' + A2(
+							$elm$core$Maybe$withDefault,
+							'None',
+							A2($elm$core$Maybe$map, $elm$core$String$fromInt, model.source)))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Target: ' + A2(
+							$elm$core$Maybe$withDefault,
+							'None',
+							A2($elm$core$Maybe$map, $elm$core$String$fromInt, model.target)))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Queue: ' + queueText)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						function () {
+						var _v0 = currentState.finalCost;
+						if (_v0.$ === 'Just') {
+							var cost = _v0.a;
+							return $elm$html$Html$text(
+								'Total Cost: ' + $elm$core$String$fromInt(cost));
+						} else {
+							return $elm$html$Html$text('');
+						}
+					}()
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -12778,6 +13133,51 @@ var $author$project$Main$viewHeader = A2(
 											_List_fromArray(
 												[
 													$elm$html$Html$text('Heaps')
+												]))
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('dropdown-group')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-label')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Graphs')
+								])),
+							A2(
+							$elm$html$Html$ul,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-content')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('Dijkstra'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Dijkstra\'s')
 												]))
 										]))
 								]))
