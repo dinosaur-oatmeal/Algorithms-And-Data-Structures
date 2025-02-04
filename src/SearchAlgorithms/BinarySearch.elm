@@ -100,7 +100,8 @@ view track running toMsg =
               [ text """Binary Search is more efficient than linear search but requires the array to be sorted.
                 The algorithm functions by repeatedly dividing the search range in half,
                 comparing whether the target value is less than or greater than the current pointer value.
-                If the current pointer value is less than the target, it searches the right half; otherwise, it searches the left half.""" ]
+                If the current pointer value is less than the target, it searches the right half;
+                otherwise, it searches the left half.""" ]
 
         -- Graph
         , Visualization.renderComparison

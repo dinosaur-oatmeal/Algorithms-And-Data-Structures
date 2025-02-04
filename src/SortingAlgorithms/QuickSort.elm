@@ -115,11 +115,11 @@ view track running toMsg =
           -- Description
         , div [ class "description" ]
               [ text """Quick Sort selects a pivot element and partitions the array around it
-                (Rightmost element in this example).
-                During partitioning, elements that are smaller than the pivot are to the left
+                (the rightmost element in this example).
+                During partitioning, elements that are smaller than the pivot are to the left,
                 and elements larger than the pivot are to the right.
                 The algorithm recursively applies the partitioning to the left and right subarrays
-                until the greater array is fully sorted (one element in left subarray).""" ]
+                until the greater array is fully sorted (one element in the left subarray).""" ]
 
           -- Graph
         , renderComparison

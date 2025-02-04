@@ -94,19 +94,25 @@ This project's impact has superseded students' learning on their own volition. C
 ##### **Complexities:**
 - **Time Complexity**: $O(\log n)$
 - **Space Complexity**: $O(n)$
--  
----
 
-## Work In Progress (WIP)
+### **Graphs**
 
-#### **Shortest Path Algorithm**
+#### **1. Shortest Path Algorithm**
 
 ##### **Dijkstra’s Algorithm**
-- Finds the shortest path from a source node to a target node in a weighted graph.
+- Dijkstra's algorithm traverses weighted graphs, finding the shortest path between a source node and target node. This algorithm implements a priority queue, selecting the closest unvisited node until the target node is found. By utilizing a priority queue, the most optimal path between the source node and target node is always found first.
 
 ##### **Complexities:**
 - **Time Complexity**: $O((V + E) log V)$
 - **Space Complexity**: $O(V)$ or $O(V + E)$
+---
+
+## Work In Progress (WIP)
+
+#### **Minimum Spanning Tree**
+
+- **Prim’s Algorithm**: Finds a minimum spanning tree by growing it one edge at a time.
+- **Kruskal’s Algorithm**: Finds a minimum spanning tree using edge sorting.
 
 ---
 
@@ -116,15 +122,13 @@ This project's impact has superseded students' learning on their own volition. C
 - **Binary Search Trees (BSTs)**: Tree where left nodes are smaller and right nodes are larger.  
 
 ### **Graph Algorithms**
+
 #### **Graph Traversals** 
 - **Depth-First Search (DFS)**: Explores as far as possible along each branch before backtracking.
 - **Breadth-First Search (BFS)**: Explores all neighbors of a node before moving on to the next level.
 
-#### **Minimum Spanning Tree** 
-- **Kruskal’s Algorithm**: Finds a minimum spanning tree using edge sorting.
-- **Prim’s Algorithm**: Finds a minimum spanning tree by growing it one edge at a time.
-
 ### **Data Structures**
+
 #### **Fundamental Structures**  
 - **Arrays**: Ordered collection of elements accessible by index.  
 - **Linked Lists**: Sequence of nodes where each node points to the next.  

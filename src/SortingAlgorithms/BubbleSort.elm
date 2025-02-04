@@ -82,7 +82,8 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Bubble Sort is one of the simplest sorting algorithms. It steps through the array one element at a time,
+              [ text """Bubble Sort is one of the simplest sorting algorithms.
+                It steps through the array one element at a time,
                 comparing and swapping adjacent elements if the right one is less than the left one.
                 It does this repeatedly until the array is sorted.""" ]
 

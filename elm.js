@@ -10577,7 +10577,7 @@ var $author$project$SearchAlgorithms$BinarySearch$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Binary Search is more efficient than linear search but requires the array to be sorted.\r\n                The algorithm functions by repeatedly dividing the search range in half,\r\n                comparing whether the target value is less than or greater than the current pointer value.\r\n                If the current pointer value is less than the target, it searches the right half; otherwise, it searches the left half.')
+							$elm$html$Html$text('Binary Search is more efficient than linear search but requires the array to be sorted.\r\n                The algorithm functions by repeatedly dividing the search range in half,\r\n                comparing whether the target value is less than or greater than the current pointer value.\r\n                If the current pointer value is less than the target, it searches the right half;\r\n                otherwise, it searches the left half.')
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
@@ -10766,7 +10766,7 @@ var $author$project$SearchAlgorithms$LinearSearch$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('As the easiest searching algorithm to implement,\r\n              linear search starts at the first element in the array and searches until it finds the target element or hits the end of the array.\r\n              If the target element in found, the algorithm stops and returns the index of the element.\r\n              If the element isn\'t found, the algorithm returns -1 indicating it\'s not in the array.')
+							$elm$html$Html$text('As the easiest searching algorithm to implement,\r\n                linear search starts at the first element in the array and searches until it finds the target element or hits the end of the array.\r\n                If the target element is found, the algorithm stops and returns the index of the element.\r\n                If the element isn\'t found, the algorithm returns -1 indicating it\'s not in the array.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -10939,7 +10939,7 @@ var $author$project$SortingAlgorithms$BubbleSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Bubble Sort is one of the simplest sorting algorithms. It steps through the array one element at a time,\r\n                comparing and swapping adjacent elements if the right one is less than the left one.\r\n                It does this repeatedly until the array is sorted.')
+							$elm$html$Html$text('Bubble Sort is one of the simplest sorting algorithms.\r\n                It steps through the array one element at a time,\r\n                comparing and swapping adjacent elements if the right one is less than the left one.\r\n                It does this repeatedly until the array is sorted.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11327,7 +11327,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Merge Sort is a divide and conquer sorting algorithm\r\n                that recursively splits an array into smaller subarrays.\r\n                This splitting occurs until each subarray contains one element.\r\n                Then, it merges these subarrays together in sorted order.\r\n                Every merge step ensures that the combined subarrays are sorted,\r\n                resulting in the larger array being fully sorted.')
+							$elm$html$Html$text('Merge Sort is a divide-and-conquer sorting algorithm\r\n                that recursively splits an array into smaller subarrays.\r\n                This splitting occurs until each subarray contains one element.\r\n                Then, it merges these subarrays together in sorted order.\r\n                Every merge step ensures that the combined subarrays are sorted,\r\n                resulting in the larger array being fully sorted.')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11510,7 +11510,7 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Quick Sort selects a pivot element and partitions the array around it\r\n                (Rightmost element in this example).\r\n                During partitioning, elements that are smaller than the pivot are to the left\r\n                and elements larger than the pivot are to the right.\r\n                The algorithm recursively applies the partitioning to the left and right subarrays\r\n                until the greater array is fully sorted (one element in left subarray).')
+							$elm$html$Html$text('Quick Sort selects a pivot element and partitions the array around it\r\n                (the rightmost element in this example).\r\n                During partitioning, elements that are smaller than the pivot are to the left,\r\n                and elements larger than the pivot are to the right.\r\n                The algorithm recursively applies the partitioning to the left and right subarrays\r\n                until the greater array is fully sorted (one element in the left subarray).')
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
@@ -11894,7 +11894,7 @@ var $author$project$SortingAlgorithms$ShellSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Shell Sort is an optimized version of insertion sort,\r\n                and works by sorting elements that are far apart in the array first.\r\n                As the algorithm runs, the gap between elements being compared reduces,\r\n                resulting in elements moving toward their correct positions more quickly than insertion sort.')
+							$elm$html$Html$text('Shell Sort is an optimized version of insertion sort\r\n                and works by sorting elements that are far apart in the array first.\r\n                As the algorithm runs, the gap between elements being compared reduces,\r\n                resulting in elements moving toward their correct positions more quickly than insertion sort.')
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,

@@ -100,7 +100,7 @@ view track running toMsg =
 
           -- Description
         , div [ class "description" ]
-              [ text """Shell Sort is an optimized version of insertion sort,
+              [ text """Shell Sort is an optimized version of insertion sort
                 and works by sorting elements that are far apart in the array first.
                 As the algorithm runs, the gap between elements being compared reduces,
                 resulting in elements moving toward their correct positions more quickly than insertion sort.""" ]

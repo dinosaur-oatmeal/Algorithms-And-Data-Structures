@@ -62,9 +62,9 @@ view track running toMsg =
           -- Description
         , div [ class "description" ]
               [ text """As the easiest searching algorithm to implement,
-              linear search starts at the first element in the array and searches until it finds the target element or hits the end of the array.
-              If the target element in found, the algorithm stops and returns the index of the element.
-              If the element isn't found, the algorithm returns -1 indicating it's not in the array.""" ]
+                linear search starts at the first element in the array and searches until it finds the target element or hits the end of the array.
+                If the target element is found, the algorithm stops and returns the index of the element.
+                If the element isn't found, the algorithm returns -1 indicating it's not in the array.""" ]
 
           -- Graph
         , renderComparison
