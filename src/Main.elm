@@ -47,6 +47,7 @@ import Trees.HeapType as HeapType exposing (Msg(..))
 
 -- Graph pages that can be visited
 import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
+import Graphs.MST as MST exposing(Msg(..))
 
 -- Model (info stored during interactions)
 type alias Model =
@@ -61,6 +62,7 @@ type alias Model =
     , heapTypeModel : HeapType.Model
     -- Call Dijkstra.elm model
     , dijkstraModel : Dijkstra.Model
+    , mstModel : MST.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
@@ -81,6 +83,7 @@ type Route
     | TreeRoute
     | HeapRoute
     | DijkstraRoute
+    | MSTRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -96,6 +99,7 @@ type Page
     | TreeTraversal
     | HeapType
     | Dijkstra
+    | MST
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -109,6 +113,7 @@ type Msg
     | HeapTypeMsg HeapType.Msg
     -- Update something on Dijkstra page
     | DijkstraMsg Dijkstra.Msg
+    | MSTMsg MST.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -142,6 +147,7 @@ routeParser =
         , Parser.map TreeRoute (s "tree-traversal")
         , Parser.map HeapRoute (s "heap-type")
         , Parser.map DijkstraRoute (s "dijkstra")
+        , Parser.map MSTRoute (s "mst")
         ]
 
 -- Convert URL into a page
@@ -196,6 +202,9 @@ parseUrl url =
         Just DijkstraRoute ->
             Dijkstra
 
+        Just MSTRoute ->
+            MST
+
         -- Default to Home
         _ ->
             Home
@@ -211,6 +220,7 @@ init _ url key =
             , treeTraversalModel = TreeTraversal.initModel
             , heapTypeModel = HeapType.initModel
             , dijkstraModel = Dijkstra.initModel
+            , mstModel = MST.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
             }
@@ -271,6 +281,16 @@ update msg model =
             ( { model | dijkstraModel = newDijkstraModel }
             , Cmd.map DijkstraMsg dijkstraCmd
             )
+
+        MSTMsg mstMsg ->
+            let
+                ( newMSTModel, mstCmd ) =
+                    MST.update mstMsg model.mstModel
+            in
+            ( { model | mstModel = newMSTModel }
+            , Cmd.map MSTMsg mstCmd
+            )
+
 
         -- Algorithm selection from dropdown
         SelectAlgorithm algName ->
@@ -370,6 +390,14 @@ update msg model =
 
                 "Dijkstra" ->
                     ( { model | currentPage = Dijkstra
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    , Random.generate GotRandomGraph randomGraphGenerator
+                    )
+
+                "MST" ->
+                    ( { model | currentPage = MST
                             , sortingAlgorithm = defaultSortingTrack []
                             , running = False
                     }
@@ -675,10 +703,21 @@ update msg model =
                     , Cmd.map DijkstraMsg cmd
                     )
 
+                MST ->
+                    let
+                        -- Break apart triplet into its parts
+                        ( graph, source, target ) = triplet
+                        ( newMSTModel, cmd ) =
+                            -- Ignore target value because we only need graph and source
+                            MST.update (MST.SetGraph ( graph, source )) model.mstModel
+                    in
+                    ( { model | mstModel = newMSTModel }
+                    , Cmd.map MSTMsg cmd
+                    )
+
                 -- Default to not not updating anything
                 _ ->
                     ( model, Cmd.none )
-
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -701,6 +740,10 @@ subscriptions model =
         Dijkstra ->
             Dijkstra.subscriptions model.dijkstraModel
                 |> Sub.map DijkstraMsg
+
+        MST ->
+            MST.subscriptions model.mstModel
+                |> Sub.map MSTMsg
 
         -- Default to every 0.5 seconds if running flag True
             -- Used for running algorithms
@@ -771,6 +814,9 @@ view model =
                     
                     Dijkstra ->
                         Html.map DijkstraMsg (Dijkstra.view model.dijkstraModel)
+
+                    MST ->
+                        Html.map MSTMsg (MST.view model.mstModel)
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -839,16 +885,16 @@ viewHeader =
                     ]
                 ]
 
-
-            -- DIJKSTRA WIP
-
-            
             -- Graphs
             , div [ class "dropdown-group" ]
                 [ div [ class "dropdown-label" ] [ text "Graphs" ]
                 , ul [ class "dropdown-content" ]
                     [ li []
                         [ button [ onClick (SelectAlgorithm "Dijkstra") ] [ text "Dijkstra's" ] ]
+                    {-
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "MST") ] [ text "MSTs" ] ]
+                    -}
                     ]
                 ]
             

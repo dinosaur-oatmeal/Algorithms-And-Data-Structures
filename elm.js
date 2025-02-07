@@ -5324,6 +5324,15 @@ var $author$project$Graphs$Dijkstra$initModel = {
 	source: $elm$core$Maybe$Nothing,
 	target: $elm$core$Maybe$Nothing
 };
+var $author$project$Graphs$MST$Kruskal = {$: 'Kruskal'};
+var $author$project$Graphs$MST$initModel = {
+	graph: {edges: _List_Nil, nodes: _List_Nil},
+	index: 0,
+	mstSteps: _List_Nil,
+	running: false,
+	selectedAlgorithm: $author$project$Graphs$MST$Kruskal,
+	startNode: 0
+};
 var $author$project$MainComponents$Home$Dark = {$: 'Dark'};
 var $author$project$MainComponents$Home$initModel = {
 	backgroundArray: $elm$core$Array$fromList(
@@ -5355,6 +5364,7 @@ var $author$project$Main$Dijkstra = {$: 'Dijkstra'};
 var $author$project$Main$HeapType = {$: 'HeapType'};
 var $author$project$Main$InsertionSort = {$: 'InsertionSort'};
 var $author$project$Main$LinearSearch = {$: 'LinearSearch'};
+var $author$project$Main$MST = {$: 'MST'};
 var $author$project$Main$MergeSort = {$: 'MergeSort'};
 var $author$project$Main$QuickSort = {$: 'QuickSort'};
 var $author$project$Main$SelectionSort = {$: 'SelectionSort'};
@@ -6001,6 +6011,7 @@ var $author$project$Main$HeapRoute = {$: 'HeapRoute'};
 var $author$project$Main$HomeRoute = {$: 'HomeRoute'};
 var $author$project$Main$InsertionSortRoute = {$: 'InsertionSortRoute'};
 var $author$project$Main$LinearSearchRoute = {$: 'LinearSearchRoute'};
+var $author$project$Main$MSTRoute = {$: 'MSTRoute'};
 var $author$project$Main$MergeSortRoute = {$: 'MergeSortRoute'};
 var $author$project$Main$QuickSortRoute = {$: 'QuickSortRoute'};
 var $author$project$Main$SelectionSortRoute = {$: 'SelectionSortRoute'};
@@ -6147,7 +6158,11 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$DijkstraRoute,
-			$elm$url$Url$Parser$s('dijkstra'))
+			$elm$url$Url$Parser$s('dijkstra')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$MSTRoute,
+			$elm$url$Url$Parser$s('mst'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6186,9 +6201,12 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'HeapRoute':
 				var _v11 = _v0.a;
 				return $author$project$Main$HeapType;
-			default:
+			case 'DijkstraRoute':
 				var _v12 = _v0.a;
 				return $author$project$Main$Dijkstra;
+			default:
+				var _v13 = _v0.a;
+				return $author$project$Main$MST;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6202,6 +6220,7 @@ var $author$project$Main$init = F3(
 			heapTypeModel: $author$project$Trees$HeapType$initModel,
 			homeModel: $author$project$MainComponents$Home$initModel,
 			key: key,
+			mstModel: $author$project$Graphs$MST$initModel,
 			running: false,
 			sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil),
 			treeTraversalModel: $author$project$Trees$TreeTraversal$initModel
@@ -6216,6 +6235,9 @@ var $author$project$Main$HeapTypeMsg = function (a) {
 };
 var $author$project$Main$HomeMsg = function (a) {
 	return {$: 'HomeMsg', a: a};
+};
+var $author$project$Main$MSTMsg = function (a) {
+	return {$: 'MSTMsg', a: a};
 };
 var $author$project$Main$Tick = function (a) {
 	return {$: 'Tick', a: a};
@@ -6505,6 +6527,12 @@ var $author$project$Graphs$Dijkstra$Tick = function (a) {
 var $author$project$Graphs$Dijkstra$subscriptions = function (model) {
 	return model.running ? A2($elm$time$Time$every, 2000, $author$project$Graphs$Dijkstra$Tick) : $elm$core$Platform$Sub$none;
 };
+var $author$project$Graphs$MST$Tick = function (a) {
+	return {$: 'Tick', a: a};
+};
+var $author$project$Graphs$MST$subscriptions = function (model) {
+	return model.running ? A2($elm$time$Time$every, 2000, $author$project$Graphs$MST$Tick) : $elm$core$Platform$Sub$none;
+};
 var $author$project$MainComponents$Home$SwapNeeded = {$: 'SwapNeeded'};
 var $author$project$MainComponents$Home$TypingSimulation = {$: 'TypingSimulation'};
 var $elm$core$Basics$always = F2(
@@ -6560,6 +6588,11 @@ var $author$project$Main$subscriptions = function (model) {
 				$elm$core$Platform$Sub$map,
 				$author$project$Main$DijkstraMsg,
 				$author$project$Graphs$Dijkstra$subscriptions(model.dijkstraModel));
+		case 'MST':
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$MSTMsg,
+				$author$project$Graphs$MST$subscriptions(model.mstModel));
 		default:
 			return model.running ? A2($elm$time$Time$every, 500, $author$project$Main$Tick) : $elm$core$Platform$Sub$none;
 	}
@@ -6581,6 +6614,9 @@ var $author$project$Main$GotRandomTree = function (a) {
 };
 var $author$project$Trees$HeapType$HeapifyStep = {$: 'HeapifyStep'};
 var $author$project$Graphs$Dijkstra$SetGraph = function (a) {
+	return {$: 'SetGraph', a: a};
+};
+var $author$project$Graphs$MST$SetGraph = function (a) {
 	return {$: 'SetGraph', a: a};
 };
 var $author$project$Trees$HeapType$SetTree = function (a) {
@@ -8492,6 +8528,181 @@ var $author$project$Graphs$Dijkstra$update = F2(
 				return $author$project$Graphs$Dijkstra$resetAndGenerateGraph(model);
 		}
 	});
+var $author$project$Graphs$MST$Prim = {$: 'Prim'};
+var $author$project$Graphs$MST$buildInitialState = function (graph) {
+	var union = $author$project$MainComponents$Structs$unionInit(
+		$elm$core$List$length(graph.nodes));
+	var sortedEdges = A2(
+		$elm$core$List$sortBy,
+		function (e) {
+			return e.weight;
+		},
+		graph.edges);
+	return {currentEdge: $elm$core$Maybe$Nothing, edgeQueue: sortedEdges, finalCost: $elm$core$Maybe$Nothing, graph: graph, treeEdges: _List_Nil, union: union, visitedNodes: _List_Nil};
+};
+var $author$project$Graphs$MST$updateStateWithEdge = F2(
+	function (state, edge) {
+		var totalEdgesNeeded = $elm$core$List$length(state.graph.nodes) - 1;
+		var toRoot = A2($author$project$MainComponents$Structs$unionFind, state.union, edge.to);
+		var remainingEdges = function () {
+			var _v1 = state.edgeQueue;
+			if (_v1.b) {
+				var tail = _v1.b;
+				return tail;
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var fromRoot = A2($author$project$MainComponents$Structs$unionFind, state.union, edge.from);
+		var _v0 = _Utils_eq(fromRoot, toRoot) ? _Utils_Tuple2(state.treeEdges, state.union) : _Utils_Tuple2(
+			A2($elm$core$List$cons, edge, state.treeEdges),
+			A3($author$project$MainComponents$Structs$unionCheck, state.union, fromRoot, toRoot));
+		var newTreeEdges = _v0.a;
+		var newunion = _v0.b;
+		var cost = _Utils_eq(
+			$elm$core$List$length(newTreeEdges),
+			totalEdgesNeeded) ? $elm$core$Maybe$Just(
+			A3(
+				$elm$core$List$foldl,
+				F2(
+					function (e, acc) {
+						return acc + e.weight;
+					}),
+				0,
+				newTreeEdges)) : $elm$core$Maybe$Nothing;
+		return _Utils_update(
+			state,
+			{
+				currentEdge: $elm$core$Maybe$Just(edge),
+				edgeQueue: remainingEdges,
+				finalCost: cost,
+				treeEdges: newTreeEdges,
+				union: newunion
+			});
+	});
+var $author$project$Graphs$MST$generateKruskalSteps = function (graph) {
+	var initialState = $author$project$Graphs$MST$buildInitialState(graph);
+	var states = A3(
+		$elm$core$List$foldl,
+		F2(
+			function (edge, acc) {
+				var current = A2(
+					$elm$core$Maybe$withDefault,
+					initialState,
+					$elm$core$List$head(acc));
+				var newState = A2($author$project$Graphs$MST$updateStateWithEdge, current, edge);
+				return A2($elm$core$List$cons, newState, acc);
+			}),
+		_List_fromArray(
+			[initialState]),
+		initialState.edgeQueue);
+	return $elm$core$List$reverse(states);
+};
+var $author$project$Graphs$MST$resetAndGenerateGraph = function (model) {
+	var cmd = A2(
+		$elm$random$Random$generate,
+		function (_v0) {
+			var graph = _v0.a;
+			var source = _v0.b;
+			var target = _v0.c;
+			return $author$project$Graphs$MST$SetGraph(
+				_Utils_Tuple2(graph, source));
+		},
+		$author$project$MainComponents$Structs$randomGraphGenerator);
+	return _Utils_Tuple2(
+		_Utils_update(
+			model,
+			{index: 0, mstSteps: _List_Nil, running: false}),
+		cmd);
+};
+var $author$project$Graphs$MST$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'GenerateGraph':
+				return $author$project$Graphs$MST$resetAndGenerateGraph(model);
+			case 'SetGraph':
+				var _v1 = msg.a;
+				var newGraph = _v1.a;
+				var startNode = _v1.b;
+				var steps = function () {
+					var _v2 = model.selectedAlgorithm;
+					if (_v2.$ === 'Kruskal') {
+						return $author$project$Graphs$MST$generateKruskalSteps(newGraph);
+					} else {
+						return _List_fromArray(
+							[
+								{
+								currentEdge: $elm$core$Maybe$Nothing,
+								edgeQueue: _List_Nil,
+								finalCost: $elm$core$Maybe$Nothing,
+								graph: newGraph,
+								treeEdges: _List_Nil,
+								union: $author$project$MainComponents$Structs$unionInit(
+									$elm$core$List$length(newGraph.nodes)),
+								visitedNodes: _List_Nil
+							}
+							]);
+					}
+				}();
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{graph: newGraph, index: 0, mstSteps: steps, running: false, startNode: startNode}),
+					$elm$core$Platform$Cmd$none);
+			case 'MSTStep':
+				var totalSteps = $elm$core$List$length(model.mstSteps);
+				var newIndex = model.index + 1;
+				return (_Utils_cmp(newIndex, totalSteps) < 0) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{index: newIndex}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			case 'Tick':
+				var totalSteps = $elm$core$List$length(model.mstSteps);
+				var newIndex = model.index + 1;
+				return (_Utils_cmp(newIndex, totalSteps) < 0) ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{index: newIndex}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{running: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'StartMST':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{running: true}),
+					$elm$core$Platform$Cmd$none);
+			case 'StopMST':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{running: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'ResetGraph':
+				return $author$project$Graphs$MST$resetAndGenerateGraph(model);
+			case 'SelectPrim':
+				var _v3 = $author$project$Graphs$MST$resetAndGenerateGraph(model);
+				var newModel = _v3.a;
+				var cmd = _v3.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						newModel,
+						{selectedAlgorithm: $author$project$Graphs$MST$Prim}),
+					cmd);
+			default:
+				var _v4 = $author$project$Graphs$MST$resetAndGenerateGraph(model);
+				var newModel = _v4.a;
+				var cmd = _v4.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						newModel,
+						{selectedAlgorithm: $author$project$Graphs$MST$Kruskal}),
+					cmd);
+		}
+	});
 var $author$project$MainComponents$Home$IndexSwap = function (a) {
 	return {$: 'IndexSwap', a: a};
 };
@@ -9219,6 +9430,16 @@ var $author$project$Main$update = F2(
 						model,
 						{dijkstraModel: newDijkstraModel}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$DijkstraMsg, dijkstraCmd));
+			case 'MSTMsg':
+				var mstMsg = msg.a;
+				var _v5 = A2($author$project$Graphs$MST$update, mstMsg, model.mstModel);
+				var newMSTModel = _v5.a;
+				var mstCmd = _v5.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{mstModel: newMSTModel}),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$MSTMsg, mstCmd));
 			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
@@ -9348,6 +9569,16 @@ var $author$project$Main$update = F2(
 									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomGraph, $author$project$MainComponents$Structs$randomGraphGenerator));
+					case 'MST':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$MST,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							A2($elm$random$Random$generate, $author$project$Main$GotRandomGraph, $author$project$MainComponents$Structs$randomGraphGenerator));
 					default:
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -9376,8 +9607,8 @@ var $author$project$Main$update = F2(
 							$elm$core$Platform$Cmd$none);
 					case 'Reset':
 						var resetCmds = function () {
-							var _v7 = model.currentPage;
-							switch (_v7.$) {
+							var _v8 = model.currentPage;
+							switch (_v8.$) {
 								case 'LinearSearch':
 									return _List_fromArray(
 										[
@@ -9414,8 +9645,8 @@ var $author$project$Main$update = F2(
 								}),
 							$elm$core$Platform$Cmd$batch(resetCmds));
 					default:
-						var _v8 = model.currentPage;
-						switch (_v8.$) {
+						var _v9 = model.currentPage;
+						switch (_v9.$) {
 							case 'BubbleSort':
 								var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 								return _Utils_Tuple2(
@@ -9473,18 +9704,18 @@ var $author$project$Main$update = F2(
 										{sortingAlgorithm: updatedTrack}),
 									$elm$core$Platform$Cmd$none);
 							case 'TreeTraversal':
-								var _v9 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
-								var updatedTreeModel = _v9.a;
-								var treeCmd = _v9.b;
+								var _v10 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
+								var updatedTreeModel = _v10.a;
+								var treeCmd = _v10.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{treeTraversalModel: updatedTreeModel}),
 									A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
 							case 'HeapType':
-								var _v10 = A2($author$project$Trees$HeapType$update, $author$project$Trees$HeapType$HeapifyStep, model.heapTypeModel);
-								var updatedHeapModel = _v10.a;
-								var heapCmd = _v10.b;
+								var _v11 = A2($author$project$Trees$HeapType$update, $author$project$Trees$HeapType$HeapifyStep, model.heapTypeModel);
+								var updatedHeapModel = _v11.a;
+								var heapCmd = _v11.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
@@ -9496,8 +9727,8 @@ var $author$project$Main$update = F2(
 				}
 			case 'Tick':
 				if (model.running) {
-					var _v11 = model.currentPage;
-					switch (_v11.$) {
+					var _v12 = model.currentPage;
+					switch (_v12.$) {
 						case 'BubbleSort':
 							var updatedTrack = $author$project$SortingAlgorithms$BubbleSort$bubbleSortStep(model.sortingAlgorithm);
 							return _Utils_Tuple2(
@@ -9555,18 +9786,18 @@ var $author$project$Main$update = F2(
 									{sortingAlgorithm: updatedTrack}),
 								$elm$core$Platform$Cmd$none);
 						case 'TreeTraversal':
-							var _v12 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
-							var updatedTreeModel = _v12.a;
-							var treeCmd = _v12.b;
+							var _v13 = A2($author$project$Trees$TreeTraversal$update, $author$project$Trees$TreeTraversal$TraversalStep, model.treeTraversalModel);
+							var updatedTreeModel = _v13.a;
+							var treeCmd = _v13.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
 									{treeTraversalModel: updatedTreeModel}),
 								A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
 						case 'HeapType':
-							var _v13 = A2($author$project$Trees$HeapType$update, $author$project$Trees$HeapType$HeapifyStep, model.heapTypeModel);
-							var updatedHeapModel = _v13.a;
-							var heapCmd = _v13.b;
+							var _v14 = A2($author$project$Trees$HeapType$update, $author$project$Trees$HeapType$HeapifyStep, model.heapTypeModel);
+							var updatedHeapModel = _v14.a;
+							var heapCmd = _v14.b;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -9603,9 +9834,9 @@ var $author$project$Main$update = F2(
 				var updatedSortingAlgorithm = function () {
 					var array = currentSortingAlgorithm.array;
 					var targetValue = function () {
-						var _v14 = A2($elm$core$Array$get, newTarget, array);
-						if (_v14.$ === 'Just') {
-							var value = _v14.a;
+						var _v15 = A2($elm$core$Array$get, newTarget, array);
+						if (_v15.$ === 'Just') {
+							var value = _v15.a;
 							return value;
 						} else {
 							return 0;
@@ -9621,27 +9852,27 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(updatedModel, $elm$core$Platform$Cmd$none);
 			case 'GotRandomTree':
 				var newTree = msg.a;
-				var _v15 = model.currentPage;
-				switch (_v15.$) {
+				var _v16 = model.currentPage;
+				switch (_v16.$) {
 					case 'TreeTraversal':
-						var _v16 = A2(
+						var _v17 = A2(
 							$author$project$Trees$TreeTraversal$update,
 							$author$project$Trees$TreeTraversal$SetTree(newTree),
 							model.treeTraversalModel);
-						var newTreeModel = _v16.a;
-						var treeCmd = _v16.b;
+						var newTreeModel = _v17.a;
+						var treeCmd = _v17.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
 								{treeTraversalModel: newTreeModel}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$TreeTraversalMsg, treeCmd));
 					case 'HeapType':
-						var _v17 = A2(
+						var _v18 = A2(
 							$author$project$Trees$HeapType$update,
 							$author$project$Trees$HeapType$SetTree(newTree),
 							model.heapTypeModel);
-						var newHeapTypeModel = _v17.a;
-						var heapCmd = _v17.b;
+						var newHeapTypeModel = _v18.a;
+						var heapCmd = _v18.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -9652,21 +9883,39 @@ var $author$project$Main$update = F2(
 				}
 			default:
 				var triplet = msg.a;
-				var _v18 = model.currentPage;
-				if (_v18.$ === 'Dijkstra') {
-					var _v19 = A2(
-						$author$project$Graphs$Dijkstra$update,
-						$author$project$Graphs$Dijkstra$SetGraph(triplet),
-						model.dijkstraModel);
-					var newDijkstraModel = _v19.a;
-					var cmd = _v19.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{dijkstraModel: newDijkstraModel}),
-						A2($elm$core$Platform$Cmd$map, $author$project$Main$DijkstraMsg, cmd));
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				var _v19 = model.currentPage;
+				switch (_v19.$) {
+					case 'Dijkstra':
+						var _v20 = A2(
+							$author$project$Graphs$Dijkstra$update,
+							$author$project$Graphs$Dijkstra$SetGraph(triplet),
+							model.dijkstraModel);
+						var newDijkstraModel = _v20.a;
+						var cmd = _v20.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{dijkstraModel: newDijkstraModel}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$DijkstraMsg, cmd));
+					case 'MST':
+						var _v21 = triplet;
+						var graph = _v21.a;
+						var source = _v21.b;
+						var target = _v21.c;
+						var _v22 = A2(
+							$author$project$Graphs$MST$update,
+							$author$project$Graphs$MST$SetGraph(
+								_Utils_Tuple2(graph, source)),
+							model.mstModel);
+						var newMSTModel = _v22.a;
+						var cmd = _v22.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{mstModel: newMSTModel}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$MSTMsg, cmd));
+					default:
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 		}
 	});
@@ -10369,6 +10618,278 @@ var $author$project$Graphs$Dijkstra$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Space Complexity: O(V) or O(V + E)')
+					]))
+			]));
+};
+var $author$project$Graphs$MST$SelectKruskal = {$: 'SelectKruskal'};
+var $author$project$Graphs$MST$SelectPrim = {$: 'SelectPrim'};
+var $author$project$Graphs$MST$MSTStep = {$: 'MSTStep'};
+var $author$project$Graphs$MST$ResetGraph = {$: 'ResetGraph'};
+var $author$project$Graphs$MST$StartMST = {$: 'StartMST'};
+var $author$project$Graphs$MST$StopMST = {$: 'StopMST'};
+var $author$project$Graphs$MST$convertControlMsg = function (control) {
+	switch (control.$) {
+		case 'Run':
+			return $author$project$Graphs$MST$StartMST;
+		case 'Pause':
+			return $author$project$Graphs$MST$StopMST;
+		case 'Step':
+			return $author$project$Graphs$MST$MSTStep;
+		default:
+			return $author$project$Graphs$MST$ResetGraph;
+	}
+};
+var $author$project$Graphs$MST$edgeToString = function (edge) {
+	return '(' + ($elm$core$String$fromInt(edge.from) + (', ' + ($elm$core$String$fromInt(edge.to) + (', ' + ($elm$core$String$fromInt(edge.weight) + ')')))));
+};
+var $author$project$Graphs$MST$edgesToString = function (edges) {
+	return '[' + (A2(
+		$elm$core$String$join,
+		', ',
+		A2($elm$core$List$map, $author$project$Graphs$MST$edgeToString, edges)) + ']');
+};
+var $author$project$Graphs$MST$getDescription = function (algorithm) {
+	if (algorithm.$ === 'Prim') {
+		return 'Prim\'s algorithm constructs a Minimum Spanning Tree (MST) by expanding from a starting node,\r\n                always selecting the cheapest edge that connects to an unvisited node.\r\n                Using a priority queue, Prim\'s gradually forms a spanning tree with the minimal total weight.';
+	} else {
+		return 'Kruskal\'s algorithm builds a Minimum Spanning Tree (MST) by sorting\r\n                edges by weight and adding them one by one, ensuring no cycles form.\r\n                By utilizing a union structure, Kruskal\'s always selects the cheapest\r\n                available edge to achieve the minimal total weight.';
+	}
+};
+var $author$project$Graphs$MST$view = function (model) {
+	var maybeState = $elm$core$List$head(
+		A2($elm$core$List$drop, model.index, model.mstSteps));
+	var currentState = A2(
+		$elm$core$Maybe$withDefault,
+		$author$project$Graphs$MST$buildInitialState(model.graph),
+		maybeState);
+	var queueText = A2(
+		$elm$core$String$join,
+		', ',
+		A2(
+			$elm$core$List$map,
+			function (edge) {
+				return '(' + ($elm$core$String$fromInt(edge.from) + (', ' + ($elm$core$String$fromInt(edge.to) + ')')));
+			},
+			currentState.edgeQueue));
+	var costText = function () {
+		var _v1 = currentState.finalCost;
+		if (_v1.$ === 'Just') {
+			var cost = _v1.a;
+			return ' | Total Cost: ' + $elm$core$String$fromInt(cost);
+		} else {
+			return '';
+		}
+	}();
+	var algorithmName = function () {
+		var _v0 = model.selectedAlgorithm;
+		if (_v0.$ === 'Kruskal') {
+			return 'Kruskal\'s Algorithm';
+		} else {
+			return 'Prim\'s Algorithm';
+		}
+	}();
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('sort-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Minimum Spanning Tree')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$Graphs$MST$getDescription(model.selectedAlgorithm))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('traversal-controls')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.selectedAlgorithm, $author$project$Graphs$MST$Prim) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick($author$project$Graphs$MST$SelectPrim)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Prim\'s')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.selectedAlgorithm, $author$project$Graphs$MST$Kruskal) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick($author$project$Graphs$MST$SelectKruskal)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Kruskal\'s')
+							]))
+					])),
+				A6(
+				$author$project$Graphs$GraphVisualization$view,
+				currentState.graph,
+				$elm$core$Maybe$Nothing,
+				currentState.visitedNodes,
+				A2(
+					$elm$core$List$map,
+					function (edge) {
+						return _Utils_Tuple2(edge.from, edge.to);
+					},
+					currentState.treeEdges),
+				_List_Nil,
+				false),
+				A2($author$project$MainComponents$Controls$view, model.running, $author$project$Graphs$MST$convertControlMsg),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Current Step: ' + ($elm$core$String$fromInt(model.index) + costText))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'MST Edges: ' + $author$project$Graphs$MST$edgesToString(currentState.treeEdges))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('variable-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Current Step: number of simulation steps taken.')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Total Cost: cumulative weight of the MST (when complete).')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('MST Edges: list of edges that have been added to the minimum spanning tree.')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Big(O) Notation')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Prim\'s Algorithm:')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O((V + E) log V)')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Kruskal\'s Algorithm:')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O(E log E)')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('space-complexity')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Space Complexity: O(V + E)')
 					]))
 			]));
 };
@@ -13321,11 +13842,16 @@ var $author$project$Main$view = function (model) {
 											$elm$html$Html$map,
 											$author$project$Main$HeapTypeMsg,
 											$author$project$Trees$HeapType$view(model.heapTypeModel));
-									default:
+									case 'Dijkstra':
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$DijkstraMsg,
 											$author$project$Graphs$Dijkstra$view(model.dijkstraModel));
+									default:
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$MSTMsg,
+											$author$project$Graphs$MST$view(model.mstModel));
 								}
 							}()
 							])),
