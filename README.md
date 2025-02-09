@@ -105,27 +105,35 @@ This project's impact has superseded students' learning on their own volition. C
 ##### **Complexities:**
 - **Time Complexity**: $O((V + E) log V)$
 - **Space Complexity**: $O(V)$ or $O(V + E)$
+
+#### **2. Minimum Spanning Trees**
+
+##### **Prim's Algorithm**
+- Prim's algorithm constructs a Minimum Spanning Tree (MST) by expanding from a starting node, always selecting the cheapest edge that connects to an unvisited node. Using a priority queue, Prim's gradually forms a spanning tree with the minimal total weight.
+
+##### **Complexities:**
+- **Time Complexity**: $O((V + E) log V)$
+- **Space Complexity**: $O(V + E)$
+
+##### **Kruskal's Algorithm**
+- Kruskal's algorithm builds a Minimum Spanning Tree (MST) by sorting edges by weight and adding them one by one, ensuring no cycles form. By utilizing a union structure, Kruskal's always selects the cheapest available edge to achieve the minimal total weight.
+
+##### **Complexities:**
+- **Time Complexity**: $O(E log E)$
+- **Space Complexity**: $O(V + E)$
+  
 ---
 
 ## Work In Progress (WIP)
 
-#### **Minimum Spanning Tree**
+#### **Graph Traversals** 
 
-- **Prim’s Algorithm**: Finds a minimum spanning tree by growing it one edge at a time.
-- **Kruskal’s Algorithm**: Finds a minimum spanning tree using edge sorting.
+- **Depth-First Search (DFS)**: Explores as far as possible along each branch before backtracking.
+- **Breadth-First Search (BFS)**: Explores all neighbors of a node before moving on to the next level.
 
 ---
 
 ## Upcoming Features
-
-### **Tree Structures**
-- **Binary Search Trees (BSTs)**: Tree where left nodes are smaller and right nodes are larger.  
-
-### **Graph Algorithms**
-
-#### **Graph Traversals** 
-- **Depth-First Search (DFS)**: Explores as far as possible along each branch before backtracking.
-- **Breadth-First Search (BFS)**: Explores all neighbors of a node before moving on to the next level.
 
 ### **Data Structures**
 
@@ -137,6 +145,9 @@ This project's impact has superseded students' learning on their own volition. C
 
 #### **Associative Structures**  
 - **Hash Maps (Dictionaries)**: Key-value pairs allowing fast lookups.  
-- **Sets**: Collection of unique elements, typically used for fast membership checking.  
+- **Sets**: Collection of unique elements, typically used for fast membership checking.
+
+#### **Tree Structures**
+- **Binary Search Trees (BSTs)**: Tree where left nodes are smaller and right nodes are larger.  
 
 ---
