@@ -94,8 +94,8 @@ initModel =
     , index = 0
     -- Running should be false
     , running = False
-    -- Default to Kruskal's
-    , selectedAlgorithm = Kruskal
+    -- Default to Prim's
+    , selectedAlgorithm = Prim
     -- Start node for search
     , startNode = 0
     }
@@ -119,15 +119,7 @@ update msg model =
 
                         -- If Prim, default for now
                         Prim ->
-                            [ { graph = newGraph
-                              , treeEdges = []
-                              , visitedNodes = []
-                              , currentEdge = Nothing
-                              , edgeQueue = []
-                              , finalCost = Nothing
-                              , union = unionInit (List.length newGraph.nodes)
-                              }
-                            ]
+                            generatePrimSteps newGraph startNode
             -- Update graph and steps
             in
             ( { model
@@ -213,7 +205,7 @@ view model =
 
         -- Default to initial state if current step is invalid
         currentState =
-            Maybe.withDefault (buildInitialState model.graph) maybeState
+            Maybe.withDefault (initialKruskalState model.graph) maybeState
 
         -- Name of algorithm
         algorithmName =
@@ -358,9 +350,9 @@ edgesToString : List Edge -> String
 edgesToString edges =
     "[" ++ String.join ", " (List.map edgeToString edges) ++ "]"
 
--- Initial state for graph
-buildInitialState : Graph -> MSTState
-buildInitialState graph =
+-- Initial state for Kruskal's
+initialKruskalState : Graph -> MSTState
+initialKruskalState graph =
     let
         -- Sort edges for cheapest ones to be visited first
         sortedEdges =
@@ -380,13 +372,17 @@ buildInitialState graph =
     , union = union
     }
 
+-- ==============
+-- Kruskal's Code
+-- ==============
+
 -- Generate all steps of Kruskal's and store in a list
 generateKruskalSteps : Graph -> List MSTState
 generateKruskalSteps graph =
     let
         -- Initial state for graph
         initialState =
-            buildInitialState graph
+            initialKruskalState graph
 
         -- Process each edge in queue
         states =
@@ -422,13 +418,34 @@ updateStateWithEdge state edge =
         toRoot =
             unionFind state.union edge.to
 
-        ( newTreeEdges, newunion ) =
+        ( newTreeEdges, newunion, newVisited ) =
             if fromRoot == toRoot then
                 -- If node points to itself, discard it (loops)
-                ( state.treeEdges, state.union )
+                ( state.treeEdges, state.union, state.visitedNodes )
             else
-                -- Append new edge and merge sets
-                ( edge :: state.treeEdges, unionCheck state.union fromRoot toRoot )
+                let
+                    -- Prepend new edge and merge sets
+                    updatedTreeEdges = edge :: state.treeEdges
+                    updatedUnion = unionCheck state.union fromRoot toRoot
+
+                    -- Helper to add a node if it isn't in a list
+                    addNode nodes node =
+                        -- Don't add node if it's already in list
+                        if List.member node nodes then
+                            nodes
+                        -- Prepend list with new node
+                        else
+                            node :: nodes
+
+                    -- Update visited list by adding both endpoints (not directed)
+                    updatedVisited =
+                        state.visitedNodes
+                            -- Calls addNode helper function above
+                            |> (\visited -> addNode visited edge.from)
+                            |> (\visited -> addNode visited edge.to)
+
+                in
+                ( updatedTreeEdges, updatedUnion, updatedVisited )
 
         -- Remove edge from processing queue
         remainingEdges =
@@ -450,8 +467,153 @@ updateStateWithEdge state edge =
     -- Updated state
     { state
         | treeEdges = newTreeEdges
+        , visitedNodes = newVisited
         , currentEdge = Just edge
         , edgeQueue = remainingEdges
         , finalCost = cost
         , union = newunion
     }
+
+-- ==============
+-- Prim's Code
+-- ==============
+
+-- Initial start state for Prim's
+initialPrimState : Graph -> Int -> MSTState
+initialPrimState graph startNode =
+    let
+        -- Visited is just startNode
+        visited =
+            [ startNode ]
+
+        -- All edges from start node in weight order
+        outgoingEdges = edgesFromNode graph startNode
+            |> List.sortBy .weight
+    in
+    { graph = graph
+    , treeEdges = []
+    , visitedNodes = visited
+    , currentEdge = Nothing
+    , edgeQueue = outgoingEdges
+    , finalCost = Nothing
+    -- Union not needed for Prim's
+    , union = unionInit 0
+    }
+
+-- Generate all steps of Prim's and store in a list
+generatePrimSteps : Graph -> Int -> List MSTState
+generatePrimSteps graph startNode =
+    let
+        -- Initial state for graph (startNode will be root for tree)
+        initialState =
+            initialPrimState graph startNode
+
+        -- Recursively build list of steps
+        states = unfoldPrimSteps initialState []
+    in
+    -- Reverse list because we prepend new states
+    List.reverse states
+
+-- Recursive function to get states for Prim's
+unfoldPrimSteps : MSTState -> List MSTState -> List MSTState
+unfoldPrimSteps state accumulator =
+    let
+        -- Number of visited nodes
+        visitedCount =
+            List.length state.visitedNodes
+
+        -- Number of total nodes in graph
+        totalNodes =
+            List.length state.graph.nodes
+    in
+    -- All nodes visited
+    if visitedCount == totalNodes then
+        let
+            -- Calculate final cost for all edges in queue
+            maybeCost =
+                    Just <| List.foldl (\e accumulatorCost -> accumulatorCost + e.weight) 0 state.treeEdges
+
+            -- Add final cost to final state
+            finalState =
+                { state | finalCost = maybeCost }
+        in
+        -- Prepend final state to accumulator list
+        finalState :: accumulator
+    else
+        let
+            -- Get next state to add to queue
+            nextState = pickNextPrimEdge state
+        in
+            -- Recursively call function prepending states to accumulator list
+            unfoldPrimSteps nextState (state :: accumulator)
+
+-- Pick cheapest edge leading from a visited node to an unvisited one
+pickNextPrimEdge : MSTState -> MSTState
+pickNextPrimEdge state =
+    -- Find cheapest edge that connects visited node to an unvisited one
+    case findValidPrimEdge state.visitedNodes state.edgeQueue of
+        Just edge ->
+            let
+                -- Determine which node is unvisited from edge
+                newNode =
+                    if List.member edge.from state.visitedNodes then
+                        edge.to
+                    else
+                        edge.from
+
+                -- Add newNode to list of visited nodes
+                newVisited =
+                    newNode :: state.visitedNodes
+
+                -- Remove edge from queue (can't be selected again)
+                filteredQueue =
+                    List.filter ((/=) edge) state.edgeQueue
+
+                -- Add edges from new node that go to unvisited nodes to queue
+                newEdges =
+                    edgesFromNode state.graph newNode
+                        |> List.filter (\e ->
+                            not (List.member e.to newVisited && List.member e.from newVisited)
+                        )
+
+                -- Combine list of edges and sort by weight
+                updatedQueue =
+                    List.sortBy .weight (filteredQueue ++ newEdges)
+
+                -- Add processed edge to MST's treeEdges
+                updatedMSTEdges =
+                    edge :: state.treeEdges
+            in
+            -- Update struct to reflect changes
+            { state
+                | treeEdges = updatedMSTEdges
+                , visitedNodes = newVisited
+                , currentEdge = Just edge
+                , edgeQueue = updatedQueue
+            }
+
+        -- Default to no update
+        _ ->
+            state
+
+-- Find edge that connects visited to unvisited node
+findValidPrimEdge : List Int -> List Edge -> Maybe Edge
+findValidPrimEdge visited edges =
+    -- Grab first node in list
+    List.head
+        -- Filter to only edges connecting a visited not to non-visited one
+        (List.filter
+            (\edge ->
+                -- Check both ways because graph isn't directed
+                (List.member edge.from visited && not (List.member edge.to visited))
+                    || (List.member edge.to visited && not (List.member edge.from visited))
+            )
+            -- Sort list by weight of edges
+            (List.sortBy .weight edges)
+        )
+
+-- Find all edges from a node
+edgesFromNode : Graph -> Int -> List Edge
+edgesFromNode graph node =
+    -- Filter both ways because graph isn't directional
+    List.filter (\edge -> edge.from == node || edge.to == node) graph.edges

@@ -891,10 +891,10 @@ viewHeader =
                 , ul [ class "dropdown-content" ]
                     [ li []
                         [ button [ onClick (SelectAlgorithm "Dijkstra") ] [ text "Dijkstra's" ] ]
-                    {-
+                    
                     , li []
                         [ button [ onClick (SelectAlgorithm "MST") ] [ text "MSTs" ] ]
-                    -}
+                    
                     ]
                 ]
             

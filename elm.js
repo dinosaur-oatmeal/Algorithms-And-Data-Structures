@@ -5324,13 +5324,13 @@ var $author$project$Graphs$Dijkstra$initModel = {
 	source: $elm$core$Maybe$Nothing,
 	target: $elm$core$Maybe$Nothing
 };
-var $author$project$Graphs$MST$Kruskal = {$: 'Kruskal'};
+var $author$project$Graphs$MST$Prim = {$: 'Prim'};
 var $author$project$Graphs$MST$initModel = {
 	graph: {edges: _List_Nil, nodes: _List_Nil},
 	index: 0,
 	mstSteps: _List_Nil,
 	running: false,
-	selectedAlgorithm: $author$project$Graphs$MST$Kruskal,
+	selectedAlgorithm: $author$project$Graphs$MST$Prim,
 	startNode: 0
 };
 var $author$project$MainComponents$Home$Dark = {$: 'Dark'};
@@ -8528,8 +8528,8 @@ var $author$project$Graphs$Dijkstra$update = F2(
 				return $author$project$Graphs$Dijkstra$resetAndGenerateGraph(model);
 		}
 	});
-var $author$project$Graphs$MST$Prim = {$: 'Prim'};
-var $author$project$Graphs$MST$buildInitialState = function (graph) {
+var $author$project$Graphs$MST$Kruskal = {$: 'Kruskal'};
+var $author$project$Graphs$MST$initialKruskalState = function (graph) {
 	var union = $author$project$MainComponents$Structs$unionInit(
 		$elm$core$List$length(graph.nodes));
 	var sortedEdges = A2(
@@ -8540,6 +8540,36 @@ var $author$project$Graphs$MST$buildInitialState = function (graph) {
 		graph.edges);
 	return {currentEdge: $elm$core$Maybe$Nothing, edgeQueue: sortedEdges, finalCost: $elm$core$Maybe$Nothing, graph: graph, treeEdges: _List_Nil, union: union, visitedNodes: _List_Nil};
 };
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
 var $author$project$Graphs$MST$updateStateWithEdge = F2(
 	function (state, edge) {
 		var totalEdgesNeeded = $elm$core$List$length(state.graph.nodes) - 1;
@@ -8554,11 +8584,28 @@ var $author$project$Graphs$MST$updateStateWithEdge = F2(
 			}
 		}();
 		var fromRoot = A2($author$project$MainComponents$Structs$unionFind, state.union, edge.from);
-		var _v0 = _Utils_eq(fromRoot, toRoot) ? _Utils_Tuple2(state.treeEdges, state.union) : _Utils_Tuple2(
-			A2($elm$core$List$cons, edge, state.treeEdges),
-			A3($author$project$MainComponents$Structs$unionCheck, state.union, fromRoot, toRoot));
+		var _v0 = function () {
+			if (_Utils_eq(fromRoot, toRoot)) {
+				return _Utils_Tuple3(state.treeEdges, state.union, state.visitedNodes);
+			} else {
+				var updatedUnion = A3($author$project$MainComponents$Structs$unionCheck, state.union, fromRoot, toRoot);
+				var updatedTreeEdges = A2($elm$core$List$cons, edge, state.treeEdges);
+				var addNode = F2(
+					function (nodes, node) {
+						return A2($elm$core$List$member, node, nodes) ? nodes : A2($elm$core$List$cons, node, nodes);
+					});
+				var updatedVisited = function (visited) {
+					return A2(addNode, visited, edge.to);
+				}(
+					function (visited) {
+						return A2(addNode, visited, edge.from);
+					}(state.visitedNodes));
+				return _Utils_Tuple3(updatedTreeEdges, updatedUnion, updatedVisited);
+			}
+		}();
 		var newTreeEdges = _v0.a;
 		var newunion = _v0.b;
+		var newVisited = _v0.c;
 		var cost = _Utils_eq(
 			$elm$core$List$length(newTreeEdges),
 			totalEdgesNeeded) ? $elm$core$Maybe$Just(
@@ -8577,11 +8624,12 @@ var $author$project$Graphs$MST$updateStateWithEdge = F2(
 				edgeQueue: remainingEdges,
 				finalCost: cost,
 				treeEdges: newTreeEdges,
-				union: newunion
+				union: newunion,
+				visitedNodes: newVisited
 			});
 	});
 var $author$project$Graphs$MST$generateKruskalSteps = function (graph) {
-	var initialState = $author$project$Graphs$MST$buildInitialState(graph);
+	var initialState = $author$project$Graphs$MST$initialKruskalState(graph);
 	var states = A3(
 		$elm$core$List$foldl,
 		F2(
@@ -8598,6 +8646,121 @@ var $author$project$Graphs$MST$generateKruskalSteps = function (graph) {
 		initialState.edgeQueue);
 	return $elm$core$List$reverse(states);
 };
+var $author$project$Graphs$MST$edgesFromNode = F2(
+	function (graph, node) {
+		return A2(
+			$elm$core$List$filter,
+			function (edge) {
+				return _Utils_eq(edge.from, node) || _Utils_eq(edge.to, node);
+			},
+			graph.edges);
+	});
+var $author$project$Graphs$MST$initialPrimState = F2(
+	function (graph, startNode) {
+		var visited = _List_fromArray(
+			[startNode]);
+		var outgoingEdges = A2(
+			$elm$core$List$sortBy,
+			function ($) {
+				return $.weight;
+			},
+			A2($author$project$Graphs$MST$edgesFromNode, graph, startNode));
+		return {
+			currentEdge: $elm$core$Maybe$Nothing,
+			edgeQueue: outgoingEdges,
+			finalCost: $elm$core$Maybe$Nothing,
+			graph: graph,
+			treeEdges: _List_Nil,
+			union: $author$project$MainComponents$Structs$unionInit(0),
+			visitedNodes: visited
+		};
+	});
+var $author$project$Graphs$MST$findValidPrimEdge = F2(
+	function (visited, edges) {
+		return $elm$core$List$head(
+			A2(
+				$elm$core$List$filter,
+				function (edge) {
+					return (A2($elm$core$List$member, edge.from, visited) && (!A2($elm$core$List$member, edge.to, visited))) || (A2($elm$core$List$member, edge.to, visited) && (!A2($elm$core$List$member, edge.from, visited)));
+				},
+				A2(
+					$elm$core$List$sortBy,
+					function ($) {
+						return $.weight;
+					},
+					edges)));
+	});
+var $author$project$Graphs$MST$pickNextPrimEdge = function (state) {
+	var _v0 = A2($author$project$Graphs$MST$findValidPrimEdge, state.visitedNodes, state.edgeQueue);
+	if (_v0.$ === 'Just') {
+		var edge = _v0.a;
+		var updatedMSTEdges = A2($elm$core$List$cons, edge, state.treeEdges);
+		var newNode = A2($elm$core$List$member, edge.from, state.visitedNodes) ? edge.to : edge.from;
+		var newVisited = A2($elm$core$List$cons, newNode, state.visitedNodes);
+		var newEdges = A2(
+			$elm$core$List$filter,
+			function (e) {
+				return !(A2($elm$core$List$member, e.to, newVisited) && A2($elm$core$List$member, e.from, newVisited));
+			},
+			A2($author$project$Graphs$MST$edgesFromNode, state.graph, newNode));
+		var filteredQueue = A2(
+			$elm$core$List$filter,
+			$elm$core$Basics$neq(edge),
+			state.edgeQueue);
+		var updatedQueue = A2(
+			$elm$core$List$sortBy,
+			function ($) {
+				return $.weight;
+			},
+			_Utils_ap(filteredQueue, newEdges));
+		return _Utils_update(
+			state,
+			{
+				currentEdge: $elm$core$Maybe$Just(edge),
+				edgeQueue: updatedQueue,
+				treeEdges: updatedMSTEdges,
+				visitedNodes: newVisited
+			});
+	} else {
+		return state;
+	}
+};
+var $author$project$Graphs$MST$unfoldPrimSteps = F2(
+	function (state, accumulator) {
+		unfoldPrimSteps:
+		while (true) {
+			var visitedCount = $elm$core$List$length(state.visitedNodes);
+			var totalNodes = $elm$core$List$length(state.graph.nodes);
+			if (_Utils_eq(visitedCount, totalNodes)) {
+				var maybeCost = $elm$core$Maybe$Just(
+					A3(
+						$elm$core$List$foldl,
+						F2(
+							function (e, accumulatorCost) {
+								return accumulatorCost + e.weight;
+							}),
+						0,
+						state.treeEdges));
+				var finalState = _Utils_update(
+					state,
+					{finalCost: maybeCost});
+				return A2($elm$core$List$cons, finalState, accumulator);
+			} else {
+				var nextState = $author$project$Graphs$MST$pickNextPrimEdge(state);
+				var $temp$state = nextState,
+					$temp$accumulator = A2($elm$core$List$cons, state, accumulator);
+				state = $temp$state;
+				accumulator = $temp$accumulator;
+				continue unfoldPrimSteps;
+			}
+		}
+	});
+var $author$project$Graphs$MST$generatePrimSteps = F2(
+	function (graph, startNode) {
+		var initialState = A2($author$project$Graphs$MST$initialPrimState, graph, startNode);
+		var states = A2($author$project$Graphs$MST$unfoldPrimSteps, initialState, _List_Nil);
+		return $elm$core$List$reverse(states);
+	});
 var $author$project$Graphs$MST$resetAndGenerateGraph = function (model) {
 	var cmd = A2(
 		$elm$random$Random$generate,
@@ -8629,19 +8792,7 @@ var $author$project$Graphs$MST$update = F2(
 					if (_v2.$ === 'Kruskal') {
 						return $author$project$Graphs$MST$generateKruskalSteps(newGraph);
 					} else {
-						return _List_fromArray(
-							[
-								{
-								currentEdge: $elm$core$Maybe$Nothing,
-								edgeQueue: _List_Nil,
-								finalCost: $elm$core$Maybe$Nothing,
-								graph: newGraph,
-								treeEdges: _List_Nil,
-								union: $author$project$MainComponents$Structs$unionInit(
-									$elm$core$List$length(newGraph.nodes)),
-								visitedNodes: _List_Nil
-							}
-							]);
+						return A2($author$project$Graphs$MST$generatePrimSteps, newGraph, startNode);
 					}
 				}();
 				return _Utils_Tuple2(
@@ -9013,36 +9164,6 @@ var $author$project$Trees$HeapType$deleteRoot = F2(
 				swapStep,
 				A2($elm$core$List$cons, removeStep, reheapifySteps));
 		}
-	});
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
 	});
 var $author$project$Trees$HeapType$TreeGenerated = function (a) {
 	return {$: 'TreeGenerated', a: a};
@@ -10660,7 +10781,7 @@ var $author$project$Graphs$MST$view = function (model) {
 		A2($elm$core$List$drop, model.index, model.mstSteps));
 	var currentState = A2(
 		$elm$core$Maybe$withDefault,
-		$author$project$Graphs$MST$buildInitialState(model.graph),
+		$author$project$Graphs$MST$initialKruskalState(model.graph),
 		maybeState);
 	var queueText = A2(
 		$elm$core$String$join,
@@ -13742,6 +13863,23 @@ var $author$project$Main$viewHeader = A2(
 											_List_fromArray(
 												[
 													$elm$html$Html$text('Dijkstra\'s')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('MST'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('MSTs')
 												]))
 										]))
 								]))
