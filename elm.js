@@ -5263,6 +5263,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
+var $author$project$MainComponents$Structs$Dark = {$: 'Dark'};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5298,6 +5299,17 @@ var $elm$core$Array$fromList = function (list) {
 		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
 	}
 };
+var $author$project$MainComponents$Structs$defaultHomeState = {
+	backgroundArray: $elm$core$Array$fromList(
+		_List_fromArray(
+			[5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10])),
+	indexOne: 0,
+	indexTwo: 0,
+	targetString: 'Algorithms and Data Structures',
+	theme: $author$project$MainComponents$Structs$Dark,
+	typingFlag: false,
+	typingIndex: 0
+};
 var $author$project$MainComponents$Structs$defaultSortingTrack = function (list) {
 	return {
 		array: $elm$core$Array$fromList(list),
@@ -5332,18 +5344,6 @@ var $author$project$Graphs$MST$initModel = {
 	running: false,
 	selectedAlgorithm: $author$project$Graphs$MST$Prim,
 	startNode: 0
-};
-var $author$project$MainComponents$Home$Dark = {$: 'Dark'};
-var $author$project$MainComponents$Home$initModel = {
-	backgroundArray: $elm$core$Array$fromList(
-		_List_fromArray(
-			[5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10])),
-	indexOne: 0,
-	indexTwo: 0,
-	targetString: 'Algorithms and Data Structures',
-	theme: $author$project$MainComponents$Home$Dark,
-	typingFlag: false,
-	typingIndex: 0
 };
 var $author$project$MainComponents$Structs$Empty = {$: 'Empty'};
 var $author$project$Trees$HeapType$MinHeap = {$: 'MinHeap'};
@@ -6218,7 +6218,7 @@ var $author$project$Main$init = F3(
 			currentPage: $author$project$Main$parseUrl(url),
 			dijkstraModel: $author$project$Graphs$Dijkstra$initModel,
 			heapTypeModel: $author$project$Trees$HeapType$initModel,
-			homeModel: $author$project$MainComponents$Home$initModel,
+			homeModel: $author$project$MainComponents$Structs$defaultHomeState,
 			key: key,
 			mstModel: $author$project$Graphs$MST$initModel,
 			running: false,
@@ -8857,7 +8857,7 @@ var $author$project$Graphs$MST$update = F2(
 var $author$project$MainComponents$Home$IndexSwap = function (a) {
 	return {$: 'IndexSwap', a: a};
 };
-var $author$project$MainComponents$Home$Light = {$: 'Light'};
+var $author$project$MainComponents$Structs$Light = {$: 'Light'};
 var $elm$random$Random$pair = F2(
 	function (genA, genB) {
 		return A3(
@@ -8893,9 +8893,9 @@ var $author$project$MainComponents$Home$update = F2(
 				var switched = function () {
 					var _v1 = model.theme;
 					if (_v1.$ === 'Light') {
-						return $author$project$MainComponents$Home$Dark;
+						return $author$project$MainComponents$Structs$Dark;
 					} else {
-						return $author$project$MainComponents$Home$Light;
+						return $author$project$MainComponents$Structs$Light;
 					}
 				}();
 				return _Utils_Tuple2(
@@ -13889,7 +13889,7 @@ var $author$project$Main$viewHeader = A2(
 var $author$project$MainComponents$Home$ToggleTheme = {$: 'ToggleTheme'};
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Main$viewThemeToggle = function (model) {
-	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$MainComponents$Home$Light) ? _Utils_Tuple2('☼', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
+	var _v0 = _Utils_eq(model.homeModel.theme, $author$project$MainComponents$Structs$Light) ? _Utils_Tuple2('☼', 'Switch to Dark Mode') : _Utils_Tuple2('☾', 'Switch to Light Mode');
 	var icon = _v0.a;
 	var tooltip = _v0.b;
 	return A2(

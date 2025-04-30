@@ -11,31 +11,13 @@ import String
 import Random
 import Time
 
+import MainComponents.Structs
+    exposing    ( HomeState
+                , Theme(..)            -- so Dark/Light destructuring still works
+                , defaultHomeState )
+
 -- Used to render background bar chart
 import SortingAlgorithms.SortingVisualization as Visualization exposing(renderBackgroundBars)
-
--- Theme type for dark/light mode
-type Theme
-    = Dark
-    | Light
-
--- MODEL
-type alias Model =
-    -- Website theme
-    { theme : Theme
-    -- Array for swaps to take place
-    , backgroundArray : Array Int
-    -- First index being swapped
-    , indexOne : Int
-    -- Second index being swapped
-    , indexTwo : Int
-    -- Index of typing simulation for title
-    , typingIndex : Int
-    -- Final string typed before deleting
-    , targetString : String
-    -- Determines whether to add or remove letter from title string
-    , typingFlag : Bool
-    }
 
 -- HOME-SPECIFIC MESSAGES
 type Msg
@@ -49,26 +31,13 @@ type Msg
     | IndexSwap ( Int, Int )
 
 -- INIT (initial state of model)
-initModel : Model
+initModel : HomeState
 initModel =
-    -- Default to superior theme
-    { theme = Dark
-    -- Start with this array
-    , backgroundArray = Array.fromList [ 5, 3, 7, 10, 2, 1, 9, 6, 3, 12, 4, 11, 8, 2, 7, 5, 3, 9, 6, 10 ]
-    -- Start with indices being 0
-    , indexOne = 0
-    , indexTwo = 0
-    -- Start at first index
-    , typingIndex = 0
-    -- Complete title to be typed
-    , targetString = "Algorithms and Data Structures"
-    -- Whole word has not yet been typed
-    , typingFlag = False
-    }
+    defaultHomeState
 
 
 -- UPDATE
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> HomeState -> ( HomeState, Cmd Msg )
 update msg model =
     case msg of
         -- Swap theme as needed
@@ -127,7 +96,7 @@ update msg model =
 
 
 -- SUBSCRIPTIONS
-subscriptions : Model -> Sub Msg
+subscriptions : HomeState -> Sub Msg
 subscriptions model =
     -- Only ran on Home Page
     Sub.batch
@@ -138,7 +107,7 @@ subscriptions model =
         ]
 
 -- VIEW
-view : Model -> Html Msg
+view : HomeState -> Html Msg
 view model =
     div [ class "home-container" ]
         [ -- Renders the background bar chart given the array and indices being swapped

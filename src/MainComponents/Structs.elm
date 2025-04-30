@@ -16,6 +16,38 @@ import Task exposing (Task, succeed)
 
 import Array exposing (Array)
 
+-- HOME information
+
+-- Theme for website
+    -- Default to superior theme
+type Theme
+    = Dark
+    | Light
+
+-- Home State
+type alias HomeState =
+    { theme : Theme
+    , backgroundArray : Array Int
+    , indexOne : Int
+    , indexTwo : Int
+    , typingIndex : Int
+    , targetString : String
+    , typingFlag : Bool
+    }
+
+-- Starting state for home page
+defaultHomeState : HomeState
+defaultHomeState =
+    { theme = Dark
+    , backgroundArray = Array.fromList
+        [ 5,3,7,10,2,1,9,6,3,12,4,11,8,2,7,5,3,9,6,10 ]
+    , indexOne = 0
+    , indexTwo = 0
+    , typingIndex = 0
+    , targetString = "Algorithms and Data Structures"
+    , typingFlag = False
+    }
+
 -- SORTING TRACK
 
 -- Record to hold all data for sorting and searching algorithms

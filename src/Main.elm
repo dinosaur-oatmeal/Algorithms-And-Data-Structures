@@ -55,7 +55,7 @@ type alias Model =
     -- Page we're visiting
     , currentPage : Page
     -- Call Home.elm model
-    , homeModel : Home.Model
+    , homeModel : HomeState
     -- Call TreeTraversal.elm model
     , treeTraversalModel : TreeTraversal.Model
     -- Call HeapType.elm model
@@ -216,7 +216,7 @@ init _ url key =
         model =
             { key = key
             , currentPage = parseUrl url
-            , homeModel = Home.initModel
+            , homeModel = defaultHomeState
             , treeTraversalModel = TreeTraversal.initModel
             , heapTypeModel = HeapType.initModel
             , dijkstraModel = Dijkstra.initModel
@@ -761,10 +761,10 @@ view model =
         -- Website theme
         themeClass =
             case model.homeModel.theme of
-                Home.Light ->
+                Light ->
                     "light-theme"
 
-                Home.Dark ->
+                Dark ->
                     "dark-theme"
     in
     Browser.Document "Algorithms & Data Structures"
@@ -906,7 +906,7 @@ viewThemeToggle : Model -> Html Msg
 viewThemeToggle model =
     let
         ( icon, tooltip ) =
-            if model.homeModel.theme == Home.Light then
+            if model.homeModel.theme == Light then
                 ( "☼", "Switch to Dark Mode" )
             else
                 ( "☾", "Switch to Light Mode" )
