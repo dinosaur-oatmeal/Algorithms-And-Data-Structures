@@ -49,6 +49,8 @@ import Trees.HeapType as HeapType exposing (Msg(..))
 import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
 import Graphs.MST as MST exposing(Msg(..))
 
+import DataStructures.StackQueue as StackQueue exposing(Msg(..))
+
 -- Model (info stored during interactions)
 type alias Model =
     { key : Nav.Key
@@ -62,7 +64,10 @@ type alias Model =
     , heapTypeModel : HeapType.Model
     -- Call Dijkstra.elm model
     , dijkstraModel : Dijkstra.Model
+    -- Call MST.elm model
     , mstModel : MST.Model
+    -- Call StackQueue.elm model
+    , sqModel : StackQueue.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
@@ -84,6 +89,7 @@ type Route
     | HeapRoute
     | DijkstraRoute
     | MSTRoute
+    | SQRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -100,6 +106,7 @@ type Page
     | HeapType
     | Dijkstra
     | MST
+    | SQ
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -113,7 +120,10 @@ type Msg
     | HeapTypeMsg HeapType.Msg
     -- Update something on Dijkstra page
     | DijkstraMsg Dijkstra.Msg
+    -- Update something on MST page
     | MSTMsg MST.Msg
+    -- Update something on SQ page
+    | SQMsg StackQueue.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -148,6 +158,7 @@ routeParser =
         , Parser.map HeapRoute (s "heap-type")
         , Parser.map DijkstraRoute (s "dijkstra")
         , Parser.map MSTRoute (s "mst")
+        , Parser.map SQRoute (s "sq")
         ]
 
 -- Convert URL into a page
@@ -202,8 +213,13 @@ parseUrl url =
         Just DijkstraRoute ->
             Dijkstra
 
+        -- MST Page
         Just MSTRoute ->
             MST
+        
+        -- StackQueue Page
+        Just SQRoute ->
+            SQ
 
         -- Default to Home
         _ ->
@@ -221,6 +237,7 @@ init _ url key =
             , heapTypeModel = HeapType.initModel
             , dijkstraModel = Dijkstra.initModel
             , mstModel = MST.initModel
+            , sqModel = StackQueue.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
             }
@@ -282,6 +299,7 @@ update msg model =
             , Cmd.map DijkstraMsg dijkstraCmd
             )
 
+        -- MST updates point to MST.elm
         MSTMsg mstMsg ->
             let
                 ( newMSTModel, mstCmd ) =
@@ -291,6 +309,15 @@ update msg model =
             , Cmd.map MSTMsg mstCmd
             )
 
+        -- SQ updates point to StackQueue.elm
+        SQMsg sqMsg ->
+            let
+                newSQModel =
+                    StackQueue.update sqMsg model.sqModel
+            in
+            ( { model | sqModel = newSQModel }
+            , Cmd.none
+            )
 
         -- Algorithm selection from dropdown
         SelectAlgorithm algName ->
@@ -402,6 +429,14 @@ update msg model =
                             , running = False
                     }
                     , Random.generate GotRandomGraph randomGraphGenerator
+                    )
+
+                "StacksQueues" ->
+                    ( { model | currentPage = SQ
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    , Cmd.none
                     )
 
                 -- Default to home for algorithms not yet added
@@ -817,6 +852,9 @@ view model =
 
                     MST ->
                         Html.map MSTMsg (MST.view model.mstModel)
+
+                    SQ ->
+                        Html.map SQMsg (StackQueue.view model.sqModel)
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -891,13 +929,19 @@ viewHeader =
                 , ul [ class "dropdown-content" ]
                     [ li []
                         [ button [ onClick (SelectAlgorithm "Dijkstra") ] [ text "Dijkstra's" ] ]
-                    
                     , li []
                         [ button [ onClick (SelectAlgorithm "MST") ] [ text "MSTs" ] ]
-                    
                     ]
                 ]
             
+            -- Data Structures
+            , div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Data Structures" ]
+                , ul [ class "dropdown-content" ]
+                    [ li [] 
+                        [ button [ onClick (SelectAlgorithm "StacksQueues") ] [ text "Stacks/Queues" ] ]
+                    ]
+                ]
             ]
         ]
 

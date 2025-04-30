@@ -5328,6 +5328,8 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 			])
 	};
 };
+var $author$project$DataStructures$StackQueue$Stack = {$: 'Stack'};
+var $author$project$DataStructures$StackQueue$initModel = {dataStructure: $author$project$DataStructures$StackQueue$Stack, elements: _List_Nil, inputValue: ''};
 var $author$project$Graphs$Dijkstra$initModel = {
 	dijkstraSteps: _List_Nil,
 	graph: {edges: _List_Nil, nodes: _List_Nil},
@@ -5367,6 +5369,7 @@ var $author$project$Main$LinearSearch = {$: 'LinearSearch'};
 var $author$project$Main$MST = {$: 'MST'};
 var $author$project$Main$MergeSort = {$: 'MergeSort'};
 var $author$project$Main$QuickSort = {$: 'QuickSort'};
+var $author$project$Main$SQ = {$: 'SQ'};
 var $author$project$Main$SelectionSort = {$: 'SelectionSort'};
 var $author$project$Main$ShellSort = {$: 'ShellSort'};
 var $author$project$Main$TreeTraversal = {$: 'TreeTraversal'};
@@ -6014,6 +6017,7 @@ var $author$project$Main$LinearSearchRoute = {$: 'LinearSearchRoute'};
 var $author$project$Main$MSTRoute = {$: 'MSTRoute'};
 var $author$project$Main$MergeSortRoute = {$: 'MergeSortRoute'};
 var $author$project$Main$QuickSortRoute = {$: 'QuickSortRoute'};
+var $author$project$Main$SQRoute = {$: 'SQRoute'};
 var $author$project$Main$SelectionSortRoute = {$: 'SelectionSortRoute'};
 var $author$project$Main$ShellSortRoute = {$: 'ShellSortRoute'};
 var $author$project$Main$TreeRoute = {$: 'TreeRoute'};
@@ -6162,7 +6166,11 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$MSTRoute,
-			$elm$url$Url$Parser$s('mst'))
+			$elm$url$Url$Parser$s('mst')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$SQRoute,
+			$elm$url$Url$Parser$s('sq'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6204,9 +6212,12 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'DijkstraRoute':
 				var _v12 = _v0.a;
 				return $author$project$Main$Dijkstra;
-			default:
+			case 'MSTRoute':
 				var _v13 = _v0.a;
 				return $author$project$Main$MST;
+			default:
+				var _v14 = _v0.a;
+				return $author$project$Main$SQ;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6223,6 +6234,7 @@ var $author$project$Main$init = F3(
 			mstModel: $author$project$Graphs$MST$initModel,
 			running: false,
 			sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil),
+			sqModel: $author$project$DataStructures$StackQueue$initModel,
 			treeTraversalModel: $author$project$Trees$TreeTraversal$initModel
 		};
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8265,6 +8277,52 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 		}
 	}
 };
+var $author$project$DataStructures$StackQueue$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'SetInput':
+				var val = msg.a;
+				return _Utils_update(
+					model,
+					{inputValue: val});
+			case 'AddItem':
+				var _v1 = $elm$core$String$toInt(model.inputValue);
+				if (_v1.$ === 'Just') {
+					var num = _v1.a;
+					var newElements = function () {
+						var _v2 = model.dataStructure;
+						if (_v2.$ === 'Stack') {
+							return A2($elm$core$List$cons, num, model.elements);
+						} else {
+							return _Utils_ap(
+								model.elements,
+								_List_fromArray(
+									[num]));
+						}
+					}();
+					return _Utils_update(
+						model,
+						{elements: newElements, inputValue: ''});
+				} else {
+					return model;
+				}
+			case 'RemoveItem':
+				var _v3 = model.elements;
+				if (!_v3.b) {
+					return model;
+				} else {
+					var rest = _v3.b;
+					return _Utils_update(
+						model,
+						{elements: rest});
+				}
+			default:
+				var newStructure = msg.a;
+				return _Utils_update(
+					model,
+					{dataStructure: newStructure});
+		}
+	});
 var $author$project$Graphs$Dijkstra$resetAndGenerateGraph = function (model) {
 	var cmd = A2($elm$random$Random$generate, $author$project$Graphs$Dijkstra$SetGraph, $author$project$MainComponents$Structs$randomGraphGenerator);
 	return _Utils_Tuple2(
@@ -9561,6 +9619,14 @@ var $author$project$Main$update = F2(
 						model,
 						{mstModel: newMSTModel}),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$MSTMsg, mstCmd));
+			case 'SQMsg':
+				var sqMsg = msg.a;
+				var newSQModel = A2($author$project$DataStructures$StackQueue$update, sqMsg, model.sqModel);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{sqModel: newSQModel}),
+					$elm$core$Platform$Cmd$none);
 			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
@@ -9700,6 +9766,16 @@ var $author$project$Main$update = F2(
 									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
 							A2($elm$random$Random$generate, $author$project$Main$GotRandomGraph, $author$project$MainComponents$Structs$randomGraphGenerator));
+					case 'StacksQueues':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$SQ,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							$elm$core$Platform$Cmd$none);
 					default:
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -10047,6 +10123,9 @@ var $elm$browser$Browser$Document = F2(
 	function (title, body) {
 		return {body: body, title: title};
 	});
+var $author$project$Main$SQMsg = function (a) {
+	return {$: 'SQMsg', a: a};
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -10059,6 +10138,391 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $author$project$DataStructures$StackQueue$AddItem = {$: 'AddItem'};
+var $author$project$DataStructures$StackQueue$ChangeDataStructure = function (a) {
+	return {$: 'ChangeDataStructure', a: a};
+};
+var $author$project$DataStructures$StackQueue$Queue = {$: 'Queue'};
+var $author$project$DataStructures$StackQueue$RemoveItem = {$: 'RemoveItem'};
+var $author$project$DataStructures$StackQueue$SetInput = function (a) {
+	return {$: 'SetInput', a: a};
+};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$DataStructures$StackQueue$getDescription = function (dsType) {
+	if (dsType.$ === 'Stack') {
+		return 'Stack: A data structure that follows the LIFO principle (Last In, First Out).\r\n                Think of it like a stack of plates: the last plate you put on top is the first one you take off.';
+	} else {
+		return 'Queue: A data structure that follows the FIFO principle (First In, First Out).\r\n                Imagine a line at a grocery store: the first person to get in line is the first to be served.';
+	}
+};
+var $author$project$DataStructures$StackQueue$infoTextFor = function (ds) {
+	if (ds.$ === 'Stack') {
+		return 'Stack: elements are removed from the top (last added).';
+	} else {
+		return 'Queue: elements are removed from the front (first added).';
+	}
+};
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$DataStructures$StackQueue$renderElement = F4(
+	function (list, dsType, index, value) {
+		var len = $elm$core$List$length(list);
+		var isLast = _Utils_eq(index, len - 1);
+		var isFirst = !index;
+		var label = function () {
+			if (dsType.$ === 'Stack') {
+				return isLast ? 'Top' : (isFirst ? 'Bottom' : '');
+			} else {
+				return isFirst ? 'Front' : (isLast ? 'Back' : '');
+			}
+		}();
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('element-box')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('element-label')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(label)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('element-value')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$String$fromInt(value))
+						]))
+				]));
+	});
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$DataStructures$StackQueue$view = function (model) {
+	var orderedElements = _Utils_eq(model.dataStructure, $author$project$DataStructures$StackQueue$Stack) ? $elm$core$List$reverse(model.elements) : model.elements;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('sort-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Stacks and Queues')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$DataStructures$StackQueue$getDescription(model.dataStructure))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('traversal-controls')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.dataStructure, $author$project$DataStructures$StackQueue$Stack) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick(
+								$author$project$DataStructures$StackQueue$ChangeDataStructure($author$project$DataStructures$StackQueue$Stack))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Stack (LIFO)')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.dataStructure, $author$project$DataStructures$StackQueue$Queue) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick(
+								$author$project$DataStructures$StackQueue$ChangeDataStructure($author$project$DataStructures$StackQueue$Queue))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Queue (FIFO)')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('insert-delete-container')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('insert-delete-row')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$DataStructures$StackQueue$AddItem)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Add')
+									])),
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('text'),
+										$elm$html$Html$Attributes$placeholder('Enter number'),
+										$elm$html$Html$Attributes$value(model.inputValue),
+										$elm$html$Html$Events$onInput($author$project$DataStructures$StackQueue$SetInput)
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$DataStructures$StackQueue$RemoveItem)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Remove')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('disclaimer')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$author$project$DataStructures$StackQueue$infoTextFor(model.dataStructure))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('element-container')
+					]),
+				$elm$core$List$isEmpty(orderedElements) ? _List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('element-placeholder')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(' ')
+							]))
+					]) : A2(
+					$elm$core$List$indexedMap,
+					A2($author$project$DataStructures$StackQueue$renderElement, orderedElements, model.dataStructure),
+					orderedElements)),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('variable-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Stack: inserts/removes from the top. LIFO.')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Queue: inserts at the back, removes from the front. FIFO.')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Big(O) Notation')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Insert')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O(1)')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('big-o-item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Remove')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('O(1)')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('space-complexity')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Space Complexity: O(n)')
+					]))
+			]));
+};
 var $author$project$Graphs$Dijkstra$DijkstraStep = {$: 'DijkstraStep'};
 var $author$project$Graphs$Dijkstra$ResetGraph = {$: 'ResetGraph'};
 var $author$project$Graphs$Dijkstra$StartDijkstra = {$: 'StartDijkstra'};
@@ -10093,7 +10557,6 @@ var $author$project$Graphs$Dijkstra$getPath = F3(
 			}
 		}
 	});
-var $elm$html$Html$li = _VirtualDom_node('li');
 var $author$project$Graphs$Dijkstra$pairs = function (list) {
 	if (list.b && list.b.b) {
 		var a = list.a;
@@ -10109,9 +10572,6 @@ var $author$project$Graphs$Dijkstra$pairs = function (list) {
 		return _List_Nil;
 	}
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Graphs$GraphVisualization$nodePositions = $elm$core$Dict$fromList(
 	_List_fromArray(
 		[
@@ -10384,24 +10844,6 @@ var $author$project$MainComponents$Controls$Pause = {$: 'Pause'};
 var $author$project$MainComponents$Controls$Reset = {$: 'Reset'};
 var $author$project$MainComponents$Controls$Run = {$: 'Run'};
 var $author$project$MainComponents$Controls$Step = {$: 'Step'};
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $author$project$MainComponents$Controls$view = F2(
 	function (running, toMsg) {
@@ -12738,50 +13180,6 @@ var $author$project$Trees$HeapType$getDescription = function (heapType) {
 		return 'Max Heap: A binary tree where the largest element is always the root.\r\n                Elements get smaller as the tree levels get deeper,\r\n                ensuring parent nodes are larger than their children.';
 	}
 };
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Trees$TreeVisualization$countNodes = function (node) {
 	if (node.$ === 'Empty') {
 		return 0;
@@ -13883,6 +14281,51 @@ var $author$project$Main$viewHeader = A2(
 												]))
 										]))
 								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('dropdown-group')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-label')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Data Structures')
+								])),
+							A2(
+							$elm$html$Html$ul,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-content')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('StacksQueues'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Stacks/Queues')
+												]))
+										]))
+								]))
 						]))
 				]))
 		]));
@@ -13985,11 +14428,16 @@ var $author$project$Main$view = function (model) {
 											$elm$html$Html$map,
 											$author$project$Main$DijkstraMsg,
 											$author$project$Graphs$Dijkstra$view(model.dijkstraModel));
-									default:
+									case 'MST':
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$MSTMsg,
 											$author$project$Graphs$MST$view(model.mstModel));
+									default:
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$SQMsg,
+											$author$project$DataStructures$StackQueue$view(model.sqModel));
 								}
 							}()
 							])),

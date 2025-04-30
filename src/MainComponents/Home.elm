@@ -11,10 +11,7 @@ import String
 import Random
 import Time
 
-import MainComponents.Structs
-    exposing    ( HomeState
-                , Theme(..)            -- so Dark/Light destructuring still works
-                , defaultHomeState )
+import MainComponents.Structs exposing (HomeState, Theme(..), defaultHomeState)
 
 -- Used to render background bar chart
 import SortingAlgorithms.SortingVisualization as Visualization exposing(renderBackgroundBars)
