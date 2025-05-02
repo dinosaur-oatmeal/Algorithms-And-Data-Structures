@@ -972,7 +972,7 @@ viewFooter =
         [ text "An educational platform built by "
         , a
             -- Open GitHub profile in a new tab
-            [ href "https://github.com/dinosaur-oatmeal"
+            [ href "https://www.willmaberry.com/"
             , target "_blank"
             -- Keep text white and underlined
             , class "underline"
