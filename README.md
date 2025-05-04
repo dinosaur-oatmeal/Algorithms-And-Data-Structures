@@ -16,7 +16,7 @@ This project's impact has superseded students' learning on their own volition. C
 
 ---
 
-## Current Algorithms
+## Algorithms
 
 ### Sorting Algorithms
 
@@ -124,6 +124,49 @@ This project's impact has superseded students' learning on their own volition. C
   
 ---
 
+## **Data Structures**
+
+### Fundamental Structures
+
+#### **Arrays**
+- An ordered collection of elements accessible by index stored on the stack that supports random access. All arrays require bounds and can't change size as needed.
+
+##### **Complexities:**
+- **Time Complexity**:
+  - Insert: $O(n)$ Beginning | $O(1)$ End
+  - Remove: $O(n)$ Beginning | $O(1)$ End
+  - Access: $O(1)$
+- **Space Complexity**: $O(n)$
+
+
+#### **Linked Lists**
+- A sequence of nodes where each node points to the next, stored in the heap. All lists can change their size as needed and don't require contiguous memory.
+
+##### **Complexities:**
+- **Time Complexity**:
+  - Insert: $O(1)$ Beginning | $O(n)$ End
+  - Remove: $O(1)$ Beginning | $O(n)$ End
+  - Access: $O(n)$
+- **Space Complexity**: $O(n)$
+
+#### **Stacks**
+- A special type of list that follows the Last-In, First-Out (LIFO) structure. This data structure is how function call stacks work.
+
+##### **Complexities:**
+- **Time Complexity**:
+  - Insert (Push): $O(1)$ (Only End at Top)
+  - Remove (Pop): $O(1)$ (Only End at Top)
+- **Space Complexity**: $O(n)$
+
+#### **Queues**  
+- A special type of list that follows the First-In, First-Out (FIFO) structure. This data structure is similar to how lines in a grocery store work.
+
+##### **Complexities:**
+- **Time Complexity**:
+  - Insert: $O(1)$ (Only End)
+  - Remove: $O(1)$ (Only Beginning)
+- **Space Complexity**: $O(n)$
+
 ## Work In Progress (WIP)
 
 #### **Graph Traversals** 
@@ -134,8 +177,6 @@ This project's impact has superseded students' learning on their own volition. C
 ---
 
 ## Upcoming Features
-
-### **Data Structures**
 
 #### **Fundamental Structures**  
 - **Arrays**: Ordered collection of elements accessible by index.  
