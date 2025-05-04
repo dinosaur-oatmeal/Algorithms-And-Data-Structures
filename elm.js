@@ -10683,11 +10683,51 @@ var $author$project$DataStructures$StackQueue$RemoveItem = {$: 'RemoveItem'};
 var $author$project$DataStructures$StackQueue$SetInput = function (a) {
 	return {$: 'SetInput', a: a};
 };
+var $author$project$DataStructures$StackQueue$bigOItem = F2(
+	function (kind, cost) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('big-o-item')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(kind)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(cost)
+						]))
+				]));
+	});
 var $author$project$DataStructures$StackQueue$getDescription = function (dsType) {
 	if (dsType.$ === 'Stack') {
 		return 'Stack: A data structure that follows the LIFO principle (Last In, First Out).\r\n                Think of it like a stack of plates: the last plate you put on top is the first one you take off.';
 	} else {
 		return 'Queue: A data structure that follows the FIFO principle (First In, First Out).\r\n                Imagine a line at a grocery store: the first person to get in line is the first to be served.';
+	}
+};
+var $author$project$DataStructures$StackQueue$getInsert = function (ds) {
+	if (ds.$ === 'Stack') {
+		return 'O(1) Push (End at Top)';
+	} else {
+		return 'O(1) Insert (End)';
+	}
+};
+var $author$project$DataStructures$StackQueue$getRemove = function (ds) {
+	if (ds.$ === 'Stack') {
+		return 'O(1) Pop (End at Top)';
+	} else {
+		return 'O(1) Remove (Beginning)';
 	}
 };
 var $author$project$DataStructures$StackQueue$infoTextFor = function (ds) {
@@ -10830,7 +10870,8 @@ var $author$project$DataStructures$StackQueue$view = function (model) {
 									]),
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Add')
+										$elm$html$Html$text(
+										_Utils_eq(model.dataStructure, $author$project$DataStructures$StackQueue$Queue) ? 'Add' : 'Push')
 									])),
 								A2(
 								$elm$html$Html$input,
@@ -10850,7 +10891,8 @@ var $author$project$DataStructures$StackQueue$view = function (model) {
 									]),
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Remove')
+										$elm$html$Html$text(
+										_Utils_eq(model.dataStructure, $author$project$DataStructures$StackQueue$Queue) ? 'Remove' : 'Pop')
 									]))
 							])),
 						A2(
@@ -10935,51 +10977,13 @@ var $author$project$DataStructures$StackQueue$view = function (model) {
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('big-o-item')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$div,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Insert')
-									])),
-								A2(
-								$elm$html$Html$div,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('O(1)')
-									]))
-							])),
+						$author$project$DataStructures$StackQueue$bigOItem,
+						'Insert',
+						$author$project$DataStructures$StackQueue$getInsert(model.dataStructure)),
 						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('big-o-item')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$div,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Remove')
-									])),
-								A2(
-								$elm$html$Html$div,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('O(1)')
-									]))
-							]))
+						$author$project$DataStructures$StackQueue$bigOItem,
+						'Remove',
+						$author$project$DataStructures$StackQueue$getRemove(model.dataStructure))
 					])),
 				A2(
 				$elm$html$Html$div,

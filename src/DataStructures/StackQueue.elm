@@ -127,7 +127,8 @@ view model =
               [ -- Row containing input and buttons
               div [ class "insert-delete-row" ]
                   -- Add Button
-                  [ button [ onClick AddItem ] [ text "Add" ]
+                  [ button [ onClick AddItem ]
+                    [ text (if model.dataStructure == Queue then "Add" else "Push") ]
 
                   -- Input field
                   , input
@@ -139,7 +140,8 @@ view model =
                       []
 
                   -- Remove button
-                  , button [ onClick RemoveItem ] [ text "Remove" ]
+                  , button [ onClick RemoveItem ]
+                    [ text (if model.dataStructure == Queue then "Remove" else "Pop") ]
                   ]
 
               -- Disclaimer text
@@ -168,14 +170,8 @@ view model =
         -- Big-O Notation
         , div [ class "big-o-title" ] [ text "Big(O) Notation" ]
         , div [ class "big-o-list" ]
-            [ div [ class "big-o-item" ]
-                [ div [] [ text "Insert" ]
-                , div [] [ text "O(1)" ]
-                ]
-            , div [ class "big-o-item" ]
-                [ div [] [ text "Remove" ]
-                , div [] [ text "O(1)" ]
-                ]
+            [ bigOItem "Insert" (getInsert model.dataStructure)
+            , bigOItem "Remove" (getRemove model.dataStructure)
             ]
         , div [ class "space-complexity" ]
             [ text "Space Complexity: O(n)" ]
@@ -209,6 +205,28 @@ renderElement list dsType index value =
         [ div [ class "element-label" ] [ text label ]
         , div [ class "element-value" ] [ text (String.fromInt value) ]
         ]
+
+-- BIG-O HELPERS
+bigOItem : String -> String -> Html msg
+bigOItem kind cost =
+    div [ class "big-o-item" ]
+        [ div [] [ text kind ]
+        , div [] [ text cost ]
+        ]
+
+-- Cost for insertion
+getInsert : DSType -> String
+getInsert ds =
+    case ds of
+        Stack  -> "O(1) Push (End at Top)"
+        Queue -> "O(1) Insert (End)"
+
+-- Cost for Removal
+getRemove : DSType -> String
+getRemove ds =
+    case ds of
+        Stack  -> "O(1) Pop (End at Top)"
+        Queue -> "O(1) Remove (Beginning)"
 
 -- Change description based on traversal type
 getDescription : DSType -> String

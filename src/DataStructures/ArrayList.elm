@@ -228,7 +228,6 @@ renderElement list dsType index value =
         , div [ class "element-value" ] [ text (String.fromInt value) ]
         ]
 
-
 -- BIG-O HELPERS
 bigOItem : String -> String -> Html msg
 bigOItem kind cost =
