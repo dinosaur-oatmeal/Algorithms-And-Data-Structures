@@ -462,9 +462,22 @@ body {
     margin-bottom: 6px;
   }
   
-  .element-value {
+  .light-theme .element-value {
     background-color: #343a40;
     color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 12px 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    min-width: 48px;
+    text-align: center;
+  }
+
+  .dark-theme .element-value {
+    background-color: white;
+    color: #343a40;
     font-weight: bold;
     font-size: 18px;
     padding: 12px 16px;
