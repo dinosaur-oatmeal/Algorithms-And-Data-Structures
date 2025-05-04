@@ -50,6 +50,7 @@ import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
 import Graphs.MST as MST exposing(Msg(..))
 
 import DataStructures.StackQueue as StackQueue exposing(Msg(..))
+import DataStructures.ArrayList as ArrayList exposing(Msg(..))
 
 -- Model (info stored during interactions)
 type alias Model =
@@ -68,6 +69,8 @@ type alias Model =
     , mstModel : MST.Model
     -- Call StackQueue.elm model
     , sqModel : StackQueue.Model
+    -- Call ArrayList.elm model
+    , alModel : ArrayList.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
@@ -90,6 +93,7 @@ type Route
     | DijkstraRoute
     | MSTRoute
     | SQRoute
+    | ALRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -107,6 +111,7 @@ type Page
     | Dijkstra
     | MST
     | SQ
+    | AL
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -124,6 +129,8 @@ type Msg
     | MSTMsg MST.Msg
     -- Update something on SQ page
     | SQMsg StackQueue.Msg
+    -- Update something on AL page
+    | ALMsg ArrayList.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -159,6 +166,7 @@ routeParser =
         , Parser.map DijkstraRoute (s "dijkstra")
         , Parser.map MSTRoute (s "mst")
         , Parser.map SQRoute (s "sq")
+        , Parser.map ALRoute (s "al")
         ]
 
 -- Convert URL into a page
@@ -221,6 +229,10 @@ parseUrl url =
         Just SQRoute ->
             SQ
 
+        -- ArrayList Page
+        Just ALRoute ->
+            AL
+
         -- Default to Home
         _ ->
             Home
@@ -238,6 +250,7 @@ init _ url key =
             , dijkstraModel = Dijkstra.initModel
             , mstModel = MST.initModel
             , sqModel = StackQueue.initModel
+            , alModel = ArrayList.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
             }
@@ -316,6 +329,16 @@ update msg model =
                     StackQueue.update sqMsg model.sqModel
             in
             ( { model | sqModel = newSQModel }
+            , Cmd.none
+            )
+
+        -- AL updates point to ArrayList.elm
+        ALMsg alMsg ->
+            let
+                newALModel =
+                    ArrayList.update alMsg model.alModel
+            in
+            ( { model | alModel = newALModel }
             , Cmd.none
             )
 
@@ -433,6 +456,14 @@ update msg model =
 
                 "StacksQueues" ->
                     ( { model | currentPage = SQ
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    , Cmd.none
+                    )
+
+                "ArraysLists" ->
+                    ( { model | currentPage = AL
                             , sortingAlgorithm = defaultSortingTrack []
                             , running = False
                     }
@@ -840,7 +871,6 @@ view model =
                     BinarySearch ->
                         BinarySearch.view model.sortingAlgorithm model.running ControlMsg
 
-                    -- Tree Traversal Page points to TreeTraversal.elm
                     TreeTraversal ->
                         Html.map TreeTraversalMsg (TreeTraversal.view model.treeTraversalModel)
 
@@ -855,6 +885,9 @@ view model =
 
                     SQ ->
                         Html.map SQMsg (StackQueue.view model.sqModel)
+
+                    AL ->
+                        Html.map ALMsg (ArrayList.view model.alModel)
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -938,7 +971,9 @@ viewHeader =
             , div [ class "dropdown-group" ]
                 [ div [ class "dropdown-label" ] [ text "Data Structures" ]
                 , ul [ class "dropdown-content" ]
-                    [ li [] 
+                    [ li []
+                        [ button [ onClick (SelectAlgorithm "ArraysLists") ] [ text "Arrays/Lists"] ]
+                    , li []
                         [ button [ onClick (SelectAlgorithm "StacksQueues") ] [ text "Stacks/Queues" ] ]
                     ]
                 ]

@@ -5328,6 +5328,8 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 			])
 	};
 };
+var $author$project$DataStructures$ArrayList$ListType = {$: 'ListType'};
+var $author$project$DataStructures$ArrayList$initModel = {dataStructure: $author$project$DataStructures$ArrayList$ListType, elements: _List_Nil, inputValue: ''};
 var $author$project$DataStructures$StackQueue$Stack = {$: 'Stack'};
 var $author$project$DataStructures$StackQueue$initModel = {dataStructure: $author$project$DataStructures$StackQueue$Stack, elements: _List_Nil, inputValue: ''};
 var $author$project$Graphs$Dijkstra$initModel = {
@@ -5360,6 +5362,7 @@ var $author$project$Trees$TreeTraversal$initModel = {
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$AL = {$: 'AL'};
 var $author$project$Main$BinarySearch = {$: 'BinarySearch'};
 var $author$project$Main$BubbleSort = {$: 'BubbleSort'};
 var $author$project$Main$Dijkstra = {$: 'Dijkstra'};
@@ -6007,6 +6010,7 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
+var $author$project$Main$ALRoute = {$: 'ALRoute'};
 var $author$project$Main$BinarySearchRoute = {$: 'BinarySearchRoute'};
 var $author$project$Main$BubbleSortRoute = {$: 'BubbleSortRoute'};
 var $author$project$Main$DijkstraRoute = {$: 'DijkstraRoute'};
@@ -6170,7 +6174,11 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$SQRoute,
-			$elm$url$Url$Parser$s('sq'))
+			$elm$url$Url$Parser$s('sq')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$ALRoute,
+			$elm$url$Url$Parser$s('al'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6215,9 +6223,12 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'MSTRoute':
 				var _v13 = _v0.a;
 				return $author$project$Main$MST;
-			default:
+			case 'SQRoute':
 				var _v14 = _v0.a;
 				return $author$project$Main$SQ;
+			default:
+				var _v15 = _v0.a;
+				return $author$project$Main$AL;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6226,6 +6237,7 @@ var $author$project$Main$parseUrl = function (url) {
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
 		var model = {
+			alModel: $author$project$DataStructures$ArrayList$initModel,
 			currentPage: $author$project$Main$parseUrl(url),
 			dijkstraModel: $author$project$Graphs$Dijkstra$initModel,
 			heapTypeModel: $author$project$Trees$HeapType$initModel,
@@ -8277,6 +8289,47 @@ var $author$project$SortingAlgorithms$ShellSort$shellSortStep = function (track)
 		}
 	}
 };
+var $author$project$DataStructures$ArrayList$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'SetInput':
+				var val = msg.a;
+				return _Utils_update(
+					model,
+					{inputValue: val});
+			case 'AddItem':
+				if ($elm$core$List$length(model.elements) < 10) {
+					var _v1 = $elm$core$String$toInt(model.inputValue);
+					if (_v1.$ === 'Just') {
+						var num = _v1.a;
+						var newElements = _Utils_ap(
+							model.elements,
+							_List_fromArray(
+								[num]));
+						return _Utils_update(
+							model,
+							{elements: newElements, inputValue: ''});
+					} else {
+						return model;
+					}
+				} else {
+					return model;
+				}
+			case 'RemoveItem':
+				var newElems = function () {
+					var len = $elm$core$List$length(model.elements);
+					return (len > 0) ? A2($elm$core$List$take, len - 1, model.elements) : _List_Nil;
+				}();
+				return _Utils_update(
+					model,
+					{elements: newElems});
+			default:
+				var ds = msg.a;
+				return _Utils_update(
+					model,
+					{dataStructure: ds});
+		}
+	});
 var $author$project$DataStructures$StackQueue$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -8286,23 +8339,27 @@ var $author$project$DataStructures$StackQueue$update = F2(
 					model,
 					{inputValue: val});
 			case 'AddItem':
-				var _v1 = $elm$core$String$toInt(model.inputValue);
-				if (_v1.$ === 'Just') {
-					var num = _v1.a;
-					var newElements = function () {
-						var _v2 = model.dataStructure;
-						if (_v2.$ === 'Stack') {
-							return A2($elm$core$List$cons, num, model.elements);
-						} else {
-							return _Utils_ap(
-								model.elements,
-								_List_fromArray(
-									[num]));
-						}
-					}();
-					return _Utils_update(
-						model,
-						{elements: newElements, inputValue: ''});
+				if ($elm$core$List$length(model.elements) < 10) {
+					var _v1 = $elm$core$String$toInt(model.inputValue);
+					if (_v1.$ === 'Just') {
+						var num = _v1.a;
+						var newElements = function () {
+							var _v2 = model.dataStructure;
+							if (_v2.$ === 'Stack') {
+								return A2($elm$core$List$cons, num, model.elements);
+							} else {
+								return _Utils_ap(
+									model.elements,
+									_List_fromArray(
+										[num]));
+							}
+						}();
+						return _Utils_update(
+							model,
+							{elements: newElements, inputValue: ''});
+					} else {
+						return model;
+					}
 				} else {
 					return model;
 				}
@@ -9627,6 +9684,14 @@ var $author$project$Main$update = F2(
 						model,
 						{sqModel: newSQModel}),
 					$elm$core$Platform$Cmd$none);
+			case 'ALMsg':
+				var alMsg = msg.a;
+				var newALModel = A2($author$project$DataStructures$ArrayList$update, alMsg, model.alModel);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{alModel: newALModel}),
+					$elm$core$Platform$Cmd$none);
 			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
@@ -9772,6 +9837,16 @@ var $author$project$Main$update = F2(
 								model,
 								{
 									currentPage: $author$project$Main$SQ,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							$elm$core$Platform$Cmd$none);
+					case 'ArraysLists':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$AL,
 									running: false,
 									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -10116,6 +10191,9 @@ var $author$project$Main$update = F2(
 				}
 		}
 	});
+var $author$project$Main$ALMsg = function (a) {
+	return {$: 'ALMsg', a: a};
+};
 var $author$project$Main$ControlMsg = function (a) {
 	return {$: 'ControlMsg', a: a};
 };
@@ -10138,28 +10216,77 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $author$project$DataStructures$StackQueue$AddItem = {$: 'AddItem'};
-var $author$project$DataStructures$StackQueue$ChangeDataStructure = function (a) {
+var $author$project$DataStructures$ArrayList$AddItem = {$: 'AddItem'};
+var $author$project$DataStructures$ArrayList$ArrayType = {$: 'ArrayType'};
+var $author$project$DataStructures$ArrayList$ChangeDataStructure = function (a) {
 	return {$: 'ChangeDataStructure', a: a};
 };
-var $author$project$DataStructures$StackQueue$Queue = {$: 'Queue'};
-var $author$project$DataStructures$StackQueue$RemoveItem = {$: 'RemoveItem'};
-var $author$project$DataStructures$StackQueue$SetInput = function (a) {
+var $author$project$DataStructures$ArrayList$RemoveItem = {$: 'RemoveItem'};
+var $author$project$DataStructures$ArrayList$SetInput = function (a) {
 	return {$: 'SetInput', a: a};
 };
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$DataStructures$ArrayList$bigOItem = F2(
+	function (kind, cost) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('big-o-item')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(kind)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(cost)
+						]))
+				]));
+	});
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $author$project$DataStructures$StackQueue$getDescription = function (dsType) {
-	if (dsType.$ === 'Stack') {
-		return 'Stack: A data structure that follows the LIFO principle (Last In, First Out).\r\n                Think of it like a stack of plates: the last plate you put on top is the first one you take off.';
+var $author$project$DataStructures$ArrayList$getAccess = function (ds) {
+	if (ds.$ === 'ListType') {
+		return 'O(n)';
 	} else {
-		return 'Queue: A data structure that follows the FIFO principle (First In, First Out).\r\n                Imagine a line at a grocery store: the first person to get in line is the first to be served.';
+		return 'O(1)';
 	}
 };
-var $author$project$DataStructures$StackQueue$infoTextFor = function (ds) {
-	if (ds.$ === 'Stack') {
-		return 'Stack: elements are removed from the top (last added).';
+var $author$project$DataStructures$ArrayList$getDescription = function (ds) {
+	if (ds.$ === 'ListType') {
+		return 'Linked List: A linear data structure where elements (nodes) are stored in the heap and linked together using pointers.\r\n                Lists don\'t require a fixed size like arrays.';
 	} else {
-		return 'Queue: elements are removed from the front (first added).';
+		return 'Array: A fixed-size, index-based data structure stored in contiguous memory on the stack.\r\n                Arrays are ideal when element positions are known and performance is critical.';
+	}
+};
+var $author$project$DataStructures$ArrayList$getInsert = function (ds) {
+	if (ds.$ === 'ListType') {
+		return 'O(1) Head | O(n) Tail';
+	} else {
+		return 'O(n) Beginning | O(1) End';
+	}
+};
+var $author$project$DataStructures$ArrayList$getRemove = function (ds) {
+	if (ds.$ === 'ListType') {
+		return 'O(1) Head | O(n) Tail';
+	} else {
+		return 'O(n) Beginning | O(1) End';
+	}
+};
+var $author$project$DataStructures$ArrayList$infoTextFor = function (ds) {
+	if (ds.$ === 'ListType') {
+		return 'List: elements can be added and removed as needed thanks to using the heap.';
+	} else {
+		return 'Array: elements are bounded to the length allocated thanks to using the stack.';
 	}
 };
 var $elm$html$Html$input = _VirtualDom_node('input');
@@ -10222,8 +10349,354 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$DataStructures$ArrayList$renderElement = F4(
+	function (list, dsType, index, value) {
+		var len = $elm$core$List$length(list);
+		var isLast = _Utils_eq(index, len - 1);
+		var isFirst = !index;
+		var label = function () {
+			if (dsType.$ === 'ListType') {
+				return isFirst ? 'Head' : (isLast ? 'Tail' : '');
+			} else {
+				return '';
+			}
+		}();
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('element-box')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('element-label')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(label)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('element-value')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$String$fromInt(value))
+						]))
+				]));
+	});
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$DataStructures$ArrayList$view = function (model) {
+	var orderedElements = model.elements;
+	var arr = $elm$core$Array$fromList(model.elements);
+	var arraySlots = A2(
+		$elm$core$List$map,
+		function (i) {
+			return A2($elm$core$Array$get, i, arr);
+		},
+		A2($elm$core$List$range, 0, 9));
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('sort-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Arrays and Lists')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$DataStructures$ArrayList$getDescription(model.dataStructure))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('traversal-controls')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.dataStructure, $author$project$DataStructures$ArrayList$ListType) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick(
+								$author$project$DataStructures$ArrayList$ChangeDataStructure($author$project$DataStructures$ArrayList$ListType))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('List')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.dataStructure, $author$project$DataStructures$ArrayList$ArrayType) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick(
+								$author$project$DataStructures$ArrayList$ChangeDataStructure($author$project$DataStructures$ArrayList$ArrayType))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Array')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('insert-delete-container')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('insert-delete-row')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$DataStructures$ArrayList$AddItem)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Add')
+									])),
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('text'),
+										$elm$html$Html$Attributes$placeholder('Enter number'),
+										$elm$html$Html$Attributes$value(model.inputValue),
+										$elm$html$Html$Events$onInput($author$project$DataStructures$ArrayList$SetInput)
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Events$onClick($author$project$DataStructures$ArrayList$RemoveItem)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Remove')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('disclaimer')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$author$project$DataStructures$ArrayList$infoTextFor(model.dataStructure))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('element-container')
+					]),
+				function () {
+					var _v0 = model.dataStructure;
+					if (_v0.$ === 'ListType') {
+						return $elm$core$List$isEmpty(orderedElements) ? _List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('element-placeholder')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(' ')
+									]))
+							]) : A2(
+							$elm$core$List$indexedMap,
+							F2(
+								function (i, v) {
+									return A4($author$project$DataStructures$ArrayList$renderElement, orderedElements, $author$project$DataStructures$ArrayList$ListType, i, v);
+								}),
+							orderedElements);
+					} else {
+						return A2(
+							$elm$core$List$indexedMap,
+							F2(
+								function (i, mVal) {
+									var label = $elm$core$String$fromInt(i);
+									var display = function () {
+										if (mVal.$ === 'Just') {
+											var n = mVal.a;
+											return $elm$core$String$fromInt(n);
+										} else {
+											return '‎';
+										}
+									}();
+									return A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('element-box wireframe-slot')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$div,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$class('element-label')
+													]),
+												_List_fromArray(
+													[
+														$elm$html$Html$text(label)
+													])),
+												A2(
+												$elm$html$Html$div,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$class('element-value')
+													]),
+												_List_fromArray(
+													[
+														$elm$html$Html$text(display)
+													]))
+											]));
+								}),
+							arraySlots);
+					}
+				}()),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('variable-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('List: Allow data to be stored non-contiguously.')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Array: Data is contiguous, so random access is supported.')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Big(O) Notation')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$author$project$DataStructures$ArrayList$bigOItem,
+						'Insert',
+						$author$project$DataStructures$ArrayList$getInsert(model.dataStructure)),
+						A2(
+						$author$project$DataStructures$ArrayList$bigOItem,
+						'Remove',
+						$author$project$DataStructures$ArrayList$getRemove(model.dataStructure)),
+						A2(
+						$author$project$DataStructures$ArrayList$bigOItem,
+						'Access',
+						$author$project$DataStructures$ArrayList$getAccess(model.dataStructure))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('space-complexity')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Space Complexity: O(n)')
+					]))
+			]));
+};
+var $author$project$DataStructures$StackQueue$AddItem = {$: 'AddItem'};
+var $author$project$DataStructures$StackQueue$ChangeDataStructure = function (a) {
+	return {$: 'ChangeDataStructure', a: a};
+};
+var $author$project$DataStructures$StackQueue$Queue = {$: 'Queue'};
+var $author$project$DataStructures$StackQueue$RemoveItem = {$: 'RemoveItem'};
+var $author$project$DataStructures$StackQueue$SetInput = function (a) {
+	return {$: 'SetInput', a: a};
+};
+var $author$project$DataStructures$StackQueue$getDescription = function (dsType) {
+	if (dsType.$ === 'Stack') {
+		return 'Stack: A data structure that follows the LIFO principle (Last In, First Out).\r\n                Think of it like a stack of plates: the last plate you put on top is the first one you take off.';
+	} else {
+		return 'Queue: A data structure that follows the FIFO principle (First In, First Out).\r\n                Imagine a line at a grocery store: the first person to get in line is the first to be served.';
+	}
+};
+var $author$project$DataStructures$StackQueue$infoTextFor = function (ds) {
+	if (ds.$ === 'Stack') {
+		return 'Stack: elements are removed from the top (last added).';
+	} else {
+		return 'Queue: elements are removed from the front (first added).';
+	}
+};
 var $author$project$DataStructures$StackQueue$renderElement = F4(
 	function (list, dsType, index, value) {
 		var len = $elm$core$List$length(list);
@@ -10267,9 +10740,6 @@ var $author$project$DataStructures$StackQueue$renderElement = F4(
 						]))
 				]));
 	});
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$DataStructures$StackQueue$view = function (model) {
 	var orderedElements = _Utils_eq(model.dataStructure, $author$project$DataStructures$StackQueue$Stack) ? $elm$core$List$reverse(model.elements) : model.elements;
 	return A2(
@@ -13898,7 +14368,7 @@ var $author$project$Main$viewFooter = A2(
 			$elm$html$Html$a,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$href('https://github.com/dinosaur-oatmeal'),
+					$elm$html$Html$Attributes$href('https://www.willmaberry.com/'),
 					$elm$html$Html$Attributes$target('_blank'),
 					$elm$html$Html$Attributes$class('underline')
 				]),
@@ -14318,6 +14788,23 @@ var $author$project$Main$viewHeader = A2(
 											_List_fromArray(
 												[
 													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('ArraysLists'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Arrays/Lists')
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
 													$author$project$Main$SelectAlgorithm('StacksQueues'))
 												]),
 											_List_fromArray(
@@ -14433,11 +14920,16 @@ var $author$project$Main$view = function (model) {
 											$elm$html$Html$map,
 											$author$project$Main$MSTMsg,
 											$author$project$Graphs$MST$view(model.mstModel));
-									default:
+									case 'SQ':
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$SQMsg,
 											$author$project$DataStructures$StackQueue$view(model.sqModel));
+									default:
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$ALMsg,
+											$author$project$DataStructures$ArrayList$view(model.alModel));
 								}
 							}()
 							])),

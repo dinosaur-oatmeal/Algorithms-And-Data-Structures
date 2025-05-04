@@ -5,6 +5,8 @@ import Html exposing (Html, div, button, text, input, ul, li)
 import Html.Attributes exposing (class, type_, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 
+import List exposing (length)
+
 -- Types of data structures
 type DSType
     = Stack
@@ -45,23 +47,29 @@ update msg model =
 
         AddItem ->
             -- Try to convert input to an int
-            case String.toInt model.inputValue of
-                Just num ->
-                    let
-                        newElements =
-                            case model.dataStructure of
-                                -- Push to front for stack
-                                Stack ->
-                                    num :: model.elements
+                -- Cap inputs to 10 ints
+            if length model.elements < 10 then
+                case String.toInt model.inputValue of
+                    Just num ->
+                        let
+                            newElements =
+                                case model.dataStructure of
+                                    -- Push to front for stack
+                                    Stack ->
+                                        num :: model.elements
 
-                                -- Push to back for Queue
-                                Queue ->
-                                    model.elements ++ [ num ]
-                    in
-                    -- Update model and reset inputValue
-                    { model | elements = newElements, inputValue = "" }
+                                    -- Push to back for Queue
+                                    Queue ->
+                                        model.elements ++ [ num ]
+                        in
+                        -- Update model and reset inputValue
+                        { model | elements = newElements, inputValue = "" }
 
-                _ -> model
+                    _ -> model
+                    
+            -- Don't update model once 10 elements in data structure
+            else
+                model
 
         RemoveItem ->
             case model.elements of

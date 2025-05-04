@@ -382,7 +382,7 @@ body {
   text-align: center;
   background-color: #6c757d;
   color: white;
-  width: 95px;
+  width: 100px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -427,11 +427,11 @@ body {
   }
 
 /* =========================================
-   Stacks and Queues
+   Data Structures
    ========================================= */
   .element-container {
     display: flex;
-    gap: 20px;
+    gap: 8px;
     justify-content: center;
     align-items: flex-end;
     margin: 40px 0 30px;
@@ -442,6 +442,12 @@ body {
     width: 60px;
     height: 79px;
     visibility: hidden;
+  }
+
+  .wireframe-slot {
+    width: 60px;
+    height: 79px;
+    margin: 10px;
   }
   
   .element-box {
@@ -456,7 +462,7 @@ body {
   }
   
   .element-value {
-    background-color: #2196F3;
+    background-color: #343a40;
     color: white;
     font-weight: bold;
     font-size: 18px;
