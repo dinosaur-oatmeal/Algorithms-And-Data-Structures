@@ -334,6 +334,7 @@ body {
   align-items: center;
   gap: 10px;
   margin: 20px 0;
+  width: fit-content;
 }
 
 .traversal-button {
@@ -446,7 +447,7 @@ body {
 
   .wireframe-slot {
     width: 60px;
-    height: 79px;
+    height: 59px;
     margin: 10px;
   }
   
