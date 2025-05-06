@@ -273,13 +273,13 @@ view model =
               [ text "Big(O) Notation" ]
         , div [ class "big-o-list" ]
             [ div [ class "big-o-item" ]
-                [ div [] [ text "Traversal Time Complexity" ]
+                [ div [] [ text "Time Complexity (traversal)" ]
                 , div [] [ text "O(n)" ]
                 ]
             ]
 
         , div [ class "space-complexity" ]
-            [ text "Space Complexity: O(h) | h = height of tree" ]
+            [ text "Space Complexity (tree): O(n)" ]
         ]
 
 -- Updates traversal depending on which one is selected

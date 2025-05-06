@@ -44,6 +44,7 @@ import SearchAlgorithms.BinarySearch as BinarySearch
 -- Tree pages that can be visited
 import Trees.TreeTraversal as TreeTraversal exposing (Msg(..))
 import Trees.HeapType as HeapType exposing (Msg(..))
+import Trees.BST as BST exposing (Msg(..))
 
 -- Graph pages that can be visited
 import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
@@ -63,6 +64,8 @@ type alias Model =
     , treeTraversalModel : TreeTraversal.Model
     -- Call HeapType.elm model
     , heapTypeModel : HeapType.Model
+    -- Call BST.elm model
+    , bstModel : BST.Model
     -- Call Dijkstra.elm model
     , dijkstraModel : Dijkstra.Model
     -- Call MST.elm model
@@ -90,6 +93,7 @@ type Route
     | BinarySearchRoute
     | TreeRoute
     | HeapRoute
+    | BSTRoute
     | DijkstraRoute
     | MSTRoute
     | SQRoute
@@ -108,6 +112,7 @@ type Page
     | BinarySearch
     | TreeTraversal
     | HeapType
+    | BST
     | Dijkstra
     | MST
     | SQ
@@ -123,6 +128,8 @@ type Msg
     | TreeTraversalMsg TreeTraversal.Msg
     -- Update something on heap type page (type of heap/buttons)
     | HeapTypeMsg HeapType.Msg
+    -- Update something on BST page
+    | BSTMsg BST.Msg
     -- Update something on Dijkstra page
     | DijkstraMsg Dijkstra.Msg
     -- Update something on MST page
@@ -163,6 +170,7 @@ routeParser =
         , Parser.map BinarySearchRoute (s "binary-search")
         , Parser.map TreeRoute (s "tree-traversal")
         , Parser.map HeapRoute (s "heap-type")
+        , Parser.map BSTRoute (s "bst")
         , Parser.map DijkstraRoute (s "dijkstra")
         , Parser.map MSTRoute (s "mst")
         , Parser.map SQRoute (s "sq")
@@ -217,6 +225,10 @@ parseUrl url =
         Just HeapRoute ->
             HeapType
 
+        -- BST Page
+        Just BSTRoute ->
+            BST
+
         -- Dijkstra Page
         Just DijkstraRoute ->
             Dijkstra
@@ -247,6 +259,7 @@ init _ url key =
             , homeModel = defaultHomeState
             , treeTraversalModel = TreeTraversal.initModel
             , heapTypeModel = HeapType.initModel
+            , bstModel = BST.initModel
             , dijkstraModel = Dijkstra.initModel
             , mstModel = MST.initModel
             , sqModel = StackQueue.initModel
@@ -300,6 +313,16 @@ update msg model =
             in
             ( { model | heapTypeModel = newHeapTypeModel }
             , Cmd.map HeapTypeMsg heapCmd
+            )
+
+        -- BST updates point to BST.elm
+        BSTMsg bstMsg ->
+            let
+                ( newBSTModel, bstCmd ) =
+                    BST.update bstMsg model.bstModel
+            in
+            ( { model | bstModel = newBSTModel }
+            , Cmd.map BSTMsg bstCmd
             )
 
         -- Dijkstra updates point to Dijkstra.elm
@@ -436,6 +459,14 @@ update msg model =
                     }
                     -- Generate a new tree when selected
                     , Random.generate GotRandomTree (randomTreeGenerator 9 30)
+                    )
+                
+                "BST" ->
+                    ( { model | currentPage = BST
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    , Random.generate GotRandomTree (randomBSTGenerator 9 30)
                     )
 
                 "Dijkstra" ->
@@ -576,7 +607,7 @@ update msg model =
                         TreeTraversal ->
                             let
                                 (updatedTreeModel, treeCmd) =
-                                    TreeTraversal.update TraversalStep model.treeTraversalModel
+                                    TreeTraversal.update TreeTraversal.TraversalStep model.treeTraversalModel
                             in
                             ( { model | treeTraversalModel = updatedTreeModel }
                             , Cmd.map TreeTraversalMsg treeCmd
@@ -652,7 +683,7 @@ update msg model =
                     TreeTraversal ->
                         let
                             (updatedTreeModel, treeCmd) =
-                                TreeTraversal.update TraversalStep model.treeTraversalModel
+                                TreeTraversal.update TreeTraversal.TraversalStep model.treeTraversalModel
                         in
                         -- Return (Model, Cmd Msg) for TreeTraversal
                         ( { model | treeTraversalModel = updatedTreeModel }
@@ -750,6 +781,16 @@ update msg model =
                     ( { model | heapTypeModel = newHeapTypeModel }
                     , Cmd.map HeapTypeMsg heapCmd
                     )
+                
+                -- Generate a new tree in bstModel
+                BST ->
+                    let
+                        (newBstModel, bstCmd) =
+                            BST.update (BST.SetTree newTree) model.bstModel
+                    in
+                    ( { model | bstModel = newBstModel }
+                    , Cmd.map BSTMsg bstCmd
+                    )
 
                 -- Default to not not updating anything
                 _ ->
@@ -802,6 +843,10 @@ subscriptions model =
         HeapType ->
             HeapType.subscriptions model.heapTypeModel
                 |> Sub.map HeapTypeMsg
+
+        BST ->
+            BST.subscriptions model.bstModel
+                |> Sub.map BSTMsg
 
         Dijkstra ->
             Dijkstra.subscriptions model.dijkstraModel
@@ -876,6 +921,9 @@ view model =
 
                     HeapType ->
                         Html.map HeapTypeMsg (HeapType.view model.heapTypeModel)
+                    
+                    BST ->
+                        Html.map BSTMsg (BST.view model.bstModel)
                     
                     Dijkstra ->
                         Html.map DijkstraMsg (Dijkstra.view model.dijkstraModel)
@@ -953,6 +1001,8 @@ viewHeader =
                         [ button [ onClick (SelectAlgorithm "Tree Traversal") ] [ text "Traversals" ] ]
                     , li []
                         [ button [ onClick (SelectAlgorithm "Heap Type" ) ] [ text "Heaps" ] ]
+                    , li []
+                        [ button [ onClick (SelectAlgorithm "BST") ] [ text "BSTs" ] ]
                     ]
                 ]
 

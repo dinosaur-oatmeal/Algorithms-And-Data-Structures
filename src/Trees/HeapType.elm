@@ -403,7 +403,7 @@ view model =
                 ]
             ]
         , div [ class "space-complexity" ]
-            [ text "Space Complexity: O(n)" ]
+            [ text "Space Complexity (heap): O(n)" ]
         ]
 
 -- Convert messages from Controls.elm to local messages

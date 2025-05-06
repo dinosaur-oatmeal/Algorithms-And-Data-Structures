@@ -135,6 +135,60 @@ randomTreeGenerator intOne intTwo =
         )
         sizeGenerator
 
+-- Insert a node into a BST
+insertBST : Int -> Int -> Tree -> Tree
+insertBST maxDepth value tree =
+    let
+        insertHelper : Int -> Tree -> Tree
+        insertHelper currentDepth t =
+            -- Don't insert if max depth exceeded
+            if currentDepth > maxDepth then
+                t
+            else
+                case t of
+                    -- Create a new node with value (valid to insert)
+                    Empty ->
+                        TreeNode value Empty Empty
+
+                    -- Node already exists at this location
+                    TreeNode v l r ->
+                        -- Go down left subtree and recursively call
+                        if value < v then
+                            TreeNode v (insertHelper (currentDepth + 1) l) r
+                        -- Go down right subtree and recursively call
+                        else if value > v then
+                            TreeNode v l (insertHelper (currentDepth + 1) r)
+                        -- Skip duplicates
+                        else
+                            t
+    in
+    -- Root is depth 1
+    insertHelper 1 tree
+
+-- Generate a BST
+randomBSTGenerator : Int -> Int -> Random.Generator Tree
+randomBSTGenerator minNodes maxNodes =
+    let
+        maxDepth = 5
+        sizeGenerator = Random.int minNodes maxNodes
+    in
+    Random.andThen
+        (\n ->
+            -- Create a list of numbers from minNodes to maxNodes
+            Random.map
+                -- Shuffle so insertion order is random
+                (\shuffledList ->
+                    let
+                        -- Only take n values for the tree
+                        values = List.take n shuffledList
+                    in
+                    -- Insert nodes into tree one at a time
+                    List.foldl (insertBST maxDepth) Empty values
+                )
+                (shuffle (List.range 1 99))
+        )
+        sizeGenerator
+
 -- Builds binary tree from list of values
 buildTree : List Int -> Int -> Int -> Tree
 buildTree values index depth =
