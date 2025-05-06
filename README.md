@@ -95,6 +95,14 @@ This project's impact has superseded students' learning on their own volition. C
 - **Time Complexity**: $O(\log n)$
 - **Space Complexity**: $O(n)$
 
+#### **3. Binary Search Trees**
+
+- Binary search trees are a special type of tree where every node has a maximum of two child nodes. Additionally, left hcild nodes are always smaller than the parent, while right child nodes are always larger.
+
+##### **Complexities:**
+- **Time Complexity**: $O(n)$
+- **Space Complexity**: $O(n)$
+
 ### **Graphs**
 
 #### **1. Shortest Path Algorithm**
@@ -178,17 +186,8 @@ This project's impact has superseded students' learning on their own volition. C
 
 ## Upcoming Features
 
-#### **Fundamental Structures**  
-- **Arrays**: Ordered collection of elements accessible by index.  
-- **Linked Lists**: Sequence of nodes where each node points to the next.  
-- **Stacks**: Last-In, First-Out (LIFO) structure (e.g., function call stack).  
-- **Queues**: First-In, First-Out (FIFO) structure (e.g., task scheduling).  
-
 #### **Associative Structures**  
 - **Hash Maps (Dictionaries)**: Key-value pairs allowing fast lookups.  
 - **Sets**: Collection of unique elements, typically used for fast membership checking.
-
-#### **Tree Structures**
-- **Binary Search Trees (BSTs)**: Tree where left nodes are smaller and right nodes are larger.  
 
 ---
