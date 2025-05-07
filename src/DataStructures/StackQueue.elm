@@ -5,6 +5,7 @@ import Html exposing (Html, div, button, text, input, ul, li)
 import Html.Attributes exposing (class, type_, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 
+-- List for stacks and queues
 import List exposing (length)
 
 -- Types of data structures

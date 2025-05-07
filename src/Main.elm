@@ -50,8 +50,10 @@ import Trees.BST as BST exposing (Msg(..))
 import Graphs.Dijkstra as Dijkstra exposing(Msg(..))
 import Graphs.MST as MST exposing(Msg(..))
 
+-- Data structure pages that can be visited
 import DataStructures.StackQueue as StackQueue exposing(Msg(..))
 import DataStructures.ArrayList as ArrayList exposing(Msg(..))
+import DataStructures.SetMap as SetMap exposing(Msg(..))
 
 -- Model (info stored during interactions)
 type alias Model =
@@ -74,6 +76,8 @@ type alias Model =
     , sqModel : StackQueue.Model
     -- Call ArrayList.elm model
     , alModel : ArrayList.Model
+    -- Call SetMap.elm model
+    , smModel : SetMap.Model
     -- Generic sortingTrack data
     , sortingAlgorithm : SortingTrack
     -- Running or not
@@ -98,6 +102,7 @@ type Route
     | MSTRoute
     | SQRoute
     | ALRoute
+    | SMRoute
 
 -- PAGE (different views for the website)
 type Page
@@ -117,6 +122,7 @@ type Page
     | MST
     | SQ
     | AL
+    | SM
 
 -- MESSAGES (all possible messages for hte program to receive)
 type Msg
@@ -138,6 +144,8 @@ type Msg
     | SQMsg StackQueue.Msg
     -- Update something on AL page
     | ALMsg ArrayList.Msg
+    -- Update something on SM page
+    | SMMsg SetMap.Msg
     -- Select and algorithm to view
     | SelectAlgorithm String
     -- Control buttons for algorithm
@@ -175,6 +183,7 @@ routeParser =
         , Parser.map MSTRoute (s "mst")
         , Parser.map SQRoute (s "sq")
         , Parser.map ALRoute (s "al")
+        , Parser.map SMRoute (s "sm")
         ]
 
 -- Convert URL into a page
@@ -245,6 +254,10 @@ parseUrl url =
         Just ALRoute ->
             AL
 
+        -- SetMap Page
+        Just SMRoute ->
+            SM
+
         -- Default to Home
         _ ->
             Home
@@ -264,6 +277,7 @@ init _ url key =
             , mstModel = MST.initModel
             , sqModel = StackQueue.initModel
             , alModel = ArrayList.initModel
+            , smModel = SetMap.initModel
             , sortingAlgorithm = defaultSortingTrack []
             , running = False
             }
@@ -362,6 +376,16 @@ update msg model =
                     ArrayList.update alMsg model.alModel
             in
             ( { model | alModel = newALModel }
+            , Cmd.none
+            )
+
+        -- SM updates point to SetMap.elm
+        SMMsg smMsg ->
+            let
+                newSMModel =
+                    SetMap.update smMsg model.smModel
+            in
+            ( { model | smModel = newSMModel }
             , Cmd.none
             )
 
@@ -500,6 +524,15 @@ update msg model =
                     }
                     , Cmd.none
                     )
+
+                "SetMap" ->
+                    ( { model | currentPage = SM
+                            , sortingAlgorithm = defaultSortingTrack []
+                            , running = False
+                    }
+                    , Cmd.none
+                    )
+
 
                 -- Default to home for algorithms not yet added
                 _ ->
@@ -936,6 +969,9 @@ view model =
 
                     AL ->
                         Html.map ALMsg (ArrayList.view model.alModel)
+
+                    SM ->
+                        Html.map SMMsg (SetMap.view model.smModel)
                 ]
             -- Pass model to toggle to show appropriate emoji
             , viewThemeToggle model
@@ -1017,14 +1053,23 @@ viewHeader =
                     ]
                 ]
             
-            -- Data Structures
+            -- Linear Structures
             , div [ class "dropdown-group" ]
-                [ div [ class "dropdown-label" ] [ text "Data Structures" ]
+                [ div [ class "dropdown-label" ] [ text "Linear Structures" ]
                 , ul [ class "dropdown-content" ]
                     [ li []
                         [ button [ onClick (SelectAlgorithm "ArraysLists") ] [ text "Arrays/Lists"] ]
                     , li []
                         [ button [ onClick (SelectAlgorithm "StacksQueues") ] [ text "Stacks/Queues" ] ]
+                    ]
+                ]
+
+            -- Associative Structures
+            , div [ class "dropdown-group" ]
+                [ div [ class "dropdown-label" ] [ text "Associative Structures" ]
+                , ul [ class "dropdown-content" ]
+                    [ li []
+                        [ button [ onClick (SelectAlgorithm "SetMap") ] [ text "Sets/Maps"] ]
                     ]
                 ]
             ]

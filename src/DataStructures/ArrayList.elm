@@ -1,9 +1,11 @@
-module DataStructures.ArrayList exposing (Model, Msg, initModel, update, view)
+module DataStructures.ArrayList exposing (..)
 
 -- HTML Imports
 import Html exposing (Html, div, button, text, input, ul, li)
 import Html.Attributes exposing (class, type_, placeholder, value)
 import Html.Events exposing (onClick, onInput)
+
+-- List and Array for lists and arrays
 import List exposing (length, range, take, indexedMap, isEmpty, map)
 import Array exposing (Array, fromList, get)
 
@@ -24,8 +26,8 @@ type Msg
     = SetInput String
     -- Add item to data structure
     | AddItem
-    -- Remove item from data structure
-    | RemoveItem
+    -- Reset data structure
+    | ResetStruct
     -- Change type of data structure
     | ChangeDataStructure DSType
 
@@ -64,20 +66,11 @@ update msg model =
             else
                 model
 
-        RemoveItem ->
-            let
-                newElems =
-                    let
-                        len = length model.elements
-                    in
-                    if len > 0 then
-                        -- Take last element from array
-                        take (len - 1) model.elements
-                    -- Length 0 array shouldn't change
-                    else
-                        []
-            in
-            { model | elements = newElems }
+        ResetStruct ->
+            { model
+                | elements = []
+                , inputValue = ""
+            }
 
         -- Change data structure to new one
         ChangeDataStructure ds ->
@@ -142,8 +135,8 @@ view model =
                       ]
                       []
 
-                  -- Remove button
-                  , button [ onClick RemoveItem ] [ text "Remove" ]
+                  -- Reset button
+                  , button [ onClick ResetStruct ] [ text "Reset" ]
                   ]
 
               -- Disclaimer text
@@ -228,7 +221,7 @@ renderElement list dsType index value =
         , div [ class "element-value" ] [ text (String.fromInt value) ]
         ]
 
--- BIG-O HELPERS
+-- Big-O Helper
 bigOItem : String -> String -> Html msg
 bigOItem kind cost =
     div [ class "big-o-item" ]
@@ -243,7 +236,7 @@ getInsert ds =
         ListType  -> "O(1) Head | O(n) Tail"
         ArrayType -> "O(n) Beginning | O(1) End"
 
--- Cost for Removal
+-- Cost for removal
 getRemove : DSType -> String
 getRemove ds =
     case ds of
@@ -257,7 +250,7 @@ getAccess ds =
         ListType  -> "O(n)"
         ArrayType -> "O(1)"
 
--- Change description based on traversal type
+-- Change description based on data structure
 getDescription : DSType -> String
 getDescription ds =
     case ds of

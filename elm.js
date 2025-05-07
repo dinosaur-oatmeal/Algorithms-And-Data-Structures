@@ -5330,6 +5330,14 @@ var $author$project$MainComponents$Structs$defaultSortingTrack = function (list)
 };
 var $author$project$DataStructures$ArrayList$ListType = {$: 'ListType'};
 var $author$project$DataStructures$ArrayList$initModel = {dataStructure: $author$project$DataStructures$ArrayList$ListType, elements: _List_Nil, inputValue: ''};
+var $author$project$DataStructures$SetMap$SetType = {$: 'SetType'};
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$core$Set$Set_elm_builtin = function (a) {
+	return {$: 'Set_elm_builtin', a: a};
+};
+var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+var $author$project$DataStructures$SetMap$initModel = {dataStructure: $author$project$DataStructures$SetMap$SetType, keyInput: '', map: $elm$core$Dict$empty, set: $elm$core$Set$empty, valInput: ''};
 var $author$project$DataStructures$StackQueue$Stack = {$: 'Stack'};
 var $author$project$DataStructures$StackQueue$initModel = {dataStructure: $author$project$DataStructures$StackQueue$Stack, elements: _List_Nil, inputValue: ''};
 var $author$project$Graphs$Dijkstra$initModel = {
@@ -5380,6 +5388,7 @@ var $author$project$Main$LinearSearch = {$: 'LinearSearch'};
 var $author$project$Main$MST = {$: 'MST'};
 var $author$project$Main$MergeSort = {$: 'MergeSort'};
 var $author$project$Main$QuickSort = {$: 'QuickSort'};
+var $author$project$Main$SM = {$: 'SM'};
 var $author$project$Main$SQ = {$: 'SQ'};
 var $author$project$Main$SelectionSort = {$: 'SelectionSort'};
 var $author$project$Main$ShellSort = {$: 'ShellSort'};
@@ -5487,7 +5496,6 @@ var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
 		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
 	});
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$Red = {$: 'Red'};
 var $elm$core$Dict$balance = F5(
 	function (color, key, value, left, right) {
@@ -5992,7 +6000,6 @@ var $elm$url$Url$Parser$addParam = F2(
 			return dict;
 		}
 	});
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
 	if (maybeQuery.$ === 'Nothing') {
 		return $elm$core$Dict$empty;
@@ -6030,6 +6037,7 @@ var $author$project$Main$LinearSearchRoute = {$: 'LinearSearchRoute'};
 var $author$project$Main$MSTRoute = {$: 'MSTRoute'};
 var $author$project$Main$MergeSortRoute = {$: 'MergeSortRoute'};
 var $author$project$Main$QuickSortRoute = {$: 'QuickSortRoute'};
+var $author$project$Main$SMRoute = {$: 'SMRoute'};
 var $author$project$Main$SQRoute = {$: 'SQRoute'};
 var $author$project$Main$SelectionSortRoute = {$: 'SelectionSortRoute'};
 var $author$project$Main$ShellSortRoute = {$: 'ShellSortRoute'};
@@ -6191,7 +6199,11 @@ var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Main$ALRoute,
-			$elm$url$Url$Parser$s('al'))
+			$elm$url$Url$Parser$s('al')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Main$SMRoute,
+			$elm$url$Url$Parser$s('sm'))
 		]));
 var $author$project$Main$parseUrl = function (url) {
 	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Main$routeParser, url);
@@ -6242,9 +6254,12 @@ var $author$project$Main$parseUrl = function (url) {
 			case 'SQRoute':
 				var _v15 = _v0.a;
 				return $author$project$Main$SQ;
-			default:
+			case 'ALRoute':
 				var _v16 = _v0.a;
 				return $author$project$Main$AL;
+			default:
+				var _v17 = _v0.a;
+				return $author$project$Main$SM;
 		}
 	} else {
 		return $author$project$Main$Home;
@@ -6262,6 +6277,7 @@ var $author$project$Main$init = F3(
 			key: key,
 			mstModel: $author$project$Graphs$MST$initModel,
 			running: false,
+			smModel: $author$project$DataStructures$SetMap$initModel,
 			sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil),
 			sqModel: $author$project$DataStructures$StackQueue$initModel,
 			treeTraversalModel: $author$project$Trees$TreeTraversal$initModel
@@ -8398,14 +8414,64 @@ var $author$project$DataStructures$ArrayList$update = F2(
 				} else {
 					return model;
 				}
-			case 'RemoveItem':
-				var newElems = function () {
-					var len = $elm$core$List$length(model.elements);
-					return (len > 0) ? A2($elm$core$List$take, len - 1, model.elements) : _List_Nil;
-				}();
+			case 'ResetStruct':
 				return _Utils_update(
 					model,
-					{elements: newElems});
+					{elements: _List_Nil, inputValue: ''});
+			default:
+				var ds = msg.a;
+				return _Utils_update(
+					model,
+					{dataStructure: ds});
+		}
+	});
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var $author$project$DataStructures$SetMap$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'SetKeyInput':
+				var val = msg.a;
+				return _Utils_update(
+					model,
+					{keyInput: val});
+			case 'SetValInput':
+				var val = msg.a;
+				return _Utils_update(
+					model,
+					{valInput: val});
+			case 'AddItem':
+				var _v1 = model.dataStructure;
+				if (_v1.$ === 'SetType') {
+					var _v2 = $elm$core$String$toInt(model.keyInput);
+					if (_v2.$ === 'Just') {
+						var number = _v2.a;
+						return _Utils_update(
+							model,
+							{
+								keyInput: '',
+								set: A2($elm$core$Set$insert, number, model.set)
+							});
+					} else {
+						return model;
+					}
+				} else {
+					return (model.keyInput !== '') ? _Utils_update(
+						model,
+						{
+							keyInput: '',
+							map: A3($elm$core$Dict$insert, model.keyInput, model.valInput, model.map),
+							valInput: ''
+						}) : model;
+				}
+			case 'ResetStruct':
+				return _Utils_update(
+					model,
+					{keyInput: '', map: $elm$core$Dict$empty, set: $elm$core$Set$empty, valInput: ''});
 			default:
 				var ds = msg.a;
 				return _Utils_update(
@@ -8471,10 +8537,6 @@ var $author$project$Graphs$Dijkstra$resetAndGenerateGraph = function (model) {
 			{dijkstraSteps: _List_Nil, index: 0, running: false}),
 		cmd);
 };
-var $elm$core$Set$Set_elm_builtin = function (a) {
-	return {$: 'Set_elm_builtin', a: a};
-};
-var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -8499,12 +8561,6 @@ var $author$project$Graphs$Dijkstra$getNeighbors = F2(
 					return _Utils_eq(edge.from, node) || _Utils_eq(edge.to, node);
 				},
 				graph.edges));
-	});
-var $elm$core$Set$insert = F2(
-	function (key, _v0) {
-		var dict = _v0.a;
-		return $elm$core$Set$Set_elm_builtin(
-			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
 	});
 var $elm$core$Dict$member = F2(
 	function (key, dict) {
@@ -9931,6 +9987,14 @@ var $author$project$Main$update = F2(
 						model,
 						{alModel: newALModel}),
 					$elm$core$Platform$Cmd$none);
+			case 'SMMsg':
+				var smMsg = msg.a;
+				var newSMModel = A2($author$project$DataStructures$SetMap$update, smMsg, model.smModel);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{smModel: newSMModel}),
+					$elm$core$Platform$Cmd$none);
 			case 'SelectAlgorithm':
 				var algName = msg.a;
 				switch (algName) {
@@ -10099,6 +10163,16 @@ var $author$project$Main$update = F2(
 								model,
 								{
 									currentPage: $author$project$Main$AL,
+									running: false,
+									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
+								}),
+							$elm$core$Platform$Cmd$none);
+					case 'SetMap':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									currentPage: $author$project$Main$SM,
 									running: false,
 									sortingAlgorithm: $author$project$MainComponents$Structs$defaultSortingTrack(_List_Nil)
 								}),
@@ -10465,6 +10539,9 @@ var $elm$browser$Browser$Document = F2(
 	function (title, body) {
 		return {body: body, title: title};
 	});
+var $author$project$Main$SMMsg = function (a) {
+	return {$: 'SMMsg', a: a};
+};
 var $author$project$Main$SQMsg = function (a) {
 	return {$: 'SQMsg', a: a};
 };
@@ -10485,7 +10562,7 @@ var $author$project$DataStructures$ArrayList$ArrayType = {$: 'ArrayType'};
 var $author$project$DataStructures$ArrayList$ChangeDataStructure = function (a) {
 	return {$: 'ChangeDataStructure', a: a};
 };
-var $author$project$DataStructures$ArrayList$RemoveItem = {$: 'RemoveItem'};
+var $author$project$DataStructures$ArrayList$ResetStruct = {$: 'ResetStruct'};
 var $author$project$DataStructures$ArrayList$SetInput = function (a) {
 	return {$: 'SetInput', a: a};
 };
@@ -10772,11 +10849,11 @@ var $author$project$DataStructures$ArrayList$view = function (model) {
 								$elm$html$Html$button,
 								_List_fromArray(
 									[
-										$elm$html$Html$Events$onClick($author$project$DataStructures$ArrayList$RemoveItem)
+										$elm$html$Html$Events$onClick($author$project$DataStructures$ArrayList$ResetStruct)
 									]),
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Remove')
+										$elm$html$Html$text('Reset')
 									]))
 							])),
 						A2(
@@ -10925,6 +11002,421 @@ var $author$project$DataStructures$ArrayList$view = function (model) {
 						$author$project$DataStructures$ArrayList$bigOItem,
 						'Access',
 						$author$project$DataStructures$ArrayList$getAccess(model.dataStructure))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('space-complexity')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Space Complexity: O(n)')
+					]))
+			]));
+};
+var $author$project$DataStructures$SetMap$AddItem = {$: 'AddItem'};
+var $author$project$DataStructures$SetMap$ChangeDataStructure = function (a) {
+	return {$: 'ChangeDataStructure', a: a};
+};
+var $author$project$DataStructures$SetMap$MapType = {$: 'MapType'};
+var $author$project$DataStructures$SetMap$ResetStruct = {$: 'ResetStruct'};
+var $author$project$DataStructures$SetMap$SetKeyInput = function (a) {
+	return {$: 'SetKeyInput', a: a};
+};
+var $author$project$DataStructures$SetMap$SetValInput = function (a) {
+	return {$: 'SetValInput', a: a};
+};
+var $author$project$DataStructures$SetMap$bigOItem = F2(
+	function (kind, cost) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('big-o-item')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(kind)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(cost)
+						]))
+				]));
+	});
+var $author$project$DataStructures$SetMap$getAccess = function (ds) {
+	if (ds.$ === 'SetType') {
+		return 'O(1) avg';
+	} else {
+		return 'O(1) avg';
+	}
+};
+var $author$project$DataStructures$SetMap$getDescription = function (ds) {
+	if (ds.$ === 'SetType') {
+		return 'Set: An unordered collection of unique elements, typically implemented using hash tables.\r\n            Sets automatically enforce uniqueness and provide fast insertion, deletion, and lookup.';
+	} else {
+		return 'Hash Map: A collection of key-value pairs with fast access, insertion, and deletion.\r\n            Keys must be unique, and values are retrieved by hashing the key to a location in memory.';
+	}
+};
+var $author$project$DataStructures$SetMap$getInsert = function (ds) {
+	if (ds.$ === 'SetType') {
+		return 'O(1) avg | O(n) worst';
+	} else {
+		return 'O(1) avg | O(n) worst';
+	}
+};
+var $author$project$DataStructures$SetMap$getRemove = function (ds) {
+	if (ds.$ === 'SetType') {
+		return 'O(1) avg';
+	} else {
+		return 'O(1) avg';
+	}
+};
+var $elm$core$Dict$isEmpty = function (dict) {
+	if (dict.$ === 'RBEmpty_elm_builtin') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Set$isEmpty = function (_v0) {
+	var dict = _v0.a;
+	return $elm$core$Dict$isEmpty(dict);
+};
+var $author$project$DataStructures$SetMap$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('sort-page')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('sort-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Sets and Maps')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('description')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$DataStructures$SetMap$getDescription(model.dataStructure))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('traversal-controls')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.dataStructure, $author$project$DataStructures$SetMap$SetType) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick(
+								$author$project$DataStructures$SetMap$ChangeDataStructure($author$project$DataStructures$SetMap$SetType))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Set')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('traversal-button'),
+								_Utils_eq(model.dataStructure, $author$project$DataStructures$SetMap$MapType) ? $elm$html$Html$Attributes$class('selected') : $elm$html$Html$Attributes$class(''),
+								$elm$html$Html$Events$onClick(
+								$author$project$DataStructures$SetMap$ChangeDataStructure($author$project$DataStructures$SetMap$MapType))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Map')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('insert-delete-container')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('insert-delete-row')
+							]),
+						function () {
+							var _v0 = model.dataStructure;
+							if (_v0.$ === 'SetType') {
+								return _List_fromArray(
+									[
+										A2(
+										$elm$html$Html$button,
+										_List_fromArray(
+											[
+												$elm$html$Html$Events$onClick($author$project$DataStructures$SetMap$AddItem)
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Add')
+											])),
+										A2(
+										$elm$html$Html$input,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$placeholder('Enter number'),
+												$elm$html$Html$Attributes$value(model.keyInput),
+												$elm$html$Html$Events$onInput($author$project$DataStructures$SetMap$SetKeyInput)
+											]),
+										_List_Nil),
+										A2(
+										$elm$html$Html$button,
+										_List_fromArray(
+											[
+												$elm$html$Html$Events$onClick($author$project$DataStructures$SetMap$ResetStruct)
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Reset')
+											]))
+									]);
+							} else {
+								return _List_fromArray(
+									[
+										A2(
+										$elm$html$Html$button,
+										_List_fromArray(
+											[
+												$elm$html$Html$Events$onClick($author$project$DataStructures$SetMap$AddItem)
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Add')
+											])),
+										A2(
+										$elm$html$Html$input,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$placeholder('Key'),
+												$elm$html$Html$Attributes$value(model.keyInput),
+												$elm$html$Html$Events$onInput($author$project$DataStructures$SetMap$SetKeyInput)
+											]),
+										_List_Nil),
+										A2(
+										$elm$html$Html$input,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$placeholder('Value'),
+												$elm$html$Html$Attributes$value(model.valInput),
+												$elm$html$Html$Events$onInput($author$project$DataStructures$SetMap$SetValInput)
+											]),
+										_List_Nil),
+										A2(
+										$elm$html$Html$button,
+										_List_fromArray(
+											[
+												$elm$html$Html$Events$onClick($author$project$DataStructures$SetMap$ResetStruct)
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Reset')
+											]))
+									]);
+							}
+						}())
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('element-container')
+					]),
+				function () {
+					var _v1 = model.dataStructure;
+					if (_v1.$ === 'SetType') {
+						return $elm$core$Set$isEmpty(model.set) ? _List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('element-placeholder')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(' ')
+									]))
+							]) : A2(
+							$elm$core$List$map,
+							function (n) {
+								return A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('element-box')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('element-label')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Value')
+												])),
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('element-value light-theme')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(
+													$elm$core$String$fromInt(n))
+												]))
+										]));
+							},
+							$elm$core$Set$toList(model.set));
+					} else {
+						return $elm$core$Dict$isEmpty(model.map) ? _List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('element-placeholder')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(' ')
+									]))
+							]) : A2(
+							$elm$core$List$map,
+							function (_v2) {
+								var k = _v2.a;
+								var v = _v2.b;
+								return A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('element-box')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('element-label')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Key: ' + k)
+												])),
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('element-value light-theme')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(v)
+												]))
+										]));
+							},
+							$elm$core$Dict$toList(model.map));
+					}
+				}()),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('variable-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Set: Similar to a list but doesn\'t allow duplicates.')
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Map: A special type of set that has key-value pairs.')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Big(O) Notation')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('big-o-list')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$author$project$DataStructures$SetMap$bigOItem,
+						'Insert',
+						$author$project$DataStructures$SetMap$getInsert(model.dataStructure)),
+						A2(
+						$author$project$DataStructures$SetMap$bigOItem,
+						'Remove',
+						$author$project$DataStructures$SetMap$getRemove(model.dataStructure)),
+						A2(
+						$author$project$DataStructures$SetMap$bigOItem,
+						'Access',
+						$author$project$DataStructures$SetMap$getAccess(model.dataStructure))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -15219,7 +15711,7 @@ var $author$project$Main$viewHeader = A2(
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Data Structures')
+									$elm$html$Html$text('Linear Structures')
 								])),
 							A2(
 							$elm$html$Html$ul,
@@ -15261,6 +15753,51 @@ var $author$project$Main$viewHeader = A2(
 											_List_fromArray(
 												[
 													$elm$html$Html$text('Stacks/Queues')
+												]))
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('dropdown-group')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-label')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Associative Structures')
+								])),
+							A2(
+							$elm$html$Html$ul,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('dropdown-content')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick(
+													$author$project$Main$SelectAlgorithm('SetMap'))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Sets/Maps')
 												]))
 										]))
 								]))
@@ -15381,11 +15918,16 @@ var $author$project$Main$view = function (model) {
 											$elm$html$Html$map,
 											$author$project$Main$SQMsg,
 											$author$project$DataStructures$StackQueue$view(model.sqModel));
-									default:
+									case 'AL':
 										return A2(
 											$elm$html$Html$map,
 											$author$project$Main$ALMsg,
 											$author$project$DataStructures$ArrayList$view(model.alModel));
+									default:
+										return A2(
+											$elm$html$Html$map,
+											$author$project$Main$SMMsg,
+											$author$project$DataStructures$SetMap$view(model.smModel));
 								}
 							}()
 							])),
