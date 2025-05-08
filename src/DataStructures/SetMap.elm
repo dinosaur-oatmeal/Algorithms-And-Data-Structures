@@ -175,7 +175,7 @@ view model =
                                 (\n ->
                                     div [ class "element-box" ]
                                         [ div [ class "element-label" ] [ text "Value" ]
-                                        , div [ class "element-value light-theme" ] [ text (String.fromInt n) ]
+                                        , div [ class "element-value" ] [ text (String.fromInt n) ]
                                         ]
                                 )
 
@@ -185,15 +185,14 @@ view model =
                         [ div [ class "element-placeholder" ] [ text " " ] ]
                     -- Show actual map of elements
                     else
-                    Dict.toList model.map
-                        |> List.map
-                            (\(k, v) ->
-                                div [ class "element-box" ]
-                                    [ div [ class "element-label" ] [ text ("Key: " ++ k) ]
-                                    , div [ class "element-value light-theme" ] [ text v ]
-                                    ]
-                            )
-
+                        Dict.toList model.map
+                            |> List.map
+                                (\(k, v) ->
+                                    div [ class "element-box" ]
+                                        [ div [ class "element-label" ] [ text ("Key: " ++ k) ]
+                                        , div [ class "element-value" ] [ text v ]
+                                        ]
+                                )
             )
 
         -- Breakdown

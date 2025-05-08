@@ -10631,6 +10631,24 @@ var $author$project$DataStructures$ArrayList$infoTextFor = function (ds) {
 	}
 };
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$core$List$intersperse = F2(
+	function (sep, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var hd = xs.a;
+			var tl = xs.b;
+			var step = F2(
+				function (x, rest) {
+					return A2(
+						$elm$core$List$cons,
+						sep,
+						A2($elm$core$List$cons, x, rest));
+				});
+			var spersed = A3($elm$core$List$foldr, step, _List_Nil, tl);
+			return A2($elm$core$List$cons, hd, spersed);
+		}
+	});
 var $elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -10877,25 +10895,44 @@ var $author$project$DataStructures$ArrayList$view = function (model) {
 				function () {
 					var _v0 = model.dataStructure;
 					if (_v0.$ === 'ListType') {
-						return $elm$core$List$isEmpty(orderedElements) ? _List_fromArray(
-							[
-								A2(
-								$elm$html$Html$div,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('element-placeholder')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text(' ')
-									]))
-							]) : A2(
-							$elm$core$List$indexedMap,
-							F2(
-								function (i, v) {
-									return A4($author$project$DataStructures$ArrayList$renderElement, orderedElements, $author$project$DataStructures$ArrayList$ListType, i, v);
-								}),
-							orderedElements);
+						if ($elm$core$List$isEmpty(orderedElements)) {
+							return _List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('element-placeholder')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(' ')
+										]))
+								]);
+						} else {
+							var renderElementsWithArrows = function (elems) {
+								return A2(
+									$elm$core$List$intersperse,
+									A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('arrow')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('→')
+											])),
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, v) {
+												return A4($author$project$DataStructures$ArrayList$renderElement, orderedElements, $author$project$DataStructures$ArrayList$ListType, i, v);
+											}),
+										elems));
+							};
+							return renderElementsWithArrows(orderedElements);
+						}
 					} else {
 						return A2(
 							$elm$core$List$indexedMap,
@@ -11297,7 +11334,7 @@ var $author$project$DataStructures$SetMap$view = function (model) {
 											$elm$html$Html$div,
 											_List_fromArray(
 												[
-													$elm$html$Html$Attributes$class('element-value light-theme')
+													$elm$html$Html$Attributes$class('element-value')
 												]),
 											_List_fromArray(
 												[
@@ -11347,7 +11384,7 @@ var $author$project$DataStructures$SetMap$view = function (model) {
 											$elm$html$Html$div,
 											_List_fromArray(
 												[
-													$elm$html$Html$Attributes$class('element-value light-theme')
+													$elm$html$Html$Attributes$class('element-value')
 												]),
 											_List_fromArray(
 												[
@@ -11493,18 +11530,38 @@ var $author$project$DataStructures$StackQueue$infoTextFor = function (ds) {
 		return 'Queue: elements are removed from the front (first added).';
 	}
 };
+var $author$project$DataStructures$StackQueue$getLabel = F3(
+	function (dsType, index, len) {
+		if (dsType.$ === 'Stack') {
+			return _Utils_eq(index, len - 1) ? 'Top' : ((!index) ? 'Bottom' : '');
+		} else {
+			return (!index) ? 'Front' : (_Utils_eq(index, len - 1) ? 'Back' : '');
+		}
+	});
 var $author$project$DataStructures$StackQueue$renderElement = F4(
 	function (list, dsType, index, value) {
+		var queueArrow = ((!index) && _Utils_eq(dsType, $author$project$DataStructures$StackQueue$Queue)) ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('queue-arrow')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('↓')
+				])) : $elm$html$Html$text('');
 		var len = $elm$core$List$length(list);
-		var isLast = _Utils_eq(index, len - 1);
-		var isFirst = !index;
-		var label = function () {
-			if (dsType.$ === 'Stack') {
-				return isLast ? 'Top' : (isFirst ? 'Bottom' : '');
-			} else {
-				return isFirst ? 'Front' : (isLast ? 'Back' : '');
-			}
-		}();
+		var label = A3($author$project$DataStructures$StackQueue$getLabel, dsType, index, len);
+		var stackArrow = ((label === 'Top') && _Utils_eq(dsType, $author$project$DataStructures$StackQueue$Stack)) ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('stack-arrow')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('↓')
+				])) : $elm$html$Html$text('');
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -11513,6 +11570,8 @@ var $author$project$DataStructures$StackQueue$renderElement = F4(
 				]),
 			_List_fromArray(
 				[
+					stackArrow,
+					queueArrow,
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
@@ -11703,14 +11762,7 @@ var $author$project$DataStructures$StackQueue$view = function (model) {
 								_List_Nil,
 								_List_fromArray(
 									[
-										$elm$html$Html$text('Stack: inserts/removes from the top. LIFO.')
-									])),
-								A2(
-								$elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Queue: inserts at the back, removes from the front. FIFO.')
+										$elm$html$Html$text('Element under the arrow will be removed first.')
 									]))
 							]))
 					])),

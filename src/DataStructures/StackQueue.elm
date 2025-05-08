@@ -163,9 +163,7 @@ view model =
         -- Breakdown
         , div [ class "variable-list" ]
               [ ul []
-                  [ li [] [ text "Stack: inserts/removes from the top. LIFO." ]
-                  , li [] [ text "Queue: inserts at the back, removes from the front. FIFO." ]
-                  ]
+                  [ li [] [ text "Element under the arrow will be removed first." ] ]
               ]
 
         -- Big-O Notation
@@ -178,32 +176,47 @@ view model =
             [ text "Space Complexity: O(n)" ]
         ]
 
+-- Get a specific label for data structure
+getLabel : DSType -> Int -> Int -> String
+getLabel dsType index len =
+    case dsType of
+        Stack ->
+            if index == len - 1 then "Top"
+            else if index == 0 then "Bottom"
+            else ""
+
+        Queue ->
+            if index == 0 then "Front"
+            else if index == len - 1 then "Back"
+            else ""
+
+
 -- Render an element in the data structure
 renderElement : List Int -> DSType -> Int -> Int -> Html Msg
 renderElement list dsType index value =
     let
-        -- Get first and last element of the list
+        -- Get length and label for data structure
         len = List.length list
-        isFirst = index == 0
-        isLast = index == len - 1
+        label = getLabel dsType index len
 
-        label =
-            case dsType of
-                -- Names for first and last stack indices
-                Stack ->
-                    if isLast then "Top"
-                    else if isFirst then "Bottom"
-                    else ""
+        -- Create stack and queue arrows
+        stackArrow =
+            if label == "Top" && dsType == Stack then
+                div [ class "stack-arrow" ] [ text "↓" ]
+            else
+                text ""
 
-                -- Names for first and last queue indices
-                Queue ->
-                    if isFirst then "Front"
-                    else if isLast then "Back"
-                    else ""
+        queueArrow =
+            if index == 0 && dsType == Queue then
+                div [ class "queue-arrow" ] [ text "↓" ]
+            else
+                text ""
     in
     div [ class "element-box" ]
-        -- Create element label and value
-        [ div [ class "element-label" ] [ text label ]
+        -- Create element arrow, label, and value
+        [ stackArrow
+        , queueArrow
+        , div [ class "element-label" ] [ text label ]
         , div [ class "element-value" ] [ text (String.fromInt value) ]
         ]
 

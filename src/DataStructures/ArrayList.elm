@@ -148,12 +148,17 @@ view model =
         , div [ class "element-container" ]
             (case model.dataStructure of
                 ListType ->
-                    -- Show empty container to keep bottom text aligned
                     if isEmpty orderedElements then
                         [ div [ class "element-placeholder" ] [ text " " ] ]
-                    -- Show actual list of elements
                     else
-                        indexedMap (\i v -> renderElement orderedElements ListType i v) orderedElements
+                        let
+                            -- Render elements with arrows between them
+                            renderElementsWithArrows elems =
+                                elems
+                                    |> List.indexedMap (\i v -> renderElement orderedElements ListType i v)
+                                    |> List.intersperse (div [ class "arrow" ] [ text "→" ])
+                        in
+                        renderElementsWithArrows orderedElements
 
                 ArrayType ->
                     indexedMap
