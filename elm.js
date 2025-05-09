@@ -5362,6 +5362,7 @@ var $author$project$Trees$BST$initModel = {
 	index: $elm$core$Maybe$Just(0),
 	running: false,
 	searchInput: '',
+	targetFound: false,
 	traversalResult: _List_Nil,
 	tree: $author$project$MainComponents$Structs$Empty
 };
@@ -9224,16 +9225,21 @@ var $author$project$Trees$BST$stepTraversal = F2(
 		var _v0 = model.index;
 		if (_v0.$ === 'Just') {
 			var i = _v0.a;
-			var nextIdx = i + 1;
-			var done = _Utils_cmp(
-				nextIdx,
-				$elm$core$List$length(model.traversalResult)) > -1;
-			return _Utils_update(
-				model,
-				{
-					index: $elm$core$Maybe$Just(nextIdx),
-					running: isAuto ? (!done) : false
-				});
+			var pathLength = $elm$core$List$length(model.traversalResult);
+			var maxIndex = model.targetFound ? (pathLength - 1) : pathLength;
+			var done = _Utils_cmp(i, maxIndex) > -1;
+			if (done) {
+				return model;
+			} else {
+				var nextIdx = i + 1;
+				var newDone = _Utils_cmp(nextIdx, maxIndex) > 0;
+				return _Utils_update(
+					model,
+					{
+						index: $elm$core$Maybe$Just(nextIdx),
+						running: isAuto ? (!newDone) : false
+					});
+			}
 		} else {
 			return model;
 		}
@@ -9330,12 +9336,22 @@ var $author$project$Trees$BST$update = F2(
 				if (_v2.$ === 'Just') {
 					var tgt = _v2.a;
 					var path = A2($author$project$Trees$BST$searchPath, tgt, model.tree);
+					var found = function () {
+						var _v3 = $elm$core$List$reverse(path);
+						if (_v3.b) {
+							var last = _v3.a;
+							return _Utils_eq(last, tgt);
+						} else {
+							return false;
+						}
+					}();
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
 								index: $elm$core$Maybe$Just(0),
 								running: false,
+								targetFound: found,
 								traversalResult: path
 							}),
 						$elm$core$Platform$Cmd$none);

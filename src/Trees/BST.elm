@@ -31,6 +31,8 @@ type alias Model =
     , running : Bool
     -- Input from user to search
     , searchInput : String
+    -- See if target is found
+    , targetFound : Bool
     }
 
 type Msg
@@ -66,6 +68,8 @@ initModel =
     , running = False
     -- No text typed
     , searchInput = ""
+    -- Target isn't found
+    , targetFound = False
     }
 
 -- Helper function for steps
@@ -74,15 +78,24 @@ stepTraversal isAuto model =
     case model.index of
         Just i ->
             let
-                -- Go to next index in list
-                nextIdx = i + 1
-                -- flag that the algorithm is done
-                done = nextIdx >= List.length model.traversalResult
+                pathLength = List.length model.traversalResult
+                maxIndex = if model.targetFound then pathLength - 1 else pathLength
+                done = i >= maxIndex
             in
-            { model
-                | index = Just nextIdx
-                , running = if isAuto then not done else False
-            }
+            if done then
+                -- Don't update model once traversal complete
+                model
+            else
+                let
+                    -- Go to next index in list
+                    nextIdx = i + 1
+                    -- flag that the algorithm is done
+                    newDone = nextIdx > maxIndex
+                in
+                { model
+                    | index = Just nextIdx
+                    , running = if isAuto then not newDone else False
+                }
 
         -- Don't update if no valid index
         _ ->
@@ -197,11 +210,19 @@ update msg model =
                 Just tgt ->
                     let
                         path = searchPath tgt model.tree
+
+                        -- See if target is found
+                        found =
+                            case List.reverse path of
+                                last :: _ -> last == tgt
+                                [] -> False
+                    
                     in
                     ( { model
                         | traversalResult = path
                         , index = Just 0
                         , running = False
+                        , targetFound = found
                     }
                     , Cmd.none
                     )
