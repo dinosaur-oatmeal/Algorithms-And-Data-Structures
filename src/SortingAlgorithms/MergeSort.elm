@@ -4,7 +4,8 @@ module SortingAlgorithms.MergeSort exposing (view, mergeSortStep)
 import Html exposing (Html, div, text, ul, li)
 import Html.Attributes exposing (class)
 
-import Array exposing (Array)
+import Array exposing (Array, length, get, slice, append, fromList, empty)
+import List exposing (drop, length)
 
 -- Import necessary structure to track state
 import MainComponents.Structs exposing (SortingTrack)
@@ -15,110 +16,127 @@ import SortingAlgorithms.SortingVisualization as Visualization exposing (renderC
 -- Import for control buttons (used in view)
 import MainComponents.Controls  as Controls exposing (ControlMsg, view)
 
+-- Whether to split subarray or merge subarray
+type Action
+    = Split Int Int
+    | Merge Int Int
+
+-- Build list of splits and merges to make
+generateActions : Int -> Int -> List Action
+generateActions start len =
+    -- Don't make an action for nothing
+    if len <= 1 then
+        []
+    else
+        let
+            -- Find midpoint and left and right subarrays
+            mid = start + (len // 2)
+            leftLen  = mid - start
+            rightLen = start + len - mid
+        in
+        -- Split subarrays and recursively call again
+        [ Split start len ]
+            ++ generateActions start leftLen
+            ++ generateActions mid rightLen
+            -- Finally merge 2 subarrays together
+            ++ [ Merge start len ]
+
+-- Do a single step of merge sort
 mergeSortStep : SortingTrack -> SortingTrack
 mergeSortStep track =
-    let
-        array = track.array
-        arrayLength = Array.length array
-        currentStep = track.currentStep
-        outerIndex = track.outerIndex
+    -- Don't update track if sorted
+    if track.sorted then
+        track
+    else
+        let
+            -- Generate all actions to take
+            length = Array.length track.array
+            actions = generateActions 0 length
+            total = List.length actions
+            idx = track.currentStep
+        in
+        -- Mark sorted as true
+        if idx >= total then
+            { track | sorted = True }
+        else
+            let
+                -- Pick current action
+                action =
+                    case drop idx actions of
+                        a :: _ -> a
+                        _ -> Split 0 1
 
-        -- Track steps to know when sorting is complete (log2 array length)
-        totalSteps = ceiling (logBase 2 (toFloat arrayLength))
+                -- Step to next action
+                nextStep = idx + 1
 
-        -- Check if sorting is complete
-        isSorted = currentStep > totalSteps
+                -- Decode start and length
+                ( start, len ) =
+                    case action of
+                        Split s l  -> ( s, l )
+                        Merge s l  -> ( s, l )
 
-        -- Calculate halfStep (midpoint of current step)
-        halfStep = 2 ^ currentStep // 2
-        
-        updatedArray =
-            -- Perform one step of merging
-            if not isSorted then
-                -- One step of MergeSort
-                processMergeStep currentStep halfStep array
-            -- Don't update array if sorted
-            else
-                array
+                -- Compute middle and end position
+                mid = start + (len // 2)
+                end = start + len - 1
 
-    -- Update track with necessary info for next step
-    in
-    { track
-        | array = updatedArray
-        -- Current step updates to know if sorting complete
-        , currentStep =
-            if isSorted then
-                currentStep
-            else
-                currentStep + 1
-        , currentIndex = currentStep
-        , outerIndex = halfStep
-        , sorted = isSorted
-    }
+                newArray =
+                    case action of
+                        -- Don't update for split (just for visuals)
+                        Split _ _ ->
+                            track.array
 
--- Process one step of merging based on the current step
-processMergeStep : Int -> Int -> Array Int -> Array Int
-processMergeStep currentStep halfStep array =
-    let
-        arrayLength = Array.length array
-        -- Size of arrays being merged
-        stepSize = 2 ^ currentStep
+                        -- Slice left and right halves
+                        Merge s l ->
+                            let
+                                -- Left and right halves to be merged
+                                left  = slice s mid track.array
+                                right = slice mid (end + 1) track.array
 
-        -- Recursively process each segment pair and merge them
-        processSegments start acc =
-            if start >= arrayLength then
-                acc
-            else
-                let
-                    -- Left: start to (start + halfStep)
-                    left = Array.slice start (start + halfStep) array
-                    -- Right: (start + halfStep) to (start + stepSize)
-                    right = Array.slice (start + halfStep) (start + stepSize) array
-                    -- Call mergeArrays function with subarrays
-                    merged = mergeArrays left right
-                in
-                -- Recursively call processSegments (Divide)
-                processSegments (start + stepSize) (Array.append acc merged)
-    in
-    -- Initial call to processSegments
-    processSegments 0 Array.empty
+                                -- Two pointers to merge back into a single array
+                                merged =
+                                    let
+                                        step li ri acc =
+                                            case ( get li left, get ri right ) of
+                                                ( Just lv, Just rv ) ->
+                                                    -- Append left and then right
+                                                    if lv < rv then
+                                                        step (li + 1) ri (append acc (fromList [ lv ]))
+                                                    -- Append right and then left
+                                                    else
+                                                        step li (ri + 1) (append acc (fromList [ rv ]))
 
--- Merge two sorted arrays into a single sorted array (Conquer)
-mergeArrays : Array Int -> Array Int -> Array Int
-mergeArrays leftArray rightArray =
-    let
-        -- Recursively merges elements
-        mergeHelper leftIndex rightIndex combinedArray =
-            case (Array.get leftIndex leftArray, Array.get rightIndex rightArray) of
-                (Just leftValue, Just rightValue) ->
-                    -- Append leftValue to new array if smaller and increment leftIndex
-                    if leftValue < rightValue then
-                        mergeHelper (leftIndex + 1) rightIndex (Array.append combinedArray (Array.fromList [leftValue]))
-                    -- Append rightValue to new array if smaller and increment rightIndex
-                    else
-                        mergeHelper leftIndex (rightIndex + 1) (Array.append combinedArray (Array.fromList [rightValue]))
+                                                -- Just append left values
+                                                ( Just lv, Nothing ) ->
+                                                    step (li + 1) ri (append acc (fromList [ lv ]))
 
-                -- Only leftArray has values, so apped the rest of leftArray
-                (Just leftValue, Nothing) ->
-                    mergeHelper (leftIndex + 1) rightIndex (Array.append combinedArray (Array.fromList [leftValue]))
+                                                -- Just append right values
+                                                ( Nothing, Just rv ) ->
+                                                    step li (ri + 1) (append acc (fromList [ rv ]))
 
-                -- Only rightArray has values, so append the rest of rightArray
-                (Nothing, Just rightValue) ->
-                    mergeHelper leftIndex (rightIndex + 1) (Array.append combinedArray (Array.fromList [rightValue]))
+                                                -- Return fully-merged result
+                                                ( Nothing, Nothing ) ->
+                                                    acc
 
-                -- Both smaller arrays are empty, so return final array
-                (Nothing, Nothing) ->
-                    combinedArray
-    in
-    -- Initial call to mergeHelper
-    mergeHelper 0 0 Array.empty
+                                    in
+                                    step 0 0 empty
 
-{-
-    Basic page view for Merge Sort
-        Title, Description, Graph, Buttons, Variables, Breakdown, & Big-O Notation
-        (ControlMsg -> msg) is ControlMsg in Main.elm
--}
-view : SortingTrack -> Bool -> (ControlMsg -> msg) -> Html msg
+                                -- Splice back into before ++ merged ++ after
+                                before = slice 0 s track.array
+                                after  = slice (end + 1) length track.array
+                            in
+                            append (append before merged) after
+            in
+            { track
+                -- Update array to new version
+                | array        = newArray
+                , currentStep  = nextStep
+                , outerIndex   = start
+                , currentIndex = mid - 1
+                , minIndex     = end
+                , sorted       = False
+            }
+
+view : SortingTrack -> Bool -> (Controls.ControlMsg -> msg) -> Html msg
 view track running toMsg =
     div [ class "sort-page" ]
         [ -- Title
@@ -134,14 +152,14 @@ view track running toMsg =
                 Every merge step ensures that the combined subarrays are sorted,
                 resulting in the larger array being fully sorted.""" ]
 
-          -- Graph
+          -- Visualization
         , renderComparison
               track.array
               "Walk through the steps below"
               track.sorted
               track.outerIndex
               track.currentIndex
-              Nothing
+              (Just track.minIndex)
 
           -- Buttons (calls Controls.elm to be rendered)
             -- Allows button actions to be routed to Main.elm
@@ -149,19 +167,21 @@ view track running toMsg =
 
           -- Variables
         , div [ class "indices" ]
-              [ text ("Middle Index: " ++ String.fromInt track.outerIndex)
-              , text (" | Outer Index: " ++ String.fromInt track.currentIndex)
-              , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
-              ]
+            [ text ("Start: " ++ String.fromInt track.outerIndex)
+            , text (" | Mid: " ++ String.fromInt track.currentIndex)
+            , text (" | End: " ++ String.fromInt track.minIndex)
+            , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
+            ]
 
           -- Breakdown
         , div [ class "variable-list" ]
-              [ ul []
-                  [ li [] [ text "Middle Index:  The middle of the subarrays being merged." ]
-                  , li [] [ text "Outer Index: the rightmost index of the merging arrays." ]
-                  , li [] [ text "Sorted: tells us once the array is sorted." ]
-                  ]
-              ]
+            [ ul []
+                [ li [] [ text "Start: the inclusive start index of this action." ]
+                , li [] [ text "Mid: the midpoint (exclusive for the left slice)." ]
+                , li [] [ text "End: the inclusive end index of this action." ]
+                , li [] [ text "Sorted: true once we’ve run out of actions." ]
+                ]
+            ]
 
           -- Big-O Notation
         , div [ class "big-o-title" ]
@@ -180,7 +200,6 @@ view track running toMsg =
                 , div [] [ text "O(n log(n))" ]
                 ]
             ]
-
         , div [ class "space-complexity" ]
             [ text "Space Complexity: O(n)" ]
         ]

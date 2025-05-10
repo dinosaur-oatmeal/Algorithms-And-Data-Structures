@@ -7011,7 +7011,10 @@ var $author$project$SearchAlgorithms$LinearSearch$linearSearchStep = function (t
 		{currentStep: track.currentStep, sorted: false})));
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
-var $elm$core$Basics$pow = _Basics_pow;
+var $author$project$SortingAlgorithms$MergeSort$Split = F2(
+	function (a, b) {
+		return {$: 'Split', a: a, b: b};
+	});
 var $elm$core$Elm$JsArray$appendN = _JsArray_appendN;
 var $elm$core$Elm$JsArray$slice = _JsArray_slice;
 var $elm$core$Array$appendHelpBuilder = F2(
@@ -7186,88 +7189,6 @@ var $elm$core$Array$append = F2(
 						bTree)));
 		}
 	});
-var $author$project$SortingAlgorithms$MergeSort$mergeArrays = F2(
-	function (leftArray, rightArray) {
-		var mergeHelper = F3(
-			function (leftIndex, rightIndex, combinedArray) {
-				mergeHelper:
-				while (true) {
-					var _v0 = _Utils_Tuple2(
-						A2($elm$core$Array$get, leftIndex, leftArray),
-						A2($elm$core$Array$get, rightIndex, rightArray));
-					if (_v0.a.$ === 'Just') {
-						if (_v0.b.$ === 'Just') {
-							var leftValue = _v0.a.a;
-							var rightValue = _v0.b.a;
-							if (_Utils_cmp(leftValue, rightValue) < 0) {
-								var $temp$leftIndex = leftIndex + 1,
-									$temp$rightIndex = rightIndex,
-									$temp$combinedArray = A2(
-									$elm$core$Array$append,
-									combinedArray,
-									$elm$core$Array$fromList(
-										_List_fromArray(
-											[leftValue])));
-								leftIndex = $temp$leftIndex;
-								rightIndex = $temp$rightIndex;
-								combinedArray = $temp$combinedArray;
-								continue mergeHelper;
-							} else {
-								var $temp$leftIndex = leftIndex,
-									$temp$rightIndex = rightIndex + 1,
-									$temp$combinedArray = A2(
-									$elm$core$Array$append,
-									combinedArray,
-									$elm$core$Array$fromList(
-										_List_fromArray(
-											[rightValue])));
-								leftIndex = $temp$leftIndex;
-								rightIndex = $temp$rightIndex;
-								combinedArray = $temp$combinedArray;
-								continue mergeHelper;
-							}
-						} else {
-							var leftValue = _v0.a.a;
-							var _v1 = _v0.b;
-							var $temp$leftIndex = leftIndex + 1,
-								$temp$rightIndex = rightIndex,
-								$temp$combinedArray = A2(
-								$elm$core$Array$append,
-								combinedArray,
-								$elm$core$Array$fromList(
-									_List_fromArray(
-										[leftValue])));
-							leftIndex = $temp$leftIndex;
-							rightIndex = $temp$rightIndex;
-							combinedArray = $temp$combinedArray;
-							continue mergeHelper;
-						}
-					} else {
-						if (_v0.b.$ === 'Just') {
-							var _v2 = _v0.a;
-							var rightValue = _v0.b.a;
-							var $temp$leftIndex = leftIndex,
-								$temp$rightIndex = rightIndex + 1,
-								$temp$combinedArray = A2(
-								$elm$core$Array$append,
-								combinedArray,
-								$elm$core$Array$fromList(
-									_List_fromArray(
-										[rightValue])));
-							leftIndex = $temp$leftIndex;
-							rightIndex = $temp$rightIndex;
-							combinedArray = $temp$combinedArray;
-							continue mergeHelper;
-						} else {
-							var _v3 = _v0.a;
-							var _v4 = _v0.b;
-							return combinedArray;
-						}
-					}
-				}
-			});
-		return A3(mergeHelper, 0, 0, $elm$core$Array$empty);
-	});
 var $elm$core$List$drop = F2(
 	function (n, list) {
 		drop:
@@ -7287,6 +7208,33 @@ var $elm$core$List$drop = F2(
 					continue drop;
 				}
 			}
+		}
+	});
+var $author$project$SortingAlgorithms$MergeSort$Merge = F2(
+	function (a, b) {
+		return {$: 'Merge', a: a, b: b};
+	});
+var $author$project$SortingAlgorithms$MergeSort$generateActions = F2(
+	function (start, len) {
+		if (len <= 1) {
+			return _List_Nil;
+		} else {
+			var mid = start + ((len / 2) | 0);
+			var rightLen = (start + len) - mid;
+			var leftLen = mid - start;
+			return _Utils_ap(
+				_List_fromArray(
+					[
+						A2($author$project$SortingAlgorithms$MergeSort$Split, start, len)
+					]),
+				_Utils_ap(
+					A2($author$project$SortingAlgorithms$MergeSort$generateActions, start, leftLen),
+					_Utils_ap(
+						A2($author$project$SortingAlgorithms$MergeSort$generateActions, mid, rightLen),
+						_List_fromArray(
+							[
+								A2($author$project$SortingAlgorithms$MergeSort$Merge, start, len)
+							]))));
 		}
 	});
 var $elm$core$Array$sliceLeft = F2(
@@ -7468,49 +7416,146 @@ var $elm$core$Array$slice = F3(
 			correctFrom,
 			A2($elm$core$Array$sliceRight, correctTo, array));
 	});
-var $author$project$SortingAlgorithms$MergeSort$processMergeStep = F3(
-	function (currentStep, halfStep, array) {
-		var stepSize = A2($elm$core$Basics$pow, 2, currentStep);
-		var arrayLength = $elm$core$Array$length(array);
-		var processSegments = F2(
-			function (start, acc) {
-				processSegments:
-				while (true) {
-					if (_Utils_cmp(start, arrayLength) > -1) {
-						return acc;
-					} else {
-						var right = A3($elm$core$Array$slice, start + halfStep, start + stepSize, array);
-						var left = A3($elm$core$Array$slice, start, start + halfStep, array);
-						var merged = A2($author$project$SortingAlgorithms$MergeSort$mergeArrays, left, right);
-						var $temp$start = start + stepSize,
-							$temp$acc = A2($elm$core$Array$append, acc, merged);
-						start = $temp$start;
-						acc = $temp$acc;
-						continue processSegments;
-					}
-				}
-			});
-		return A2(processSegments, 0, $elm$core$Array$empty);
-	});
 var $author$project$SortingAlgorithms$MergeSort$mergeSortStep = function (track) {
-	var outerIndex = track.outerIndex;
-	var currentStep = track.currentStep;
-	var halfStep = (A2($elm$core$Basics$pow, 2, currentStep) / 2) | 0;
-	var array = track.array;
-	var arrayLength = $elm$core$Array$length(array);
-	var totalSteps = $elm$core$Basics$ceiling(
-		A2($elm$core$Basics$logBase, 2, arrayLength));
-	var isSorted = _Utils_cmp(currentStep, totalSteps) > 0;
-	var updatedArray = (!isSorted) ? A3($author$project$SortingAlgorithms$MergeSort$processMergeStep, currentStep, halfStep, array) : array;
-	return _Utils_update(
-		track,
-		{
-			array: updatedArray,
-			currentIndex: currentStep,
-			currentStep: isSorted ? currentStep : (currentStep + 1),
-			outerIndex: halfStep,
-			sorted: isSorted
-		});
+	if (track.sorted) {
+		return track;
+	} else {
+		var length = $elm$core$Array$length(track.array);
+		var idx = track.currentStep;
+		var actions = A2($author$project$SortingAlgorithms$MergeSort$generateActions, 0, length);
+		var total = $elm$core$List$length(actions);
+		if (_Utils_cmp(idx, total) > -1) {
+			return _Utils_update(
+				track,
+				{sorted: true});
+		} else {
+			var nextStep = idx + 1;
+			var action = function () {
+				var _v8 = A2($elm$core$List$drop, idx, actions);
+				if (_v8.b) {
+					var a = _v8.a;
+					return a;
+				} else {
+					return A2($author$project$SortingAlgorithms$MergeSort$Split, 0, 1);
+				}
+			}();
+			var _v0 = function () {
+				if (action.$ === 'Split') {
+					var s = action.a;
+					var l = action.b;
+					return _Utils_Tuple2(s, l);
+				} else {
+					var s = action.a;
+					var l = action.b;
+					return _Utils_Tuple2(s, l);
+				}
+			}();
+			var start = _v0.a;
+			var len = _v0.b;
+			var end = (start + len) - 1;
+			var mid = start + ((len / 2) | 0);
+			var newArray = function () {
+				if (action.$ === 'Split') {
+					return track.array;
+				} else {
+					var s = action.a;
+					var l = action.b;
+					var right = A3($elm$core$Array$slice, mid, end + 1, track.array);
+					var left = A3($elm$core$Array$slice, s, mid, track.array);
+					var merged = function () {
+						var step = F3(
+							function (li, ri, acc) {
+								step:
+								while (true) {
+									var _v3 = _Utils_Tuple2(
+										A2($elm$core$Array$get, li, left),
+										A2($elm$core$Array$get, ri, right));
+									if (_v3.a.$ === 'Just') {
+										if (_v3.b.$ === 'Just') {
+											var lv = _v3.a.a;
+											var rv = _v3.b.a;
+											if (_Utils_cmp(lv, rv) < 0) {
+												var $temp$li = li + 1,
+													$temp$ri = ri,
+													$temp$acc = A2(
+													$elm$core$Array$append,
+													acc,
+													$elm$core$Array$fromList(
+														_List_fromArray(
+															[lv])));
+												li = $temp$li;
+												ri = $temp$ri;
+												acc = $temp$acc;
+												continue step;
+											} else {
+												var $temp$li = li,
+													$temp$ri = ri + 1,
+													$temp$acc = A2(
+													$elm$core$Array$append,
+													acc,
+													$elm$core$Array$fromList(
+														_List_fromArray(
+															[rv])));
+												li = $temp$li;
+												ri = $temp$ri;
+												acc = $temp$acc;
+												continue step;
+											}
+										} else {
+											var lv = _v3.a.a;
+											var _v4 = _v3.b;
+											var $temp$li = li + 1,
+												$temp$ri = ri,
+												$temp$acc = A2(
+												$elm$core$Array$append,
+												acc,
+												$elm$core$Array$fromList(
+													_List_fromArray(
+														[lv])));
+											li = $temp$li;
+											ri = $temp$ri;
+											acc = $temp$acc;
+											continue step;
+										}
+									} else {
+										if (_v3.b.$ === 'Just') {
+											var _v5 = _v3.a;
+											var rv = _v3.b.a;
+											var $temp$li = li,
+												$temp$ri = ri + 1,
+												$temp$acc = A2(
+												$elm$core$Array$append,
+												acc,
+												$elm$core$Array$fromList(
+													_List_fromArray(
+														[rv])));
+											li = $temp$li;
+											ri = $temp$ri;
+											acc = $temp$acc;
+											continue step;
+										} else {
+											var _v6 = _v3.a;
+											var _v7 = _v3.b;
+											return acc;
+										}
+									}
+								}
+							});
+						return A3(step, 0, 0, $elm$core$Array$empty);
+					}();
+					var before = A3($elm$core$Array$slice, 0, s, track.array);
+					var after = A3($elm$core$Array$slice, end + 1, length, track.array);
+					return A2(
+						$elm$core$Array$append,
+						A2($elm$core$Array$append, before, merged),
+						after);
+				}
+			}();
+			return _Utils_update(
+				track,
+				{array: newArray, currentIndex: mid - 1, currentStep: nextStep, minIndex: end, outerIndex: start, sorted: false});
+		}
+	}
 };
 var $author$project$MainComponents$Structs$orderedListCmd = function (toMsg) {
 	var orderedList = A2($elm$core$List$range, 1, 30);
@@ -13711,7 +13756,14 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						[
 							$elm$html$Html$text('Merge Sort is a divide-and-conquer sorting algorithm\r\n                that recursively splits an array into smaller subarrays.\r\n                This splitting occurs until each subarray contains one element.\r\n                Then, it merges these subarrays together in sorted order.\r\n                Every merge step ensures that the combined subarrays are sorted,\r\n                resulting in the larger array being fully sorted.')
 						])),
-					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
+					A6(
+					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
+					track.array,
+					'Walk through the steps below',
+					track.sorted,
+					track.outerIndex,
+					track.currentIndex,
+					$elm$core$Maybe$Just(track.minIndex)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
 					A2(
 					$elm$html$Html$div,
@@ -13722,9 +13774,11 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Middle Index: ' + $elm$core$String$fromInt(track.outerIndex)),
+							'Start: ' + $elm$core$String$fromInt(track.outerIndex)),
 							$elm$html$Html$text(
-							' | Outer Index: ' + $elm$core$String$fromInt(track.currentIndex)),
+							' | Mid: ' + $elm$core$String$fromInt(track.currentIndex)),
+							$elm$html$Html$text(
+							' | End: ' + $elm$core$String$fromInt(track.minIndex)),
 							$elm$html$Html$text(
 							' | Sorted: ' + (track.sorted ? 'Yes' : 'No'))
 						])),
@@ -13746,21 +13800,28 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Middle Index:  The middle of the subarrays being merged.')
+											$elm$html$Html$text('Start: the inclusive start index of this action.')
 										])),
 									A2(
 									$elm$html$Html$li,
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Outer Index: the rightmost index of the merging arrays.')
+											$elm$html$Html$text('Mid: the midpoint (exclusive for the left slice).')
 										])),
 									A2(
 									$elm$html$Html$li,
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Sorted: tells us once the array is sorted.')
+											$elm$html$Html$text('End: the inclusive end index of this action.')
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Sorted: true once we’ve run out of actions.')
 										]))
 								]))
 						])),
