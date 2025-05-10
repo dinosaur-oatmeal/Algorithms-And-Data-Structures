@@ -11153,9 +11153,16 @@ var $author$project$DataStructures$SetMap$bigOItem = F2(
 	});
 var $author$project$DataStructures$SetMap$getAccess = function (ds) {
 	if (ds.$ === 'SetType') {
-		return 'O(1) avg';
+		return 'O(1) avg | O(n) worst';
 	} else {
-		return 'O(1) avg';
+		return 'O(1) avg | O(n) worst';
+	}
+};
+var $author$project$DataStructures$SetMap$getAccessLabel = function (ds) {
+	if (ds.$ === 'SetType') {
+		return 'Membership Test';
+	} else {
+		return 'Access';
 	}
 };
 var $author$project$DataStructures$SetMap$getDescription = function (ds) {
@@ -11174,9 +11181,9 @@ var $author$project$DataStructures$SetMap$getInsert = function (ds) {
 };
 var $author$project$DataStructures$SetMap$getRemove = function (ds) {
 	if (ds.$ === 'SetType') {
-		return 'O(1) avg';
+		return 'O(1) avg | O(n) worst';
 	} else {
-		return 'O(1) avg';
+		return 'O(1) avg | O(n) worst';
 	}
 };
 var $elm$core$Dict$isEmpty = function (dict) {
@@ -11513,7 +11520,7 @@ var $author$project$DataStructures$SetMap$view = function (model) {
 						$author$project$DataStructures$SetMap$getRemove(model.dataStructure)),
 						A2(
 						$author$project$DataStructures$SetMap$bigOItem,
-						'Access',
+						$author$project$DataStructures$SetMap$getAccessLabel(model.dataStructure),
 						$author$project$DataStructures$SetMap$getAccess(model.dataStructure))
 					])),
 				A2(

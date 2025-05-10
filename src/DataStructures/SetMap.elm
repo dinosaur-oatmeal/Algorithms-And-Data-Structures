@@ -208,7 +208,7 @@ view model =
         , div [ class "big-o-list" ]
             [ bigOItem "Insert" (getInsert model.dataStructure)
             , bigOItem "Remove" (getRemove model.dataStructure)
-            , bigOItem "Access" (getAccess model.dataStructure)
+            , bigOItem (getAccessLabel model.dataStructure) (getAccess model.dataStructure)
             ]
         , div [ class "space-complexity" ] [ text "Space Complexity: O(n)" ]
         ]
@@ -232,15 +232,22 @@ getInsert ds =
 getRemove : DSType -> String
 getRemove ds =
     case ds of
-        SetType -> "O(1) avg"
-        MapType -> "O(1) avg"
+        SetType -> "O(1) avg | O(n) worst"
+        MapType -> "O(1) avg | O(n) worst"
 
 -- Cost for access
 getAccess : DSType -> String
 getAccess ds =
     case ds of
-        SetType -> "O(1) avg"
-        MapType -> "O(1) avg"
+        SetType -> "O(1) avg | O(n) worst"
+        MapType -> "O(1) avg | O(n) worst"
+
+-- Get correct label for sets and maps
+getAccessLabel : DSType -> String
+getAccessLabel ds =
+    case ds of
+        SetType -> "Membership Test"
+        MapType -> "Access"
 
 -- Change description based on data structure
 getDescription : DSType -> String
