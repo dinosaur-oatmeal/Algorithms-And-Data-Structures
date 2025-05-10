@@ -134,7 +134,7 @@ This project's impact has superseded students' learning on their own volition. C
 
 ## **Data Structures**
 
-### Fundamental Structures
+### Linear Structures
 
 #### **Arrays**
 - An ordered collection of elements accessible by index stored on the stack that supports random access. All arrays require bounds and can't change size as needed.
@@ -175,9 +175,32 @@ This project's impact has superseded students' learning on their own volition. C
   - Remove: $O(1)$ (Only Beginning)
 - **Space Complexity**: $O(n)$
 
+### Associative Structures
+
+#### **Hash Sets**
+- An unordered collection of unique elements, typically used for quick membership checking as hash sets.
+
+##### **Complexities:**
+- **Time Complexity**:
+  - Insert: $O(1)$ Average | $O(n)$ Worst
+  - Remove: $O(1)$ Average | $O(n)$ Worst
+  - Membership Test: $O(1)$ Average | $O(n)$ Worst
+- **Space Complexity**: $O(n)$
+
+
+#### **Hash Maps**
+- A collection of key-value pairs with fast access, insertion, and deletion. Keys must be unique, and values are retrieved by hashing the key to a location in memory.
+
+##### **Complexities:**
+- **Time Complexity**:
+  - Insert: $O(1)$ Average | $O(n)$ Worst
+  - Remove: $O(1)$ Average | $O(n)$ Worst
+  - Access: $O(1)$ Average | $O(n)$ Worst
+- **Space Complexity**: $O(n)$
+
 ## Work In Progress (WIP)
 
-#### **Graph Traversals** 
+#### **Tree Traversals** 
 
 - **Depth-First Search (DFS)**: Explores as far as possible along each branch before backtracking.
 - **Breadth-First Search (BFS)**: Explores all neighbors of a node before moving on to the next level.
@@ -186,8 +209,5 @@ This project's impact has superseded students' learning on their own volition. C
 
 ## Upcoming Features
 
-#### **Associative Structures**  
-- **Hash Maps (Dictionaries)**: Key-value pairs allowing fast lookups.  
-- **Sets**: Collection of unique elements, typically used for fast membership checking.
-
+- (nothing here right now)
 ---
