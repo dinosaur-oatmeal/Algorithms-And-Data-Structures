@@ -134,6 +134,9 @@ view track running toMsg =
             -- Allows button actions to be routed to Main.elm
         , Controls.view running toMsg
 
+        -- Current action
+        , renderAction track
+
           -- Variables
         , div [ class "indices" ]
               [ text ("Pivot Index: " ++ String.fromInt track.outerIndex)
@@ -171,3 +174,15 @@ view track running toMsg =
         , div [ class "space-complexity" ]
             [ text "Space Complexity: O(n)" ]
         ]
+
+-- Convert SortingTrack to a string
+renderAction : SortingTrack -> Html msg
+renderAction track =
+    case track.stack of
+        (low, high) :: _ ->
+            div [ class "current-action quick" ]
+                [ text ("Partitioning: [" ++ String.fromInt low ++ " - " ++ String.fromInt high ++ "]") ]
+
+        [] ->
+            div [ class "current-action done" ]
+                [ text "Sorting complete!" ]

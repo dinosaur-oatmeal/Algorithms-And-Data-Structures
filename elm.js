@@ -13726,8 +13726,70 @@ var $author$project$SortingAlgorithms$InsertionSort$view = F3(
 						]))
 				]));
 	});
+var $author$project$SortingAlgorithms$MergeSort$renderAction = F2(
+	function (maybeAction, sorted) {
+		if (sorted) {
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Sorting complete!')
+					]));
+		} else {
+			if (maybeAction.$ === 'Just') {
+				if (maybeAction.a.$ === 'Split') {
+					var _v1 = maybeAction.a;
+					var start = _v1.a;
+					var len = _v1.b;
+					return A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								'Splitting: [' + ($elm$core$String$fromInt(start) + (' - ' + ($elm$core$String$fromInt((start + len) - 1) + ']'))))
+							]));
+				} else {
+					var _v2 = maybeAction.a;
+					var start = _v2.a;
+					var len = _v2.b;
+					return A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								'Merging: [' + ($elm$core$String$fromInt(start) + (' - ' + ($elm$core$String$fromInt((start + len) - 1) + ']'))))
+							]));
+				}
+			} else {
+				return A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Sorting complete!')
+						]));
+			}
+		}
+	});
 var $author$project$SortingAlgorithms$MergeSort$view = F3(
 	function (track, running, toMsg) {
+		var stepIndex = A2($elm$core$Basics$max, 0, track.currentStep - 1);
+		var allActions = A2(
+			$author$project$SortingAlgorithms$MergeSort$generateActions,
+			0,
+			$elm$core$Array$length(track.array));
+		var maybeAction = function () {
+			var _v0 = A2($elm$core$List$drop, stepIndex, allActions);
+			if (_v0.b) {
+				var a = _v0.a;
+				return $elm$core$Maybe$Just(a);
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		}();
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -13754,7 +13816,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Merge Sort is a divide-and-conquer sorting algorithm\r\n                that recursively splits an array into smaller subarrays.\r\n                This splitting occurs until each subarray contains one element.\r\n                Then, it merges these subarrays together in sorted order.\r\n                Every merge step ensures that the combined subarrays are sorted,\r\n                resulting in the larger array being fully sorted.')
+							$elm$html$Html$text('Merge Sort is a divide-and-conquer sorting algorithm\r\n                    that recursively splits an array into smaller subarrays.\r\n                    This splitting occurs until each subarray contains one element.\r\n                    Then, it merges these subarrays together in sorted order.\r\n                    Every merge step ensures that the combined subarrays are sorted,\r\n                    resulting in the larger array being fully sorted.')
 						])),
 					A6(
 					$author$project$SortingAlgorithms$SortingVisualization$renderComparison,
@@ -13765,6 +13827,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 					track.currentIndex,
 					$elm$core$Maybe$Just(track.minIndex)),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
+					A2($author$project$SortingAlgorithms$MergeSort$renderAction, maybeAction, track.sorted),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
@@ -13821,7 +13884,7 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 									_List_Nil,
 									_List_fromArray(
 										[
-											$elm$html$Html$text('Sorted: true once we’ve run out of actions.')
+											$elm$html$Html$text('Sorted: true once we\'ve run out of actions.')
 										]))
 								]))
 						])),
@@ -13925,6 +13988,36 @@ var $author$project$SortingAlgorithms$MergeSort$view = F3(
 						]))
 				]));
 	});
+var $author$project$SortingAlgorithms$QuickSort$renderAction = function (track) {
+	var _v0 = track.stack;
+	if (_v0.b) {
+		var _v1 = _v0.a;
+		var low = _v1.a;
+		var high = _v1.b;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('current-action quick')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					'Partitioning: [' + ($elm$core$String$fromInt(low) + (' - ' + ($elm$core$String$fromInt(high) + ']'))))
+				]));
+	} else {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('current-action done')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Sorting complete!')
+				]));
+	}
+};
 var $author$project$SortingAlgorithms$QuickSort$view = F3(
 	function (track, running, toMsg) {
 		return A2(
@@ -13957,6 +14050,7 @@ var $author$project$SortingAlgorithms$QuickSort$view = F3(
 						])),
 					A6($author$project$SortingAlgorithms$SortingVisualization$renderComparison, track.array, 'Walk through the steps below', track.sorted, track.outerIndex, track.currentIndex, $elm$core$Maybe$Nothing),
 					A2($author$project$MainComponents$Controls$view, running, toMsg),
+					$author$project$SortingAlgorithms$QuickSort$renderAction(track),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(

@@ -138,68 +138,100 @@ mergeSortStep track =
 
 view : SortingTrack -> Bool -> (Controls.ControlMsg -> msg) -> Html msg
 view track running toMsg =
-    div [ class "sort-page" ]
-        [ -- Title
-          div [ class "sort-title" ]
-              [ text "Merge Sort" ]
+    let
+        -- Determine current action (Split, Merge, or Complete)
+        allActions = generateActions 0 (Array.length track.array)
+        stepIndex = max 0 (track.currentStep - 1)
 
-          -- Description
-        , div [ class "description" ]
-              [ text """Merge Sort is a divide-and-conquer sorting algorithm
-                that recursively splits an array into smaller subarrays.
-                This splitting occurs until each subarray contains one element.
-                Then, it merges these subarrays together in sorted order.
-                Every merge step ensures that the combined subarrays are sorted,
-                resulting in the larger array being fully sorted.""" ]
+        maybeAction =
+            case drop stepIndex allActions of
+                a :: _ -> Just a
+                _      -> Nothing
 
-          -- Visualization
-        , renderComparison
-              track.array
-              "Walk through the steps below"
-              track.sorted
-              track.outerIndex
-              track.currentIndex
-              (Just track.minIndex)
+    in
+        div [ class "sort-page" ]
+            [ -- Title
+            div [ class "sort-title" ]
+                [ text "Merge Sort" ]
 
-          -- Buttons (calls Controls.elm to be rendered)
-            -- Allows button actions to be routed to Main.elm
-        , Controls.view running toMsg
+            -- Description
+            , div [ class "description" ]
+                [ text """Merge Sort is a divide-and-conquer sorting algorithm
+                    that recursively splits an array into smaller subarrays.
+                    This splitting occurs until each subarray contains one element.
+                    Then, it merges these subarrays together in sorted order.
+                    Every merge step ensures that the combined subarrays are sorted,
+                    resulting in the larger array being fully sorted.""" ]
 
-          -- Variables
-        , div [ class "indices" ]
-            [ text ("Start: " ++ String.fromInt track.outerIndex)
-            , text (" | Mid: " ++ String.fromInt track.currentIndex)
-            , text (" | End: " ++ String.fromInt track.minIndex)
-            , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
+            -- Visualization
+            , renderComparison
+                track.array
+                "Walk through the steps below"
+                track.sorted
+                track.outerIndex
+                track.currentIndex
+                (Just track.minIndex)
+
+            -- Buttons (calls Controls.elm to be rendered)
+                -- Allows button actions to be routed to Main.elm
+            , Controls.view running toMsg
+
+            -- Current action
+            , renderAction maybeAction track.sorted
+
+            -- Variables
+            , div [ class "indices" ]
+                [ text ("Start: " ++ String.fromInt track.outerIndex)
+                , text (" | Mid: " ++ String.fromInt track.currentIndex)
+                , text (" | End: " ++ String.fromInt track.minIndex)
+                , text (" | Sorted: " ++ (if track.sorted then "Yes" else "No"))
+                ]
+
+            -- Breakdown
+            , div [ class "variable-list" ]
+                [ ul []
+                    [ li [] [ text "Start: the inclusive start index of this action." ]
+                    , li [] [ text "Mid: the midpoint (exclusive for the left slice)." ]
+                    , li [] [ text "End: the inclusive end index of this action." ]
+                    , li [] [ text "Sorted: true once we've run out of actions." ]
+                    ]
+                ]
+
+            -- Big-O Notation
+            , div [ class "big-o-title" ]
+                [ text """Big(O) Notation""" ]
+            , div [ class "big-o-list" ]
+                [ div [ class "big-o-item" ]
+                    [ div [] [ text "Best-Case" ]
+                    , div [] [ text "O(n log(n))" ]
+                    ]
+                , div [ class "big-o-item" ]
+                    [ div [] [ text "Average-Case" ]
+                    , div [] [ text "O(n log(n))" ]
+                    ]
+                , div [ class "big-o-item" ]
+                    [ div [] [ text "Worst-Case" ]
+                    , div [] [ text "O(n log(n))" ]
+                    ]
+                ]
+            , div [ class "space-complexity" ]
+                [ text "Space Complexity: O(n)" ]
             ]
 
-          -- Breakdown
-        , div [ class "variable-list" ]
-            [ ul []
-                [ li [] [ text "Start: the inclusive start index of this action." ]
-                , li [] [ text "Mid: the midpoint (exclusive for the left slice)." ]
-                , li [] [ text "End: the inclusive end index of this action." ]
-                , li [] [ text "Sorted: true once we’ve run out of actions." ]
-                ]
-            ]
+-- Takes an action and convert it to a string
+renderAction : Maybe Action -> Bool -> Html msg
+renderAction maybeAction sorted =
+    if sorted then
+        div [] [ text "Sorting complete!" ]
 
-          -- Big-O Notation
-        , div [ class "big-o-title" ]
-              [ text """Big(O) Notation""" ]
-        , div [ class "big-o-list" ]
-            [ div [ class "big-o-item" ]
-                [ div [] [ text "Best-Case" ]
-                , div [] [ text "O(n log(n))" ]
-                ]
-            , div [ class "big-o-item" ]
-                [ div [] [ text "Average-Case" ]
-                , div [] [ text "O(n log(n))" ]
-                ]
-            , div [ class "big-o-item" ]
-                [ div [] [ text "Worst-Case" ]
-                , div [] [ text "O(n log(n))" ]
-                ]
-            ]
-        , div [ class "space-complexity" ]
-            [ text "Space Complexity: O(n)" ]
-        ]
+    else
+        case maybeAction of
+            Just (Split start len) ->
+                div [] [ text ("Splitting: [" ++ String.fromInt start ++ " - " ++ String.fromInt (start + len - 1) ++ "]") ]
+
+            Just (Merge start len) ->
+                div [] [ text ("Merging: [" ++ String.fromInt start ++ " - " ++ String.fromInt (start + len - 1) ++ "]") ]
+
+            -- Default (never reached)
+            _ ->
+                div [] [ text "Sorting complete!" ]
