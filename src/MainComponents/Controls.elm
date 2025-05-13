@@ -25,6 +25,8 @@ view running toMsg =
             -- Run if algorithm isn't running
             button [ class "sorting-button", onClick (toMsg Run) ]
                 [ span [ class "button-text" ] [ text "Run" ] ]
+        
+        -- Always shown
         , button [ class "sorting-button", onClick (toMsg Step) ]
             [ span [ class "button-text" ] [ text "Step" ] ]
         , button [ class "sorting-button", onClick (toMsg Reset) ]

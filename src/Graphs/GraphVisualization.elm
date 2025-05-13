@@ -42,6 +42,7 @@ view graph maybeCurrentNode visited traversedEdges finalRouteEdges running =
         ]
 
 -- Put positions for each node in a dictionary
+    -- Coordinates work for max of 8 nodes!
 nodePositions : Dict Int (Float, Float)
 nodePositions =
     Dict.fromList
@@ -68,7 +69,6 @@ buildPositionsDict nodes =
         )
         Dict.empty
         nodes
-
 
 -- Draws all edges on graph
     -- List of edges, dictionary for each ID of node, and list of edges to highlight

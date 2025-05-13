@@ -136,6 +136,7 @@ mergeSortStep track =
                 , sorted       = False
             }
 
+-- VIEW
 view : SortingTrack -> Bool -> (Controls.ControlMsg -> msg) -> Html msg
 view track running toMsg =
     let

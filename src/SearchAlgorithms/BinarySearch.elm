@@ -40,6 +40,7 @@ binarySearchStep track =
             else
                 Nothing
     in
+    
     -- Don't update if value found
     if track.sorted then
         track

@@ -372,9 +372,7 @@ initialKruskalState graph =
     , union = union
     }
 
--- ==============
--- Kruskal's Code
--- ==============
+-- KRUSKAL'S
 
 -- Generate all steps of Kruskal's and store in a list
 generateKruskalSteps : Graph -> List MSTState
@@ -474,9 +472,7 @@ updateStateWithEdge state edge =
         , union = newunion
     }
 
--- ==============
--- Prim's Code
--- ==============
+--PRIM'S
 
 -- Initial start state for Prim's
 initialPrimState : Graph -> Int -> MSTState

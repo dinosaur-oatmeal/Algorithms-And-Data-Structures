@@ -198,7 +198,6 @@ view model =
         , div [ class "space-complexity" ] [ text "Space Complexity: O(n)" ]
         ]
 
-
 -- Render an element in the data structure
 renderElement : List Int -> DSType -> Int -> Int -> Html Msg
 renderElement list dsType index value =

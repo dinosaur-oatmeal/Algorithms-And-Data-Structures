@@ -85,11 +85,7 @@ update msg model =
         ChangeDataStructure newStructure ->
             ( { model | dataStructure = newStructure } )
 
-{-
-    Basic page view for Data Structures
-        Title, Description, Buttons, User Input, Delete, Diagram, Breakdown, & Big-O Notation
-        (ControlMsg -> msg) is ControlMsg in Main.elm
--}
+-- VIEW
 view : Model -> Html Msg
 view model =
     let
@@ -189,7 +185,6 @@ getLabel dsType index len =
             if index == 0 then "Front"
             else if index == len - 1 then "Back"
             else ""
-
 
 -- Render an element in the data structure
 renderElement : List Int -> DSType -> Int -> Int -> Html Msg

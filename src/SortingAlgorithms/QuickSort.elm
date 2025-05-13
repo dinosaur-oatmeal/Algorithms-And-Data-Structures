@@ -48,6 +48,7 @@ quickSortStep track =
                     | stack = rest
                 }
 
+-- Get pivot index in array
 partition : Int -> Int -> SortingTrack -> (Int, SortingTrack)
 partition low high track =
     let
@@ -98,7 +99,6 @@ swap indexOne indexTwo arr =
         -- Swap position of elements in array
         |> Array.set indexOne elementTwo
         |> Array.set indexTwo elementOne
-
 
 {-
     Basic page view for Quick Sort

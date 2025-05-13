@@ -238,7 +238,6 @@ subscriptions model =
     else
         Sub.none
 
-
 -- VIEW
 view : Model -> Html Msg
 view model =
@@ -298,7 +297,6 @@ view model =
         , div [ class "space-complexity" ]
             [ text "Space Complexity (tree): O(n)" ]
         ]
-
 
 -- Convert messages from Controls.elm to local messages
 convertMsg : ControlMsg -> Msg

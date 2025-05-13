@@ -32,7 +32,6 @@ initModel : HomeState
 initModel =
     defaultHomeState
 
-
 -- UPDATE
 update : Msg -> HomeState -> ( HomeState, Cmd Msg )
 update msg model =
@@ -91,7 +90,6 @@ update msg model =
             , Cmd.none
             )
 
-
 -- SUBSCRIPTIONS
 subscriptions : HomeState -> Sub Msg
 subscriptions model =
@@ -132,4 +130,3 @@ swap indexOne indexTwo array =
             -- Default (never used)
             _ ->
                 array
-                

@@ -46,7 +46,6 @@ type alias Model =
     , newValue : String
     }
 
-
 type Msg
     -- Update heap to something new
     = ChangeHeapType HeapType
@@ -374,7 +373,6 @@ view model =
         -- Call Visualization.elm to render heap (tree)
         Visualization.view currentStep.tree Nothing currentStep.swappedIndices [] model.running
 
-
         -- Algorithm step buttons
         , Controls.view model.running convertMsg
 
@@ -438,7 +436,6 @@ resetAndGenerateTree newHeapType model =
       }
     , cmd )
 
-
 -- Change description based on traversal type
 getDescription : HeapType -> String
 getDescription heapType =
@@ -452,7 +449,6 @@ getDescription heapType =
             """Max Heap: A binary tree where the largest element is always the root.
                 Elements get smaller as the tree levels get deeper,
                 ensuring parent nodes are larger than their children."""
-
 
 -- Converts tree to an array (breadth-first)
 treeToLevelArray : Tree -> List Int
@@ -479,7 +475,6 @@ levelOrderHelper queue accumulatorList =
         -- Empty array (final pass should return whole tree in breadth-first order)
         _ ->
             accumulatorList
-
 
 -- Convert array back into tree
 levelArrayToTree : List Int -> Tree

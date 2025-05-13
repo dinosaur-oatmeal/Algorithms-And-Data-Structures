@@ -29,6 +29,7 @@ selectionSortStep track =
         { track
             | sorted = True
         }
+    
     else
         if current < length then
             -- Compare element at current with element at minimum

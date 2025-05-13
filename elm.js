@@ -8234,7 +8234,7 @@ var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
 						function (w) {
 							return {from: a, to: b, weight: w};
 						},
-						A2($elm$random$Random$int, 15, 99));
+						A2($elm$random$Random$int, 1, 99));
 				},
 				allPairs);
 			var allEdgesGenerator = $elm_community$random_extra$Random$Extra$sequence(edgeGenerators);
@@ -8251,18 +8251,18 @@ var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
 					return A2(
 						$elm$random$Random$andThen,
 						function (extraEdges) {
-							var nNodes = $elm$core$List$length(nodes);
+							var numNodes = $elm$core$List$length(nodes);
 							var graph = {
 								edges: _Utils_ap(mstEdges, extraEdges),
 								nodes: nodes
 							};
-							return (nNodes > 0) ? A2(
+							return (numNodes > 0) ? A2(
 								$elm$random$Random$andThen,
 								function (sourceIndex) {
 									return A2(
 										$elm$random$Random$map,
 										function (offset) {
-											var targetIndex = A2($elm$core$Basics$modBy, nNodes, sourceIndex + offset);
+											var targetIndex = A2($elm$core$Basics$modBy, numNodes, sourceIndex + offset);
 											var targetId = A2(
 												$elm$core$Maybe$withDefault,
 												1,
@@ -8285,9 +8285,9 @@ var $author$project$MainComponents$Structs$randomGraphGenerator = function () {
 														A2($elm$core$List$drop, sourceIndex, nodes))));
 											return _Utils_Tuple3(graph, sourceId, targetId);
 										},
-										A2($elm$random$Random$int, 1, nNodes - 1));
+										A2($elm$random$Random$int, 1, numNodes - 1));
 								},
-								A2($elm$random$Random$int, 0, nNodes - 1)) : $elm$random$Random$constant(
+								A2($elm$random$Random$int, 0, numNodes - 1)) : $elm$random$Random$constant(
 								_Utils_Tuple3(graph, 1, 1));
 						},
 						extraEdgesGenerator);

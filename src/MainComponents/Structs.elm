@@ -1,6 +1,5 @@
-{-  All files need access to the sorting track.
-    Keeping it in a separate file removes the potential
-        of circular imports.
+{-  All files need access to the sorting, tree, and graph components
+    Keeping it in a separate file removes the potential of circular imports.
 -}
 module MainComponents.Structs exposing (..)
 
@@ -16,7 +15,7 @@ import Task exposing (Task, succeed)
 
 import Array exposing (Array)
 
--- HOME information
+-- HOME
 
 -- Theme for website
     -- Default to superior theme
@@ -82,7 +81,7 @@ defaultSortingTrack list =
 
 -- GENERATORS for various pages
 
--- Generate an ordered array
+-- Generate an ordered array (binary search)
 orderedListCmd : (List Int -> msg) -> Cmd msg
 orderedListCmd toMsg =
     let
@@ -104,6 +103,7 @@ randomTargetGenerator =
     Random.int 1 30
 
 -- TREE
+
 type Tree
     -- No node with no children
     = Empty
@@ -114,7 +114,7 @@ type Tree
 randomTreeGenerator : Int -> Int -> Generator Tree
 randomTreeGenerator intOne intTwo =
     -- Generates a tree with random number of nodes between inputs
-        -- Allows 31 nodes for traversals and 30 for heaps
+        -- Allows max of 31 nodes for traversals and 30 for heaps
     let
         sizeGenerator : Generator Int
         sizeGenerator =
@@ -123,7 +123,7 @@ randomTreeGenerator intOne intTwo =
     Random.andThen
         (\n ->
             -- All values in tree are 1 - 50 with no duplicates
-                -- No duplicates needed for highlighting
+                -- Remove duplicates for highlighting
             Random.map
                 (\shuffledList ->
                     let
@@ -134,36 +134,6 @@ randomTreeGenerator intOne intTwo =
                 (shuffle (List.range 1 99))
         )
         sizeGenerator
-
--- Insert a node into a BST
-insertBST : Int -> Int -> Tree -> Tree
-insertBST maxDepth value tree =
-    let
-        insertHelper : Int -> Tree -> Tree
-        insertHelper currentDepth t =
-            -- Don't insert if max depth exceeded
-            if currentDepth > maxDepth then
-                t
-            else
-                case t of
-                    -- Create a new node with value (valid to insert)
-                    Empty ->
-                        TreeNode value Empty Empty
-
-                    -- Node already exists at this location
-                    TreeNode v l r ->
-                        -- Go down left subtree and recursively call
-                        if value < v then
-                            TreeNode v (insertHelper (currentDepth + 1) l) r
-                        -- Go down right subtree and recursively call
-                        else if value > v then
-                            TreeNode v l (insertHelper (currentDepth + 1) r)
-                        -- Skip duplicates
-                        else
-                            t
-    in
-    -- Root is depth 1
-    insertHelper 1 tree
 
 -- Generate a BST
 randomBSTGenerator : Int -> Int -> Random.Generator Tree
@@ -216,6 +186,36 @@ buildTree values index depth =
         -- Create node with value pointing to subtrees
         TreeNode val leftSubtree rightSubtree
 
+-- Insert a node into a BST
+insertBST : Int -> Int -> Tree -> Tree
+insertBST maxDepth value tree =
+    let
+        insertHelper : Int -> Tree -> Tree
+        insertHelper currentDepth t =
+            -- Don't insert if max depth exceeded
+            if currentDepth > maxDepth then
+                t
+            else
+                case t of
+                    -- Create a new node with value (valid to insert)
+                    Empty ->
+                        TreeNode value Empty Empty
+
+                    -- Node already exists at this location
+                    TreeNode v l r ->
+                        -- Go down left subtree and recursively call
+                        if value < v then
+                            TreeNode v (insertHelper (currentDepth + 1) l) r
+                        -- Go down right subtree and recursively call
+                        else if value > v then
+                            TreeNode v l (insertHelper (currentDepth + 1) r)
+                        -- Skip duplicates
+                        else
+                            t
+    in
+    -- Root is depth 1 (max depth 5 for 31 nodes)
+    insertHelper 1 tree
+
 -- GRAPH
 
 -- Node
@@ -260,7 +260,8 @@ randomGraphGenerator =
                 edgeGenerators =
                     List.map
                         (\( a, b ) ->
-                            Random.int 15 99
+                            -- Weight between 1 and 99
+                            Random.int 1 99
                                 |> Random.map (\w -> { from = a, to = b, weight = w })
                         )
                         allPairs
@@ -272,11 +273,11 @@ randomGraphGenerator =
             Random.andThen
                 (\allEdges ->
                     let
-                        -- Build MST using with Kruskal's algorithm
+                        -- Build MST using Kruskal's algorithm
                         ( mstEdges, leftover ) =
                             kruskalMST n allEdges
 
-                        -- Add random extra edges so graph isn't an MST
+                        -- Add random extra edges so graph isn't an MST (better for algoirthm visualizations)
                         extraEdgesGenerator =
                             randomSubset (extraEdgeProbability n) leftover
                     in
@@ -290,20 +291,20 @@ randomGraphGenerator =
                                     }
 
                                 -- Store the number of nodes in the graph
-                                nNodes = List.length nodes
+                                numNodes = List.length nodes
                             in
                             -- Ensure there are nodes (always should be)
-                            if nNodes > 0 then
+                            if numNodes > 0 then
                                 Random.andThen
-                                    -- Grab a random index to start at (5 through 8)
+                                    -- Grab a random index to start at
                                     (\sourceIndex ->
-                                        Random.int 1 (nNodes - 1)
+                                        Random.int 1 (numNodes - 1)
                                             |> Random.map
                                                 (\offset ->
                                                     let
                                                         -- Grab a target index that is non-zero
                                                         targetIndex =
-                                                            modBy nNodes (sourceIndex + offset)
+                                                            modBy numNodes (sourceIndex + offset)
 
                                                         sourceId =
                                                             (List.head (List.drop sourceIndex nodes))
@@ -318,8 +319,8 @@ randomGraphGenerator =
                                                     ( graph, sourceId, targetId )
                                                 )
                                     )
-                                    (Random.int 0 (nNodes - 1))
-                            -- In the graph is empty (never happens)
+                                    (Random.int 0 (numNodes - 1))
+                            -- The graph is empty (never happens)
                             else
                                 Random.constant ( graph, 1, 1 )
                         )
@@ -373,7 +374,7 @@ allUniquePairs ids =
         _ ->
             []
 
--- Kruskal's algorithm to find MST
+-- Kruskal's algorithm to find MST (used for Graph generation and MST.elm)
     -- Takes n nodes and list of edges, returns edges for MST and extra edges for graph
 kruskalMST : Int -> List Edge -> ( List Edge, List Edge )
 kruskalMST n edges =

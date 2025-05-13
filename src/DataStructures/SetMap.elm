@@ -45,7 +45,6 @@ initModel =
     , dataStructure = SetType
     }
 
-
 -- UPDATE
 update : Msg -> Model -> Model
 update msg model =

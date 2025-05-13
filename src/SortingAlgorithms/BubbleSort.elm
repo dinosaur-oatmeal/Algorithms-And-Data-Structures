@@ -67,7 +67,6 @@ bubbleSortStep track =
                 , didSwap = False
             }
 
-
 {-
     Basic page view for Bubble Sort
         Title, Description, Graph, Buttons, Variables, Breakdown, & Big-O Notation
