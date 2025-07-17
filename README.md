@@ -1,4 +1,4 @@
-[Visit The Website Here](https://dinosaur-oatmeal.github.io/Sorting-Algorithm-Website/)
+[Visit The Website Here](https://www.willmaberry.com/Algorithms-And-Data-Structures/)
 
 # Algorithm Learning Platform in Elm
 
